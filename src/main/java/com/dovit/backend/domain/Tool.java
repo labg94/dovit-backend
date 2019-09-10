@@ -32,7 +32,7 @@ public class Tool {
   private List<License> license;
 
   @OneToMany(mappedBy = "tool")
-  private List<ResourceTool> resourceTools;
+  private List<ResourceToolExpertise> resourceToolExpertises;
 
   @OneToMany(mappedBy = "tool")
   private List<ProjectResource> projectResources;

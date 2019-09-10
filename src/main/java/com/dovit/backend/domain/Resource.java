@@ -25,5 +25,5 @@ public class Resource {
   private List<ProjectResource> projectResources;
 
   @OneToMany(mappedBy = "resource")
-  private List<ResourceTool> resourceTools;
+  private List<ResourceToolExpertise> resourceToolExpertises;
 }

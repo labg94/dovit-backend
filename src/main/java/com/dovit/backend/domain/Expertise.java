@@ -23,5 +23,5 @@ public class Expertise {
   private List<ProfileExpertise> profileExpertises;
 
   @OneToMany(mappedBy = "expertise")
-  private List<ResourceTool> resourceTools;
+  private List<ResourceToolExpertise> resourceToolExpertises;
 }
