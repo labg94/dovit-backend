@@ -18,5 +18,7 @@ public class TechnologyCategory {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
+  private String description;
+
   @ManyToOne private Tool tool;
 }

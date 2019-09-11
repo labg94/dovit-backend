@@ -17,7 +17,7 @@ public class Tool {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  private Long id;
 
   @OneToMany(mappedBy = "tool")
   private List<TechnologyCategory> technologyCategory;

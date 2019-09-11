@@ -19,6 +19,9 @@ public class Profile {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
+  private String description;
+
+
   @OneToMany(mappedBy = "profile")
   private List<ProfileExpertise> profileExpertises;
 }

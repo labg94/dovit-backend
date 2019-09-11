@@ -10,13 +10,13 @@ import java.util.List;
 @Entity
 public class Role {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "role_id")
-    private Long id;
-    
-    @ManyToMany
-    private List<User> users;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "role_id")
+  private Long id;
 
+  private String description;
 
+  @ManyToMany
+  private List<User> users;
 }

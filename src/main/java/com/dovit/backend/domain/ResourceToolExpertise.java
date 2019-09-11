@@ -24,19 +24,16 @@ public class ResourceToolExpertise {
 
   @ManyToOne
   @MapsId("idResource")
-  @JoinColumn(name="idResource")
+  @JoinColumn(name = "idResource")
   private Resource resource;
 
   @ManyToOne
   @MapsId("idTool")
-  @JoinColumn(name="idTool")
+  @JoinColumn(name = "idTool")
   private Tool tool;
 
   @ManyToOne
   @MapsId("idExpertise")
-  @JoinColumn(name="idExpertise")
+  @JoinColumn(name = "idExpertise")
   private Expertise expertise;
-
-
-
 }

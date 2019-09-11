@@ -24,4 +24,7 @@ public class Expertise {
 
   @OneToMany(mappedBy = "expertise")
   private List<ResourceToolExpertise> resourceToolExpertises;
+
+  private String description;
+
 }

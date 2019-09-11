@@ -27,9 +27,9 @@ public class ResourceToolExpertiseId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ResourceToolExpertiseId that = (ResourceToolExpertiseId) o;
-        return Objects.equals(idResource, that.idResource) &&
-                Objects.equals(idTool, that.idTool) &&
-                Objects.equals(idExpertise, that.idExpertise);
+        return Objects.equals(idResource, that.idResource)
+                && Objects.equals(idTool, that.idTool)
+                && Objects.equals(idExpertise, that.idExpertise);
     }
 
     @Override
