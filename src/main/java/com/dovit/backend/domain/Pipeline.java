@@ -14,14 +14,12 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tools")
-public class Tool {
+@Table(name = "pipelines")
+public class Pipeline {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tool_id")
-    private Long tool;
-
-    private String name;
+    @Column(name = "pipeline_id")
+    private Long id;
 
 }
