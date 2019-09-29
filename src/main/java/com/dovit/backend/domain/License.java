@@ -5,12 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import java.awt.*;
+import java.time.Instant;
 
 /**
- * Entity class that refers "companies" table.
- * <br />
- * It stores the company information
  * @author Ramón París
  * @since 29-09-2019
  */
@@ -18,21 +17,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "companies")
-public class Company {
+@Table(name = "licences")
+public class License {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_id")
+    @Column(name = "licence_id")
     private Long id;
 
-    private String name;
+    @Column(nullable = false)
+    private Instant startDate;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private List<License> licenses;
+    private Instant expirationDate;
 
-
-
+    @ManyToOne
+    private Company company;
 
 
 

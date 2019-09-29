@@ -5,12 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.time.Instant;
 
 /**
- * Entity class that refers "companies" table.
- * <br />
- * It stores the company information
  * @author Ramón París
  * @since 29-09-2019
  */
@@ -18,22 +15,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "companies")
-public class Company {
+@Table(name = "projects")
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_id")
+    @Column(name = "project_id")
     private Long id;
 
-    private String name;
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private List<License> licenses;
-
-
-
-
+    private Instant initialDate;
+    private Instant finalDate;
 
 
 

@@ -24,4 +24,6 @@ public class Tool {
 
     private String name;
 
+    private String imageUrl;
+
 }
