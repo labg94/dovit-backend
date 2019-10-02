@@ -38,6 +38,7 @@ public class User extends DateAudit {
 
     @NotBlank
     @Email
+    @Column(unique = true)
     private String email;
 
     @NotBlank
@@ -52,6 +53,10 @@ public class User extends DateAudit {
     private boolean active;
 
 
-
-
+    public User(@NotBlank String name, @NotBlank String lastName, @NotBlank @Email String email, boolean active) {
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+        this.active = active;
+    }
 }
