@@ -6,8 +6,10 @@ import com.dovit.backend.domain.User;
 import com.dovit.backend.exceptions.BadRequestException;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.AuthRequest;
+import com.dovit.backend.model.requests.RegisterTokenRequest;
 import com.dovit.backend.model.requests.SignUpRequest;
 import com.dovit.backend.model.responses.AuthResponse;
+import com.dovit.backend.model.responses.RegisterTokenResponse;
 import com.dovit.backend.repositories.RoleRepository;
 import com.dovit.backend.repositories.UserRepository;
 import com.dovit.backend.security.JwtTokenProvider;
@@ -55,8 +57,12 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        String jwt = tokenProvider.generateToken(authentication);
-        return new AuthResponse(jwt, userPrincipal.getName(), userPrincipal.getLastName(), authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(", ")), null);
+        String jwt = tokenProvider.generateAuthToken(authentication);
+        String companyName = null;
+        if (userPrincipal.getCompany() != null){
+            companyName = userPrincipal.getCompany().getName();
+        }
+        return new AuthResponse(jwt, userPrincipal.getName(), userPrincipal.getLastName(), authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(", ")), companyName);
     }
 
     @Override
@@ -80,4 +86,20 @@ public class AuthServiceImpl implements AuthService {
         user = userRepository.save(user);
         return user;
     }
+
+    @Override
+    public String createUserToken(RegisterTokenRequest registerTokenRequest) {
+        return tokenProvider.generateRegisterToken(registerTokenRequest);
+    }
+
+    @Override
+    public RegisterTokenRequest getRegisterTokenInfo(String token) {
+        if (tokenProvider.validateToken(token)){
+            return tokenProvider.getRegisterRequestFromJWT(token);
+        }else {
+            throw new BadRequestException("Token no válido");
+        }
+
+    }
+
 }

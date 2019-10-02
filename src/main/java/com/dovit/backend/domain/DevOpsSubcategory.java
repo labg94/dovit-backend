@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "devops_subcategories")
 public class DevOpsSubcategory {
 
     @Id
@@ -31,7 +32,7 @@ public class DevOpsSubcategory {
     List<Tool> tools;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "devops_category")
+    @JoinColumn(nullable = false, name = "devops_category_id")
     private DevOpsCategory devOpsCategory;
 
 }

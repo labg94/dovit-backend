@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Users of the solution
@@ -21,7 +18,7 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name="users")
+@Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends DateAudit {
@@ -38,7 +35,6 @@ public class User extends DateAudit {
 
     @NotBlank
     @Email
-    @Column(unique = true)
     private String email;
 
     @NotBlank
@@ -48,6 +44,7 @@ public class User extends DateAudit {
     private Role role;
 
     @ManyToOne
+    @JoinColumn(name = "company_id")
     private Company company;
 
     private boolean active;

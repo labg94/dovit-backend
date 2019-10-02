@@ -3,9 +3,11 @@ package com.dovit.backend.controllers;
 import com.dovit.backend.domain.User;
 import com.dovit.backend.exceptions.BadRequestException;
 import com.dovit.backend.model.requests.AuthRequest;
+import com.dovit.backend.model.requests.RegisterTokenRequest;
 import com.dovit.backend.model.requests.SignUpRequest;
 import com.dovit.backend.model.responses.ApiResponse;
 import com.dovit.backend.model.responses.AuthResponse;
+import com.dovit.backend.model.responses.RegisterTokenResponse;
 import com.dovit.backend.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,19 +23,18 @@ import java.net.URI;
  */
 
 @RestController
-@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
     private AuthService authService;
 
-    @PostMapping("/signIn")
+    @PostMapping("/auth/signIn")
     public ResponseEntity<?> signIn(@Valid @RequestBody AuthRequest authRequest){
         AuthResponse token = authService.authenticateUser(authRequest);
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/signUp")
+    @PostMapping("/auth/signUp")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest){
 
         User result = authService.registerUser(signUpRequest);
@@ -44,10 +45,20 @@ public class AuthController {
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
     }
 
+    @PostMapping("/user/token")
+    public String createRegisterToken(@Valid @RequestBody RegisterTokenRequest request){
+        return authService.createUserToken(request);
+    }
+
+    @GetMapping("/auth/user/token")
+    public RegisterTokenRequest getRegisterTokenInfo(@RequestParam String token){
+        return authService.getRegisterTokenInfo(token);
+    }
+
+
     @GetMapping("/hello-world")
     public String helloWorld(){
-        throw new BadRequestException("Prueba");
-//        return "Hello World!";
+        return "Hello World!";
     }
 
 }
