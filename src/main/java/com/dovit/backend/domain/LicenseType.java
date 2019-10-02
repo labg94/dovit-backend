@@ -9,32 +9,23 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
- * Entity class that refers "client's company" table.
+ * Master table/entity that stores the type of licenses. It can be: hosted, free or paid
  * @author Ramón París
- * @since 29-09-2019
+ * @since 01-10-2019
  */
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "companies")
-public class Company {
+public class LicenseType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_id")
     private Long id;
 
     @NotEmpty
-    private String name;
+    private String description;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private List<CompanyLicense> licenses;
-
-
-
-
-
-
-
+    @OneToMany(mappedBy = "licenseType")
+    private List<License> licenses;
 }

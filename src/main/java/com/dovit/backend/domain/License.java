@@ -1,39 +1,56 @@
 package com.dovit.backend.domain;
 
+import com.dovit.backend.domain.audit.DateAudit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.awt.*;
-import java.time.Instant;
+import java.util.List;
 
 /**
+ * Licenses that a tool gives. This entity stores details of pricing and capacity
+ *
  * @author Ramón París
- * @since 29-09-2019
+ * @since 01-10-2019
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "licences")
-public class License {
+@Table(name = "licenses")
+public class License extends DateAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "licence_id")
+    @Column(name = "license_id")
     private Long id;
 
-    @Column(nullable = false)
-    private Instant startDate;
+    @NotEmpty
+    private String name;
 
-    private Instant expirationDate;
+    @NotEmpty
+    private String payCycle;
+
+    @NotNull
+    private Long licenseCapacity;
+
+    @NotNull
+    private Double licensePrice;
+
+    private String observation;
 
     @ManyToOne
-    private Company company;
+    @JoinColumn(nullable = false)
+    private LicenseType licenseType;
 
+    @OneToMany(mappedBy = "license")
+    private List<CompanyLicense> companyLicenses;
 
-
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Tool tool;
 
 }
