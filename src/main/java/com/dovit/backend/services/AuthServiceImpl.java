@@ -4,8 +4,11 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author Ramón París
- * @since 01-10-2019
+ * @since 02-10-2019
  */
 @Service
-public class PipelineServiceImpl implements PipelineService {
+public class AuthServiceImpl implements AuthService {
+
+
+
 }

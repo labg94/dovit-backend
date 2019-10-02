@@ -31,6 +31,9 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<CompanyLicense> licenses;
 
+    @OneToMany(mappedBy = "company")
+    private List<User> users;
+
 
 
 
