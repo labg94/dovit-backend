@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleService roleService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -68,20 +68,19 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public User registerUser(SignUpRequest signUpRequest) {
-        if (!signUpRequest.getRoleId().equals(Constants.ROLE_ADMIN_ID) && signUpRequest.getCompanyId() == null){
-            throw new BadRequestException("Usuarios Clientes deben enviar información de empresa ");
-        }
+        RegisterTokenRequest tokenInfo = this.getRegisterTokenInfo(signUpRequest.getRegistrationToken());
+        Company company = companyService.findById(tokenInfo.getCompanyId());
+        Role role = roleService.findById(Constants.ROLE_CLIENT_ID);
 
-        User user = new User(signUpRequest.getName(), signUpRequest.getLastName(), signUpRequest.getEmail(), signUpRequest.getActive());
+        User user = new User();
+        user.setName(signUpRequest.getName());
+        user.setLastName(signUpRequest.getLastName());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
-        Role role = roleRepository.findById(signUpRequest.getRoleId()).orElseThrow(()-> new ResourceNotFoundException("Role", "id", signUpRequest.getRoleId()));
+        user.setEmail(tokenInfo.getEmail());
+        user.setCompany(company);
         user.setRole(role);
 
-        if (signUpRequest.getCompanyId() != null) {
-            Company company = companyService.findById(signUpRequest.getCompanyId());
-            user.setCompany(company);
-        }
 
         user = userRepository.save(user);
         return user;

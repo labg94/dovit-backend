@@ -11,6 +11,7 @@ import com.dovit.backend.model.responses.RegisterTokenResponse;
 import com.dovit.backend.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -23,18 +24,19 @@ import java.net.URI;
  */
 
 @RestController
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
     private AuthService authService;
 
-    @PostMapping("/auth/signIn")
+    @PostMapping("/signIn")
     public ResponseEntity<?> signIn(@Valid @RequestBody AuthRequest authRequest){
         AuthResponse token = authService.authenticateUser(authRequest);
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/auth/signUp")
+    @PostMapping("/signUp")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest){
 
         User result = authService.registerUser(signUpRequest);
@@ -45,12 +47,7 @@ public class AuthController {
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
     }
 
-    @PostMapping("/user/token")
-    public String createRegisterToken(@Valid @RequestBody RegisterTokenRequest request){
-        return authService.createUserToken(request);
-    }
-
-    @GetMapping("/auth/user/token")
+    @GetMapping("/token")
     public RegisterTokenRequest getRegisterTokenInfo(@RequestParam String token){
         return authService.getRegisterTokenInfo(token);
     }

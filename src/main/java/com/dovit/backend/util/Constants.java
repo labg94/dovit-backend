@@ -7,5 +7,6 @@ package com.dovit.backend.util;
 public class Constants {
 
     public static final Long ROLE_ADMIN_ID = 1L;
+    public static final Long ROLE_CLIENT_ID = 2L;
 
 }
