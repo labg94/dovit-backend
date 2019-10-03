@@ -1,6 +1,7 @@
 package com.dovit.backend.exceptions;
 
 import com.dovit.backend.model.responses.ErrorResponse;
+import com.dovit.backend.util.Constants;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,10 +76,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDenied(DataIntegrityViolationException e){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(new Date());
+        errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        List<String> errors = new ArrayList<>();
+        errors.add(e.getMessage());
+        errorResponse.setErrors(errors);
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGeneralException(Exception e) {
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<?> handleGeneralException(Exception e) throws AccessDeniedException {
         e.printStackTrace();
+        if (e.getMessage().equals(Constants.ACCESS_DENIED)){
+            throw new AccessDeniedException("Acceso denegado");
+        }
         List<String> errorsMessages = new ArrayList<>();
         errorsMessages.add("Ocurrió un error interno en el servidor. Si el problema persiste contacte al equipo técnico");
         ErrorResponse errorResponse = new ErrorResponse(new Date(),HttpStatus.INTERNAL_SERVER_ERROR.value(),errorsMessages);
