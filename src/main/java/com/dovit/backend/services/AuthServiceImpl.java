@@ -80,6 +80,7 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(tokenInfo.getEmail());
         user.setCompany(company);
         user.setRole(role);
+        user.setActive(true);
 
 
         user = userRepository.save(user);
