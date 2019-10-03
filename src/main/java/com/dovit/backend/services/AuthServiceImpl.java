@@ -16,6 +16,7 @@ import com.dovit.backend.security.JwtTokenProvider;
 import com.dovit.backend.security.UserPrincipal;
 import com.dovit.backend.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -58,11 +59,8 @@ public class AuthServiceImpl implements AuthService {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         String jwt = tokenProvider.generateAuthToken(authentication);
-        String companyName = null;
-        if (userPrincipal.getCompany() != null){
-            companyName = userPrincipal.getCompany().getName();
-        }
-        return new AuthResponse(jwt, userPrincipal.getName(), userPrincipal.getLastName(), authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(", ")), companyName);
+
+        return new AuthResponse(jwt, userPrincipal.getName(), userPrincipal.getLastName(), authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(", ")), userPrincipal.getCompanyName());
     }
 
     @Override
@@ -85,11 +83,6 @@ public class AuthServiceImpl implements AuthService {
 
         user = userRepository.save(user);
         return user;
-    }
-
-    @Override
-    public String createUserToken(RegisterTokenRequest registerTokenRequest) {
-        return tokenProvider.generateRegisterToken(registerTokenRequest);
     }
 
     @Override

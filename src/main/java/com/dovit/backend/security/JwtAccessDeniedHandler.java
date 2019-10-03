@@ -28,6 +28,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         List<String> errorsMessages = new ArrayList<>();
         errorsMessages.add(e.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(new Date(), HttpServletResponse.SC_FORBIDDEN, errorsMessages);
-        response.getOutputStream().println(new Gson().toJson("Acceso denegado"));
+        response.getOutputStream().println(new Gson().toJson(errorResponse));
     }
 }

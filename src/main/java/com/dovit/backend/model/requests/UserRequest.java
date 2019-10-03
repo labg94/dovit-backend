@@ -33,8 +33,6 @@ public class UserRequest  {
     @Email
     private String email;
 
-    @NotBlank(message = "Password no debe estar vacío")
-    @Size(message = "Contraseña inválida", min = 6, max = 20)
     private String password;
 
     @NotNull

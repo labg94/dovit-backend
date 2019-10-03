@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+
+import javax.validation.ConstraintViolationException;
 import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,23 +68,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ExceptionHandler({DataIntegrityViolationException.class })
     public ResponseEntity<?> handleConflict(DataIntegrityViolationException e){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setTimestamp(new Date());
         errorResponse.setStatus(409);
         List<String> errors = new ArrayList<>();
-        errors.add("'"+e.getMostSpecificCause().getMessage().split("'")[1]+"' ya se encuentra en la base de datos" );
+        errors.add(e.getMostSpecificCause().getMessage().split("Detail:")[1]);
         errorResponse.setErrors(errors);
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<?> handleAccessDenied(DataIntegrityViolationException e){
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({CustomAccessDeniedException.class, AccessDeniedException.class})
+    public ResponseEntity<?> handleAccessDenied(Exception e){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setTimestamp(new Date());
-        errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        errorResponse.setStatus(HttpStatus.FORBIDDEN.value());
         List<String> errors = new ArrayList<>();
         errors.add(e.getMessage());
         errorResponse.setErrors(errors);

@@ -1,9 +1,14 @@
 package com.dovit.backend.security;
 
+import com.dovit.backend.domain.Role;
+import com.dovit.backend.exceptions.CustomAccessDeniedException;
+import com.dovit.backend.exceptions.ResourceNotFoundException;
+import com.dovit.backend.util.RoleName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -15,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 /**
  * To get the JWT token from the request, validate it, load the user associated with the token, and pass it to Spring Security
@@ -57,5 +63,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    public static Boolean canActOnCompany(Long companyId) {
+        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String roleName = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst().orElseThrow(()->new ResourceNotFoundException("Role", "name", ""));
+        if (RoleName.ROLE_ADMIN.name().equals(roleName))
+            return true;
+
+        if (companyId.equals(userPrincipal.getCompanyId())){
+            return true;
+        }else {
+            throw new CustomAccessDeniedException("Access denied");
+        }
+
     }
 }

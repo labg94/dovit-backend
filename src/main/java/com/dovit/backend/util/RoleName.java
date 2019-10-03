@@ -5,7 +5,12 @@ package com.dovit.backend.util;
  * @since 01-10-2019
  */
 public enum RoleName {
-    ROLE_ADMIN,
-    ROLE_CLIENT,
+    ROLE_ADMIN("Administrador"),
+    ROLE_CLIENT("Cliente");
 
+    private final String label;
+
+    private RoleName(String label){
+        this.label = label;
+    }
 }

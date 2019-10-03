@@ -4,6 +4,7 @@ import com.dovit.backend.domain.User;
 import com.dovit.backend.model.requests.RegisterTokenRequest;
 import com.dovit.backend.model.requests.UserRequest;
 import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.model.responses.UserResponse;
 import com.dovit.backend.services.AuthService;
 import com.dovit.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 /**
  * @author Ramón París
@@ -25,14 +27,23 @@ import java.net.URI;
 public class UserController {
 
     @Autowired
-    private AuthService authService;
-
-    @Autowired
     private UserService userService;
+
+
+    @GetMapping("/users/admin")
+    public List<UserResponse> findAllAdmin(){
+        return userService.findAllAdmins();
+    }
+
+    @Secured("ROLE_CLIENT")
+    @GetMapping("/company/{companyId}/users")
+    public List<UserResponse> findAllUsers(@Valid @PathVariable Long companyId){
+        return userService.findAllClients(companyId);
+    }
 
     @PostMapping("/user/token")
     public String createRegisterToken(@Valid @RequestBody RegisterTokenRequest request){
-        return authService.createUserToken(request);
+        return userService.createUserToken(request);
     }
 
     @PostMapping("/user")
@@ -55,8 +66,9 @@ public class UserController {
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(response.getId()).toUri();
 
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User created successfully"));
-
+        return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
     }
+
+
 
 }

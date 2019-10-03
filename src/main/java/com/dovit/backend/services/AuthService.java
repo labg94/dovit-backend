@@ -17,8 +17,6 @@ public interface AuthService {
 
     User registerUser(SignUpRequest signUpRequest);
 
-    String createUserToken(RegisterTokenRequest registerTokenRequest);
-
     RegisterTokenRequest getRegisterTokenInfo(String token);
 
 }

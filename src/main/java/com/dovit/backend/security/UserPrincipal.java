@@ -22,14 +22,15 @@ public class UserPrincipal implements UserDetails {
     private String lastName;
     private String email;
     private boolean active;
-    private Company company;
+    private Long companyId;
+    private String companyName;
 
     @JsonIgnore
     private String password;
 
     private GrantedAuthority authority;
 
-    public UserPrincipal(Long id, String name, String lastName, String email, String password, GrantedAuthority authority, boolean active, Company company) {
+    public UserPrincipal(Long id, String name, String lastName, String email, String password, GrantedAuthority authority, boolean active, Long companyId, String companyName) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -37,13 +38,19 @@ public class UserPrincipal implements UserDetails {
         this.password = password;
         this.authority = authority;
         this.active = active;
-        this.company = company;
+        this.companyId = companyId;
+        this.companyName = companyName;
     }
 
     public static UserPrincipal create(User user) {
 
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName().name());
-
+        Long companyId = null;
+        String companyName = null;
+        if (user.getCompany() != null){
+            companyId = user.getCompany().getId();
+            companyName = user.getCompany().getName();
+        }
         return new UserPrincipal(
                 user.getId(),
                 user.getName(),
@@ -52,7 +59,8 @@ public class UserPrincipal implements UserDetails {
                 user.getPassword(),
                 authority,
                 user.isActive(),
-                user.getCompany()
+                companyId,
+                companyName
         );
     }
 
@@ -68,8 +76,12 @@ public class UserPrincipal implements UserDetails {
         return lastName;
     }
 
-    public Company getCompany() {
-        return company;
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public String getCompanyName() {
+        return companyName;
     }
 
     public String getEmail() {

@@ -13,7 +13,6 @@ public class ModelMapper {
         user.setId(request.getId());
         user.setName(request.getName());
         user.setLastName(request.getLastName());
-        user.setPassword(request.getPassword());
         user.setEmail(request.getEmail());
         user.setActive(request.getActive());
     }
