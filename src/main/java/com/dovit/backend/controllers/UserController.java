@@ -36,7 +36,7 @@ public class UserController {
         return userService.findAllAdmins(page, size);
     }
 
-    @Secured("ROLE_CLIENT")
+    @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
     @GetMapping("/company/{companyId}/users")
     public PagedResponse<UserResponse> findAllUsers(@Valid @PathVariable Long companyId, @RequestParam int page, @RequestParam int size){
         return userService.findAllClients(companyId, page, size);

@@ -5,6 +5,7 @@ import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.CompanyRequest;
 import com.dovit.backend.model.responses.CompanyResponse;
 import com.dovit.backend.repositories.CompanyRepository;
+import com.dovit.backend.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
 
+
     @Override
     public Company findById(Long id) {
         return companyRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Company", "id", id));
@@ -28,6 +30,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public CompanyResponse findCompanyResponseById(Long id) {
+        JwtAuthenticationFilter.canActOnCompany(id);
         Company company = this.findById(id);
         return new CompanyResponse(company.getId(), company.getName());
     }
@@ -41,7 +44,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company createCompany(CompanyRequest companyRequest) {
         Company company = new Company();
-        company.setName(company.getName());
+        company.setName(companyRequest.getName());
         company = companyRepository.save(company);
         return company;
     }
@@ -49,7 +52,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company updateCompany(CompanyRequest companyRequest) {
         Company company = this.findById(companyRequest.getId());
-        company.setName(company.getName());
+        company.setName(companyRequest.getName());
         company = companyRepository.save(company);
         return company;
     }

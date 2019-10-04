@@ -32,6 +32,7 @@ public class CompanyController {
         return companyService.findAll();
     }
 
+    @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
     @GetMapping("/company/{companyId}")
     public CompanyResponse findById(@PathVariable Long companyId){
         return companyService.findCompanyResponseById(companyId);
