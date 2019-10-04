@@ -7,6 +7,7 @@ import com.dovit.backend.exceptions.BadRequestException;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.RegisterTokenRequest;
 import com.dovit.backend.model.requests.UserRequest;
+import com.dovit.backend.model.responses.PagedResponse;
 import com.dovit.backend.model.responses.UserResponse;
 import com.dovit.backend.repositories.UserRepository;
 import com.dovit.backend.security.JwtAuthenticationFilter;
@@ -16,6 +17,9 @@ import com.dovit.backend.util.Constants;
 import com.dovit.backend.util.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,9 +56,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> findAllAdmins(){
-        List<User> users = userRepository.findAllByRoleId(Constants.ROLE_ADMIN_ID);
-        return users.stream().map(u -> new UserResponse(
+    public PagedResponse<UserResponse> findAllAdmins(int page, int size){
+        Pageable pagination = PageRequest.of(page, size);
+        Page<User> usersPage = userRepository.findAllByRoleId(Constants.ROLE_ADMIN_ID, pagination);
+        List<UserResponse> users = usersPage.getContent().stream().map(u -> new UserResponse(
                 u.getId(),
                 u.getName(),
                 u.getLastName(),
@@ -65,13 +70,17 @@ public class UserServiceImpl implements UserService {
                 null,
                 null
         )).collect(Collectors.toList());
+
+
+        return new PagedResponse<>(users, usersPage.getNumber(), usersPage.getSize(), usersPage.getTotalElements(), usersPage.getTotalPages(), usersPage.isLast());
     }
 
     @Override
-    public List<UserResponse> findAllClients(Long companyId) {
+    public PagedResponse<UserResponse> findAllClients(Long companyId, int page, int size) {
         JwtAuthenticationFilter.canActOnCompany(companyId);
-        List<User> users = userRepository.findAllByCompanyId(companyId);
-        return users.stream().map(u -> new UserResponse(
+        Pageable pagination = PageRequest.of(page, size);
+        Page<User> usersPage = userRepository.findAllByCompanyId(companyId, pagination);
+        List<UserResponse> users = usersPage.getContent().stream().map(u -> new UserResponse(
                 u.getId(),
                 u.getName(),
                 u.getLastName(),
@@ -82,6 +91,9 @@ public class UserServiceImpl implements UserService {
                 u.getCompany().getId(),
                 u.getCompany().getName()
         )).collect(Collectors.toList());
+
+
+        return new PagedResponse<>(users, usersPage.getNumber(), usersPage.getSize(), usersPage.getTotalElements(), usersPage.getTotalPages(), usersPage.isLast());
     }
 
     @Override

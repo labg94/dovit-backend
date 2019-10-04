@@ -1,6 +1,9 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Company;
+import com.dovit.backend.model.responses.CompanyResponse;
+
+import java.util.List;
 
 /**
  * @author Ramón París
@@ -9,5 +12,7 @@ import com.dovit.backend.domain.Company;
 public interface CompanyService {
 
     Company findById(Long id);
+
+    List<CompanyResponse> findAll();
 
 }

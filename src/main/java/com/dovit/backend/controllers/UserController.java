@@ -4,6 +4,7 @@ import com.dovit.backend.domain.User;
 import com.dovit.backend.model.requests.RegisterTokenRequest;
 import com.dovit.backend.model.requests.UserRequest;
 import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.model.responses.PagedResponse;
 import com.dovit.backend.model.responses.UserResponse;
 import com.dovit.backend.services.AuthService;
 import com.dovit.backend.services.UserService;
@@ -31,14 +32,14 @@ public class UserController {
 
 
     @GetMapping("/users/admin")
-    public List<UserResponse> findAllAdmin(){
-        return userService.findAllAdmins();
+    public PagedResponse<UserResponse> findAllAdmin(@RequestParam int page, @RequestParam int size){
+        return userService.findAllAdmins(page, size);
     }
 
     @Secured("ROLE_CLIENT")
     @GetMapping("/company/{companyId}/users")
-    public List<UserResponse> findAllUsers(@Valid @PathVariable Long companyId){
-        return userService.findAllClients(companyId);
+    public PagedResponse<UserResponse> findAllUsers(@Valid @PathVariable Long companyId, @RequestParam int page, @RequestParam int size){
+        return userService.findAllClients(companyId, page, size);
     }
 
     @PostMapping("/user/token")

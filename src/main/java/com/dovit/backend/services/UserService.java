@@ -3,6 +3,7 @@ package com.dovit.backend.services;
 import com.dovit.backend.domain.User;
 import com.dovit.backend.model.requests.RegisterTokenRequest;
 import com.dovit.backend.model.requests.UserRequest;
+import com.dovit.backend.model.responses.PagedResponse;
 import com.dovit.backend.model.responses.UserResponse;
 
 import java.util.List;
@@ -13,7 +14,9 @@ import java.util.List;
  */
 public interface UserService {
 
-    List<UserResponse> findAllAdmins();
+    PagedResponse<UserResponse> findAllAdmins(int page, int size);
+
+    PagedResponse<UserResponse> findAllClients(Long companyId, int page, int size);
 
     User createUser(UserRequest userRequest);
 
@@ -21,7 +24,6 @@ public interface UserService {
 
     User findById(Long id);
 
-    List<UserResponse> findAllClients(Long companyId);
 
     String createUserToken(RegisterTokenRequest registerTokenRequest);
 }
