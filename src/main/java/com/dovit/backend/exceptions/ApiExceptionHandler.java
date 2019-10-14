@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -67,6 +68,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentials(BadCredentialsException e) {
+        List<String> errorsMessages = new ArrayList<>();
+        errorsMessages.add("Usuario y password no coinciden");
+        ErrorResponse errorResponse = new ErrorResponse(new Date(),HttpStatus.BAD_REQUEST.value(),errorsMessages);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler({DataIntegrityViolationException.class })
     public ResponseEntity<?> handleConflict(DataIntegrityViolationException e){
@@ -92,7 +102,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({Exception.class, SQLException.class})
     public ResponseEntity<?> handleGeneralException(Exception e) throws AccessDeniedException {
         e.printStackTrace();
         if (e.getMessage().equals(Constants.ACCESS_DENIED)){
