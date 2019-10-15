@@ -31,7 +31,7 @@ public class Tool {
     private String imageUrl;
 
     @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL)
-    private List<License> payCategories;
+    private List<License> licenses;
 
     @ManyToMany
     @JoinTable(

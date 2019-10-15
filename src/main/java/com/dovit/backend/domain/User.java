@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
  * Users of the solution
@@ -48,6 +49,9 @@ public class User extends DateAudit {
     private Company company;
 
     private boolean active;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Audit> auditList;
 
 
     public User(@NotBlank String name, @NotBlank String lastName, @NotBlank @Email String email, boolean active) {

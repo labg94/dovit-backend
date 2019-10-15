@@ -34,12 +34,6 @@ public class License extends DateAudit {
     @NotEmpty
     private String payCycle;
 
-    @NotNull
-    private Long licenseCapacity;
-
-    @NotNull
-    private Double licensePrice;
-
     private String observation;
 
     @ManyToOne
@@ -50,7 +44,10 @@ public class License extends DateAudit {
     private List<CompanyLicense> companyLicenses;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name="tool_id", nullable = false)
     private Tool tool;
+
+    @OneToMany(mappedBy = "license")
+    private List<LicensePricing> pricings;
 
 }

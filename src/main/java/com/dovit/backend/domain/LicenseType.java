@@ -20,7 +20,6 @@ import java.util.List;
 public class LicenseType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotEmpty
