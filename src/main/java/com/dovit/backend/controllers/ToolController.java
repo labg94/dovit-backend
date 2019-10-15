@@ -3,8 +3,6 @@ package com.dovit.backend.controllers;
 import com.dovit.backend.model.responses.DevopsCategoryResponse;
 import com.dovit.backend.model.responses.ToolResponse;
 import com.dovit.backend.services.ToolService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +22,13 @@ public class ToolController {
     private ToolService toolService;
 
     @GetMapping("/tools")
-    public List<DevopsCategoryResponse> findAllTools(){
+    public List<ToolResponse> findAll(){
         return toolService.findAllTools();
+    }
+
+    @GetMapping("/tools/categories")
+    public List<DevopsCategoryResponse> findAllToolsGroupedBy(){
+        return toolService.findAllToolsGroupedByCats();
     }
 
     @GetMapping("/company/{companyId}/tools")
