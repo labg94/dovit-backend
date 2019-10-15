@@ -30,10 +30,10 @@ public class Tool {
 
     private String imageUrl;
 
-    @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<License> licenses;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "tool_subcategory",
             joinColumns = @JoinColumn(name = "tool_id"),

@@ -28,7 +28,7 @@ public class DevOpsSubcategory {
     @NotEmpty
     private String description;
 
-    @ManyToMany(mappedBy = "subcategories")
+    @ManyToMany(mappedBy = "subcategories", fetch = FetchType.EAGER)
     List<Tool> tools;
 
     @ManyToOne

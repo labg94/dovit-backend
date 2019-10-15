@@ -27,7 +27,7 @@ public class DevOpsCategory {
     @NotEmpty
     private String description;
 
-    @OneToMany(mappedBy = "devOpsCategory")
+    @OneToMany(mappedBy = "devOpsCategory", fetch = FetchType.EAGER)
     private List<DevOpsSubcategory> subcategories;
 
 }

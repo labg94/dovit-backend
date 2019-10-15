@@ -24,7 +24,7 @@ public class ModelMapper {
         user.setActive(request.getActive());
     }
 
-    public static List<DevopsCategoryResponse> mapDevOpsCategoryToResponse(List<DevOpsCategory> categories){
+    public static List<DevopsCategoryResponse> mapDevOpsCategoryToResponse(List<DevOpsCategory> categories, String rootUrlImg){
         return categories.stream().map(c -> {
             DevopsCategoryResponse category = new DevopsCategoryResponse();
             category.setCategoryId(c.getId());
@@ -33,7 +33,7 @@ public class ModelMapper {
                 DevopsSubCategoryResponse subCategory = new DevopsSubCategoryResponse();
                 subCategory.setSubcategoryId(sub.getId());
                 subCategory.setSubcategoryName(sub.getDescription());
-                subCategory.setTools(sub.getTools().stream().map(t -> new ToolResponse(t.getId(), t.getName(), t.getImageUrl())).collect(Collectors.toList()));
+                subCategory.setTools(sub.getTools().stream().map(t -> new ToolResponse(t.getId(), t.getName(), rootUrlImg + t.getImageUrl())).collect(Collectors.toList()));
                 return subCategory;
             }).collect(Collectors.toList()));
             return category;
