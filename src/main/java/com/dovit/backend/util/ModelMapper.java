@@ -1,7 +1,7 @@
 package com.dovit.backend.util;
 
-import com.dovit.backend.domain.DevOpsCategory;
-import com.dovit.backend.domain.User;
+import com.dovit.backend.domain.*;
+import com.dovit.backend.model.requests.CompanyLicenseRequest;
 import com.dovit.backend.model.requests.UserRequest;
 import com.dovit.backend.model.responses.DevopsCategoryResponse;
 import com.dovit.backend.model.responses.DevopsSubCategoryResponse;
@@ -38,6 +38,15 @@ public class ModelMapper {
             }).collect(Collectors.toList()));
             return category;
         }).collect(Collectors.toList());
+    }
+
+    public static void mapCompanyLicenseRequestToCompanyLicense(CompanyLicenseRequest request, CompanyLicense companyLicense, Company company, License license){
+        companyLicense.setStartDate(request.getStartDate().toInstant());
+        if (request.getExpirationDate() != null) {
+            companyLicense.setExpirationDate(request.getExpirationDate().toInstant());
+        }
+        companyLicense.setCompany(company);
+        companyLicense.setLicense(license);
     }
 
 }

@@ -43,4 +43,21 @@ public class CompanyLicenseController {
         return ResponseEntity.created(location).body(new ApiResponse(true, "Licencia asociada correctamente"));
     }
 
+    @PutMapping("/company/license")
+    public ResponseEntity<?> updateCompanyLicense(@RequestBody CompanyLicenseRequest request){
+        CompanyLicense response = companyLicenseService.updateCompanyLicense(request);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(response.getId()).toUri();
+
+        return ResponseEntity.created(location).body(new ApiResponse(true, "Licencia editada correctamente"));
+    }
+
+    @DeleteMapping("/company/license/{companyLicenseId}")
+    public ResponseEntity<?> deleteCompanyLicense(@PathVariable Long companyLicenseId){
+        Boolean resp = companyLicenseService.deleteCompanyLicense(companyLicenseId);
+        return ResponseEntity.ok(new ApiResponse(resp, "Licencia eliminada"));
+    }
+
 }

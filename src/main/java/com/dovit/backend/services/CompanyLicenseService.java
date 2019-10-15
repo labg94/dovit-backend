@@ -16,5 +16,7 @@ public interface CompanyLicenseService {
 
     CompanyLicense createCompanyLicense(CompanyLicenseRequest request);
 
+    CompanyLicense updateCompanyLicense(CompanyLicenseRequest request);
 
+    boolean deleteCompanyLicense(Long companyLicenseId);
 }
