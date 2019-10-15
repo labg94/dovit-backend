@@ -12,4 +12,6 @@ public interface ToolService {
 
     List<DevopsCategoryResponse> findAllToolsOfCompany(Long companyId);
 
+    List<DevopsCategoryResponse> findAllTools();
+
 }

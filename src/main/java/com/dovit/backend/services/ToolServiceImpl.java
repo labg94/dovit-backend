@@ -9,6 +9,7 @@ import com.dovit.backend.model.responses.ToolResponse;
 import com.dovit.backend.repositories.CompanyLicenseRepository;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.ToolRepository;
+import com.dovit.backend.util.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,19 +35,12 @@ public class ToolServiceImpl implements ToolService {
     @Override
     public List<DevopsCategoryResponse> findAllToolsOfCompany(Long companyId) {
         List<DevOpsCategory> categories = devOpsCategoryRepository.findAllByCompanyId(companyId);
-        List<DevopsCategoryResponse> responses = categories.stream().map(c -> {
-            DevopsCategoryResponse category = new DevopsCategoryResponse();
-            category.setCategoryId(c.getId());
-            category.setCategoryName(c.getDescription());
-            category.setSubcategories(c.getSubcategories().stream().map(sub -> {
-                DevopsSubCategoryResponse subCategory = new DevopsSubCategoryResponse();
-                subCategory.setSubcategoryId(sub.getId());
-                subCategory.setSubcategoryName(sub.getDescription());
-                subCategory.setTools(sub.getTools().stream().map(t -> new ToolResponse(t.getTool(), t.getName(), t.getImageUrl())).collect(Collectors.toList()));
-                return subCategory;
-            }).collect(Collectors.toList()));
-            return category;
-        }).collect(Collectors.toList());
-        return responses;
+        return ModelMapper.mapDevOpsCategoryToResponse(categories);
+    }
+
+    @Override
+    public List<DevopsCategoryResponse> findAllTools() {
+        List<DevOpsCategory> categories = devOpsCategoryRepository.findAll();
+        return ModelMapper.mapDevOpsCategoryToResponse(categories);
     }
 }

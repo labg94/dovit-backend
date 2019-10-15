@@ -25,7 +25,7 @@ public class ToolController {
 
     @GetMapping("/tools")
     public List<DevopsCategoryResponse> findAllTools(){
-        return null;
+        return toolService.findAllTools();
     }
 
     @GetMapping("/company/{companyId}/tools")

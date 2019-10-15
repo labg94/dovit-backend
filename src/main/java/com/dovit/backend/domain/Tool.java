@@ -23,7 +23,7 @@ public class Tool {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tool_id")
-    private Long tool;
+    private Long id;
 
     @NotEmpty
     private String name;
