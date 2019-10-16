@@ -1,7 +1,9 @@
 package com.dovit.backend.exceptions;
 
 import com.dovit.backend.model.responses.ErrorResponse;
+import com.dovit.backend.services.AuditService;
 import com.dovit.backend.util.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,9 @@ import java.util.stream.Collectors;
  */
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Autowired
+    private AuditService auditService;
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {

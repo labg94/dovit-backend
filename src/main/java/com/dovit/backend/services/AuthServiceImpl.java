@@ -52,15 +52,19 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private AuditService auditService;
+
     @Override
     public AuthResponse authenticateUser(AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         String jwt = tokenProvider.generateAuthToken(authentication);
 
-        return new AuthResponse(jwt, userPrincipal.getName(), userPrincipal.getLastName(), authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(", ")), userPrincipal.getCompanyName(), userPrincipal.getId());
+        AuthResponse response = new AuthResponse(jwt, userPrincipal.getName(), userPrincipal.getLastName(), authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(", ")), userPrincipal.getCompanyName(), userPrincipal.getId());
+        auditService.registerAudit(response, "INICIO DE SESIÓN", "OK", userPrincipal.getId());
+        return response;
     }
 
     @Override
@@ -87,9 +91,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RegisterTokenRequest getRegisterTokenInfo(String token) {
-        if (tokenProvider.validateToken(token)){
+        if (tokenProvider.validateToken(token)) {
             return tokenProvider.getRegisterRequestFromJWT(token);
-        }else {
+        } else {
             throw new BadRequestException("Token no válido");
         }
 

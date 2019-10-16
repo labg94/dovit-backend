@@ -39,5 +39,7 @@ public class Audit {
     @Column(columnDefinition = "jsonb")
     private Object data;
 
+    private String databaseUser;
+
 
 }
