@@ -16,12 +16,13 @@ import java.net.URI;
 import java.util.List;
 
 /**
+ * Controller to show the COMPANY LICENSES!
  * @author Ramón París
  * @since 14-10-2019
  */
 @RestController
 @RequestMapping("/api")
-@Secured("ROLE_ADMIN")
+@Secured({"ROLE_ADMIN","ROLE_CLIENT"})
 public class CompanyLicenseController {
 
     @Autowired

@@ -24,6 +24,7 @@ public class ModelMapper {
         user.setActive(request.getActive());
     }
 
+
     public static List<DevopsCategoryResponse> mapDevOpsCategoryToResponse(List<DevOpsCategory> categories, String rootUrlImg){
         return categories.stream().map(c -> {
             DevopsCategoryResponse category = new DevopsCategoryResponse();

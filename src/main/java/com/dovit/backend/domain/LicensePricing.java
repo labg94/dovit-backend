@@ -1,6 +1,10 @@
 package com.dovit.backend.domain;
 
 import com.dovit.backend.domain.audit.DateAudit;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -8,8 +12,12 @@ import javax.persistence.*;
  * @author Ramón París
  * @since 14-10-2019
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "licensesPricing")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LicensePricing extends DateAudit {
 
     @Id

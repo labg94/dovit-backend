@@ -10,10 +10,12 @@ import com.dovit.backend.model.responses.ToolResponse;
 import com.dovit.backend.repositories.CompanyLicenseRepository;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.ToolRepository;
+import com.dovit.backend.security.JwtAuthenticationFilter;
 import com.dovit.backend.util.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,12 +40,15 @@ public class ToolServiceImpl implements ToolService {
     private String BASE_IMAGE_URL;
 
     @Override
+//    @Transactional
     public List<DevopsCategoryResponse> findAllToolsOfCompany(Long companyId) {
+        JwtAuthenticationFilter.canActOnCompany(companyId);
         List<DevOpsCategory> categories = devOpsCategoryRepository.findAllByCompanyId(companyId);
         return ModelMapper.mapDevOpsCategoryToResponse(categories, BASE_IMAGE_URL);
     }
 
     @Override
+    @Transactional
     public List<DevopsCategoryResponse> findAllToolsGroupedByCats() {
         List<DevOpsCategory> categories = devOpsCategoryRepository.findAll();
         return ModelMapper.mapDevOpsCategoryToResponse(categories, BASE_IMAGE_URL);

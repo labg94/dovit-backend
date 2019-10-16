@@ -1,8 +1,11 @@
 package com.dovit.backend.model;
 
+import com.dovit.backend.model.responses.LicensePricingResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @author Ramón París
@@ -19,5 +22,6 @@ public class LicenseDTO {
     private String payCycle;
     private Long licenseTypeId;
     private String licenseTypeDesc;
+    private List<LicensePricingResponse> licensePricing;
 
 }

@@ -6,11 +6,13 @@ import com.dovit.backend.domain.License;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.CompanyLicenseRequest;
 import com.dovit.backend.model.responses.CompanyLicensesResponse;
+import com.dovit.backend.model.responses.LicensePricingResponse;
 import com.dovit.backend.repositories.CompanyLicenseRepository;
 import com.dovit.backend.security.JwtAuthenticationFilter;
 import com.dovit.backend.util.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +34,7 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
     private LicenseService licenseService;
 
     @Override
+    @Transactional
     public List<CompanyLicensesResponse> findAllByCompanyIdAndToolId(Long companyId, Long toolId) {
         JwtAuthenticationFilter.canActOnCompany(companyId);
         List<CompanyLicense> companyLicenses = companyLicenseRepository.findAllByCompanyIdAndLicenseToolId(companyId, toolId);
@@ -46,6 +49,7 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
             response.setCompanyLicenseId(c.getId());
             response.setStart(c.getStartDate());
             response.setExpiration(c.getExpirationDate());
+            response.setLicensePricing(c.getLicense().getPricings().stream().map(p -> new LicensePricingResponse(p.getId(), p.getMinUsers(), p.getMaxUsers(), p.getPrice())).collect(Collectors.toList()));
             return response;
         }).collect(Collectors.toList());
     }
