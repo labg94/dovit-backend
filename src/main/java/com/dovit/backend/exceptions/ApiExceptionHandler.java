@@ -5,25 +5,26 @@ import com.dovit.backend.services.AuditService;
 import com.dovit.backend.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.core.MethodParameter;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,10 +32,102 @@ import java.util.stream.Collectors;
  * @since 01-10-2019
  */
 @RestControllerAdvice
-public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler implements RequestBodyAdvice {
 
     @Autowired
     private AuditService auditService;
+
+    private static final ThreadLocal<ApiExceptionHandler> requestInfoThreadLocal = new ThreadLocal<>();
+
+    private String method;
+    private Object body;
+    private String queryString;
+    private String ip;
+    private String user;
+    private String referrer;
+    private String url;
+
+    public static ApiExceptionHandler get() {
+        ApiExceptionHandler requestInfo = requestInfoThreadLocal.get();
+        if (requestInfo == null) {
+            requestInfo = new ApiExceptionHandler();
+            requestInfoThreadLocal.set(requestInfo);
+        }
+        return requestInfo;
+    }
+
+    public Map<String,Object> asMap() {
+        Map<String,Object> map = new HashMap<>();
+        map.put("method", this.method);
+        map.put("url", this.url);
+        map.put("queryParams", this.queryString);
+        map.put("body", this.body);
+        map.put("ip", this.ip);
+        map.put("referrer", this.referrer);
+        map.put("user", this.user);
+        return map;
+    }
+
+    private void setInfoFromRequest(HttpServletRequest request) {
+        this.method = request.getMethod();
+        this.queryString = request.getQueryString();
+        this.ip = request.getRemoteAddr();
+        this.referrer = request.getRemoteHost();
+        this.url = request.getRequestURI();
+        if (request.getUserPrincipal() != null) {
+            this.user = request.getUserPrincipal().getName();
+        }
+    }
+
+    public void setBody(Object body) {
+        this.body = body;
+    }
+
+    private static void setInfoFrom(HttpServletRequest request) {
+        ApiExceptionHandler requestInfo = requestInfoThreadLocal.get();
+        if (requestInfo == null) {
+            requestInfo = new ApiExceptionHandler();
+        }
+        requestInfo.setInfoFromRequest(request);
+        requestInfoThreadLocal.set(requestInfo);
+    }
+
+    private static void clear() {
+        requestInfoThreadLocal.remove();
+    }
+
+    private static void setBodyInThreadLocal(Object body) {
+        ApiExceptionHandler requestInfo = get();
+        requestInfo.setBody(body);
+        setApiExceptionHandler(requestInfo);
+    }
+
+    private static void setApiExceptionHandler(ApiExceptionHandler requestInfo) {
+        requestInfoThreadLocal.set(requestInfo);
+    }
+
+    // Implementation of RequestBodyAdvice to capture the request body and be able to add it to the report in case of an error
+
+    @Override
+    public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return true;
+    }
+
+    @Override
+    public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return inputMessage;
+    }
+
+    @Override
+    public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+        ApiExceptionHandler.setBodyInThreadLocal(body);
+        return body;
+    }
+
+    @Override
+    public Object handleEmptyBody(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return body;
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -75,10 +168,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<?> handleBadCredentials(BadCredentialsException e) {
+    public ResponseEntity<?> handleBadCredentials(BadCredentialsException e, WebRequest request) {
         List<String> errorsMessages = new ArrayList<>();
         errorsMessages.add("Usuario y password no coinciden");
         ErrorResponse errorResponse = new ErrorResponse(new Date(),HttpStatus.BAD_REQUEST.value(),errorsMessages);
+
+        ApiExceptionHandler apiExceptionHandler = get();
+        auditService.registerAudit(apiExceptionHandler.body, "INICIO DE SESIÓN", "ERROR", null);
+
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
