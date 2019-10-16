@@ -60,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         String jwt = tokenProvider.generateAuthToken(authentication);
 
-        return new AuthResponse(jwt, userPrincipal.getName(), userPrincipal.getLastName(), authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(", ")), userPrincipal.getCompanyName());
+        return new AuthResponse(jwt, userPrincipal.getName(), userPrincipal.getLastName(), authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(", ")), userPrincipal.getCompanyName(), userPrincipal.getId());
     }
 
     @Override

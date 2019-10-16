@@ -22,12 +22,14 @@ public class AuthResponse {
     private String lastName;
     private String role;
     private String company;
+    private Long userId;
 
-    public AuthResponse(String accessToken, String name, String lastName, String role, String company) {
+    public AuthResponse(String accessToken, String name, String lastName, String role, String company, Long userId) {
         this.accessToken = accessToken;
         this.name = name;
         this.lastName = lastName;
         this.role = role;
         this.company = company;
+        this.userId = userId;
     }
 }
