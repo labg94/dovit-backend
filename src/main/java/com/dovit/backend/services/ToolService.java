@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface ToolService {
 
-    List<DevopsCategoryResponse> findAllToolsOfCompany(Long companyId);
+    List<ToolResponse> findAllToolsOfCompany(Long companyId);
 
     List<DevopsCategoryResponse> findAllToolsGroupedByCats();
 

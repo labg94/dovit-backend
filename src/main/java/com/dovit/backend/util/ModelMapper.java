@@ -7,7 +7,9 @@ import com.dovit.backend.model.responses.DevopsCategoryResponse;
 import com.dovit.backend.model.responses.DevopsSubCategoryResponse;
 import com.dovit.backend.model.responses.ToolResponse;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,10 +36,30 @@ public class ModelMapper {
                 DevopsSubCategoryResponse subCategory = new DevopsSubCategoryResponse();
                 subCategory.setSubcategoryId(sub.getId());
                 subCategory.setSubcategoryName(sub.getDescription());
-                subCategory.setTools(sub.getTools().stream().map(t -> new ToolResponse(t.getId(), t.getName(), rootUrlImg + t.getImageUrl())).collect(Collectors.toList()));
+                subCategory.setTools(sub.getTools().stream().map(t -> new ToolResponse(t.getId(), t.getName(), rootUrlImg + t.getImageUrl(), null)).collect(Collectors.toList()));
                 return subCategory;
             }).collect(Collectors.toList()));
             return category;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<ToolResponse> mapToolToResponse(List<Tool> tools, String rootUrlImg){
+        return tools.stream().map(t -> {
+            ToolResponse toolResponse = new ToolResponse();
+            toolResponse.setToolId(t.getId());
+            toolResponse.setToolName(t.getName());
+            toolResponse.setUrlImg(rootUrlImg + t.getImageUrl());
+            toolResponse.setTags(t.getSubcategories().stream().map(DevOpsSubcategory::getDescription).collect(Collectors.toList()));
+
+            Set<String> parentTags = t.getSubcategories()
+                    .stream()
+                    .map(DevOpsSubcategory::getDevOpsCategory)
+                    .map(DevOpsCategory::getDescription)
+                    .collect(Collectors.toSet());
+
+            toolResponse.getTags().addAll(parentTags);
+
+            return toolResponse;
         }).collect(Collectors.toList());
     }
 

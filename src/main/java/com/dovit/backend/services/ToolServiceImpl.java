@@ -40,11 +40,10 @@ public class ToolServiceImpl implements ToolService {
     private String BASE_IMAGE_URL;
 
     @Override
-//    @Transactional
-    public List<DevopsCategoryResponse> findAllToolsOfCompany(Long companyId) {
+    public List<ToolResponse> findAllToolsOfCompany(Long companyId) {
         JwtAuthenticationFilter.canActOnCompany(companyId);
-        List<DevOpsCategory> categories = devOpsCategoryRepository.findAllByCompanyId(companyId);
-        return ModelMapper.mapDevOpsCategoryToResponse(categories, BASE_IMAGE_URL);
+        List<Tool> tools = toolRepository.findAllByCompanyId(companyId);
+        return ModelMapper.mapToolToResponse(tools, BASE_IMAGE_URL);
     }
 
     @Override
@@ -57,6 +56,6 @@ public class ToolServiceImpl implements ToolService {
     @Override
     public List<ToolResponse> findAllTools() {
         List<Tool> tools = toolRepository.findAll();
-        return tools.stream().map(t -> new ToolResponse(t.getId(), t.getName(), BASE_IMAGE_URL + t.getImageUrl())).collect(Collectors.toList());
+        return ModelMapper.mapToolToResponse(tools, BASE_IMAGE_URL);
     }
 }

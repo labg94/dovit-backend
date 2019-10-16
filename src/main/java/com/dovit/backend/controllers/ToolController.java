@@ -33,7 +33,7 @@ public class ToolController {
     }
 
     @GetMapping("/company/{companyId}/tools")
-    public List<DevopsCategoryResponse> findAllToolsByCompany(@PathVariable Long companyId) {
+    public List<ToolResponse> findAllToolsByCompany(@PathVariable Long companyId) {
         return toolService.findAllToolsOfCompany(companyId);
     }
 
