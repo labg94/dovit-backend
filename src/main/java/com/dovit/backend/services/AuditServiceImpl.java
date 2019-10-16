@@ -24,7 +24,6 @@ public class AuditServiceImpl implements AuditService {
     public void registerAudit(Object data, String message, String status, Long userId) {
         new Thread(()->{
             try {
-
                 auditRepository.registerAudit(new Gson().toJson(data), message, status, userId);
             }catch (Exception e){
                 log.error("Error al ingresar la siguiente bitácora");
