@@ -19,6 +19,7 @@ import java.util.List;
  * @author Ramón París
  * @since 03-10-2019
  */
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 @Secured("ROLE_ADMIN")

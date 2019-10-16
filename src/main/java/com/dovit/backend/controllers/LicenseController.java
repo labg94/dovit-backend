@@ -21,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @Secured({"ROLE_ADMIN","ROLE_CLIENT"})
+@CrossOrigin(origins = "*")
 public class LicenseController {
 
     @Autowired

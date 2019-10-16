@@ -24,11 +24,13 @@ import java.net.URI;
  */
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
     private AuthService authService;
+
 
     @PostMapping("/signIn")
     public ResponseEntity<?> signIn(@Valid @RequestBody AuthRequest authRequest){
