@@ -37,5 +37,10 @@ public class ToolController {
         return toolService.findAllToolsOfCompany(companyId);
     }
 
+    @GetMapping("/tool/{toolId}")
+    public ToolResponse findById(@PathVariable Long toolId){
+        return toolService.findById(toolId);
+    }
+
 
 }

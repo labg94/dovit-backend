@@ -17,4 +17,6 @@ public interface ToolService {
 
     List<ToolResponse> findAllTools();
 
+    ToolResponse findById(Long toolId);
+
 }
