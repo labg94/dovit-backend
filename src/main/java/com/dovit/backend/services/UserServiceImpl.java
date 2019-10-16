@@ -150,4 +150,21 @@ public class UserServiceImpl implements UserService {
         }
         return tokenProvider.generateRegisterToken(registerTokenRequest);
     }
+
+    @Override
+    public UserResponse findResponseById(Long userId) {
+        User u = this.findById(userId);
+
+        return new UserResponse(
+                u.getId(),
+                u.getName(),
+                u.getLastName(),
+                u.getEmail(),
+                u.getRole().getName().name(),
+                u.getRole().getId(),
+                u.isActive(),
+                u.getCompany() != null ? u.getCompany().getId() : null,
+                u.getCompany() != null ? u.getCompany().getName() : null
+        );
+    }
 }

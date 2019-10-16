@@ -24,6 +24,7 @@ public interface UserService {
 
     User findById(Long id);
 
+    UserResponse findResponseById(Long userId);
 
     String createUserToken(RegisterTokenRequest registerTokenRequest);
 }

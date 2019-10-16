@@ -47,6 +47,11 @@ public class UserController {
         return userService.createUserToken(request);
     }
 
+    @GetMapping("/user/{userId}")
+    public UserResponse findById(@PathVariable Long userId){
+        return userService.findResponseById(userId);
+    }
+
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest userRequest){
         User response = userService.createUser(userRequest);
