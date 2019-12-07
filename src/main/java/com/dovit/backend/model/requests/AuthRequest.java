@@ -19,7 +19,7 @@ import javax.validation.constraints.NotEmpty;
 public class AuthRequest {
 
     @NotEmpty(message = "Email no puede estar vacío")
-    @Email
+//    @Email
     private String email;
 
     @NotEmpty(message = "Contraseña no puede estar vacío")

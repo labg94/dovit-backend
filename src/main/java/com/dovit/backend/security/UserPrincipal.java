@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.ldap.userdetails.LdapUserDetails;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
  * @author Ramón París
  */
 public class UserPrincipal implements UserDetails {
+
+
 
     private Long id;
     private String name;
