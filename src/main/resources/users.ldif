@@ -53,6 +53,7 @@ cn: Bob Hamilton
 givenName: Bob
 sn: Hamilton
 uid: bob
+mail: bob@cleverit.cl
 userPassword: bobspassword
 
 dn: uid=joe,ou=otherpeople,dc=springframework,dc=org
