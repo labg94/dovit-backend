@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -40,5 +41,8 @@ public class Tool {
             inverseJoinColumns = @JoinColumn(name = "subcategory_id"))
     private List<DevOpsSubcategory> subcategories;
 
+
+    @OneToMany(mappedBy = "tool")
+    private List<ToolProfile> toolProfile;
 
 }

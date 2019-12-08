@@ -34,10 +34,8 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<User> users;
 
-
-
-
-
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Member> members;
 
 
 }
