@@ -4,6 +4,7 @@ import com.dovit.backend.domain.Level;
 import com.dovit.backend.domain.Member;
 import com.dovit.backend.domain.Tool;
 import com.dovit.backend.domain.ToolProfile;
+import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.MemberRequest;
 import com.dovit.backend.model.requests.ToolProfileRequest;
 import com.dovit.backend.repositories.LevelRepository;
@@ -91,5 +92,19 @@ public class MemberServiceImpl implements MemberService {
 
     member.setToolProfile(collect);
     return member;
+  }
+
+
+  @Override
+  public Member findById(Long memberId, Long companyId) throws ResourceNotFoundException {
+      Member member = memberRepository
+              .findByIdAndCompanyId(memberId,companyId)
+              .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId",memberId));
+//TODO: RAMON TERMINA ESTA WEA SOY TURISTA D: es buscar los miembros por memberId y companyId
+
+//TODO: dude no utilices Autowirde, con el RequiredArgsConstructor se inyectan als dependcnecias <3
+
+
+        return null;
   }
 }
