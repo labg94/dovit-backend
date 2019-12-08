@@ -176,3 +176,14 @@ INSERT INTO dovit.licenses_pricing (license_pricing_id, max_users, min_users, pr
 INSERT INTO dovit.licenses_pricing (license_pricing_id, max_users, min_users, price, license_id) VALUES (56, -1, 1, 36, 35);
 INSERT INTO dovit.licenses_pricing (license_pricing_id, max_users, min_users, price, license_id) VALUES (57, -1, 1, 1.91, 36);
 INSERT INTO dovit.licenses_pricing (license_pricing_id, max_users, min_users, price, license_id) VALUES (1, 5, 1, 0, 1);
+
+
+INSERT INTO dovit.level (level_id, description) VALUES (1, 'Senior');
+INSERT INTO dovit.level (level_id, description) VALUES (2, 'Semi senior');
+INSERT INTO dovit.level (level_id, description) VALUES (3, 'Júnior');
+
+INSERT INTO dovit.profile (id, description) VALUES (1, 'Backend Developer');
+INSERT INTO dovit.profile (id, description) VALUES (2, 'Quality Assurance');
+INSERT INTO dovit.profile (id, description) VALUES (3, 'Full Stack Developer');
+INSERT INTO dovit.profile (id, description) VALUES (4, 'Frontend Developer');
+INSERT INTO dovit.profile (id, description) VALUES (5, 'DevOps Engineer');

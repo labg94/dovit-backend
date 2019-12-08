@@ -22,5 +22,5 @@ public class MemberRequest {
 
   private List<Long> profiles;
 
-  private List<ToolProfileRequest> toolProfileRequest;
+  private List<ToolProfileRequest> toolProfile;
 }

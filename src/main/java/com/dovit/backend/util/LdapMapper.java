@@ -16,6 +16,8 @@ public class LdapMapper implements AttributesMapper {
 
     @Override
     public Object mapFromAttributes(Attributes attributes) throws NamingException {
+        //TODO: El role que se toma no debería ser estático. Debería ser dinámico según lo que entregue el LDAP pero no sube hacer la relación de a
+        // qué grupo pertenece este miembro
         Role role = new Role();
         role.setName(RoleName.ROLE_ADMIN);
 

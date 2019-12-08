@@ -7,10 +7,8 @@ import com.dovit.backend.domain.ToolProfile;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.MemberRequest;
 import com.dovit.backend.model.requests.ToolProfileRequest;
-import com.dovit.backend.repositories.LevelRepository;
-import com.dovit.backend.repositories.MemberRepository;
-import com.dovit.backend.repositories.ToolProfileRepository;
-import com.dovit.backend.repositories.ToolRepository;
+import com.dovit.backend.model.responses.MemberResponse;
+import com.dovit.backend.repositories.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -29,33 +27,30 @@ public class MemberServiceImpl implements MemberService {
   private final LevelRepository levelRepository;
   private final ToolRepository toolRepository;
   private final ToolProfileRepository toolProfileRepository;
+  private final ProfileRepository profileRepository;
   private final ModelMapper modelMapper = new ModelMapper();
 
   @Override
   @Transactional
-  public Member agregar(MemberRequest member) {
-    Member mappedMember = toMember(member);
-
-    log.info("mappedMember {}", mappedMember);
-    Member save = memberRepository.save(mappedMember);
-    save.getToolProfile().forEach(toolProfile -> toolProfile.setMemberId(save.getId()));
-    List<ToolProfile> toolProfiles = toolProfileRepository.saveAll(save.getToolProfile());
-
-    log.info("MemberServiceImpl - agregar toolProfiles  toolProfiles {}", toolProfiles);
-    return save;
+  public Member save(MemberRequest member) {
+    Member mappedMember = mapMemberRequestToMember(member);
+    Member saved = memberRepository.save(mappedMember);
+    saved.getToolProfile().forEach(toolProfile -> toolProfile.setMemberId(saved.getId()));
+    List<ToolProfile> toolProfiles = toolProfileRepository.saveAll(saved.getToolProfile());
+    return saved;
   }
 
-  private Member toMember(MemberRequest memberRequest) {
+  private Member mapMemberRequestToMember(MemberRequest memberRequest) {
 
     Member member = modelMapper.map(memberRequest, Member.class);
 
     List<Long> levelsIds =
-        memberRequest.getToolProfileRequest().stream()
+        memberRequest.getToolProfile().stream()
             .map(ToolProfileRequest::getLevelId)
             .collect(Collectors.toList());
 
     List<Long> toolsIds =
-        memberRequest.getToolProfileRequest().stream()
+        memberRequest.getToolProfile().stream()
             .map(ToolProfileRequest::getToolId)
             .collect(Collectors.toList());
 
@@ -63,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
     List<Tool> tools = toolRepository.findAllById(toolsIds);
 
     List<ToolProfile> collect =
-        memberRequest.getToolProfileRequest().stream()
+        memberRequest.getToolProfile().stream()
             .map(
                 toolProfileRequest -> {
                   Level levelGotten =
@@ -91,20 +86,25 @@ public class MemberServiceImpl implements MemberService {
             .collect(Collectors.toList());
 
     member.setToolProfile(collect);
+
+    member.setProfiles(profileRepository.findAllByIdIn(memberRequest.getProfiles()));
+
     return member;
   }
 
-
   @Override
-  public Member findById(Long memberId, Long companyId) throws ResourceNotFoundException {
+  @Transactional
+  public MemberResponse findById(Long memberId) throws ResourceNotFoundException {
       Member member = memberRepository
-              .findByIdAndCompanyId(memberId,companyId)
+              .findById(memberId)
               .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId",memberId));
-//TODO: RAMON TERMINA ESTA WEA SOY TURISTA D: es buscar los miembros por memberId y companyId
 
-//TODO: dude no utilices Autowirde, con el RequiredArgsConstructor se inyectan als dependcnecias <3
-
-
-        return null;
+      return new MemberResponse(member);
   }
+
+    @Override
+    @Transactional
+    public List<MemberResponse> findAllByCompanyId(Long companyId) throws ResourceNotFoundException {
+      return memberRepository.findAllByCompanyId(companyId).stream().map(MemberResponse::new).collect(Collectors.toList());
+    }
 }
