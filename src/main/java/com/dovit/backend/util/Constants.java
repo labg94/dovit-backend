@@ -11,4 +11,6 @@ public class Constants {
 
     public static final String ACCESS_DENIED = "Access is denied";
 
+    public static final String CLEVER_IT = "Cleverit";
+
 }

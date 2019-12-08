@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +39,28 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_IN_MS);
 
+        Map<String, Object> customClaim = new HashMap<>();
+        customClaim.put("isLdapUser", false);
+
         return Jwts.builder()
+                .setClaims(customClaim)
                 .setSubject(Long.toString(userPrincipal.getId()))
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+                .compact();
+    }
+
+    public String generateAuthToken(CustomLdapUserDetails userPrincipal) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_IN_MS);
+
+        Map<String, Object> customClaim = new HashMap<>();
+        customClaim.put("isLdapUser", true);
+
+        return Jwts.builder()
+                .setClaims(customClaim)
+                .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
@@ -73,13 +92,17 @@ public class JwtTokenProvider {
 
     }
 
-    public Long getUserIdFromJWT(String token) {
+    public Map<String, Object> getUserIdFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(JWT_SECRET)
                 .parseClaimsJws(token)
                 .getBody();
 
-        return Long.parseLong(claims.getSubject());
+        Map<String, Object> map = new HashMap();
+        map.put("isLdapUser", claims.get("isLdapUser"));
+        map.put("subject", claims.getSubject());
+
+        return map;
     }
 
     public boolean validateToken(String authToken) {

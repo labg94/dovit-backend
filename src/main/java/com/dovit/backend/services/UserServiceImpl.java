@@ -16,6 +16,7 @@ import com.dovit.backend.security.UserPrincipal;
 import com.dovit.backend.util.Constants;
 import com.dovit.backend.util.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +50,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Value("${app.frontend.domain}")
+    private String APP_FRONTEND_DOMAIN;
 
     @Override
     public User findById(Long id) {
@@ -148,7 +155,11 @@ public class UserServiceImpl implements UserService {
         if (exists){
             throw new DataIntegrityViolationException("Detail:Email "+registerTokenRequest.getEmail() + " ya se encuentra en base de datos");
         }
-        return tokenProvider.generateRegisterToken(registerTokenRequest);
+
+        String token = tokenProvider.generateRegisterToken(registerTokenRequest);
+        emailService.sendSimpleMessage(registerTokenRequest.getEmail(), "Registration process",
+                "Bienvenido a Dovit! Ingresa al siguiente link y termina tu registro: " + APP_FRONTEND_DOMAIN + "/userCompany/create/" + token);
+        return token;
     }
 
     @Override

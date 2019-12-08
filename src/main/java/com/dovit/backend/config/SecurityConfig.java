@@ -1,11 +1,9 @@
 package com.dovit.backend.config;
 
 import com.dovit.backend.exceptions.ApiExceptionHandler;
-import com.dovit.backend.security.CustomUserDetailsService;
-import com.dovit.backend.security.JwtAccessDeniedHandler;
-import com.dovit.backend.security.JwtAuthenticationEntryPoint;
-import com.dovit.backend.security.JwtAuthenticationFilter;
+import com.dovit.backend.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,9 +17,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
+import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 
 /**
  * @author Ramón París
@@ -51,11 +52,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationFilter();
     }
 
+    @Value("${api.ldap.server}")
+    public String LDAP_SERVER;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.ldapAuthentication()
+                .userDnPatterns("uid={0},ou=people")
+                .groupSearchBase("ou=groups")
+                .contextSource(contextSource())
+                .userDetailsContextMapper(userDetailsContextMapper())
+                .passwordCompare()
+//                .passwordEncoder(passwordEncoder())
+                .passwordAttribute("userPassword");
+
         auth
                 .userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public DefaultSpringSecurityContextSource contextSource() {
+        return  new DefaultSpringSecurityContextSource(
+                Collections.singletonList(LDAP_SERVER), "dc=springframework,dc=org");
+    }
+
+    public UserDetailsContextMapper userDetailsContextMapper(){
+        return new CustomLdapMapper();
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -72,8 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
+                .cors().disable()
                 .csrf().disable()
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler)
