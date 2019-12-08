@@ -9,6 +9,7 @@ import com.dovit.backend.model.responses.ApiResponse;
 import com.dovit.backend.model.responses.AuthResponse;
 import com.dovit.backend.model.responses.RegisterTokenResponse;
 import com.dovit.backend.services.AuthService;
+import com.dovit.backend.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -30,6 +31,9 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private EmailService emailService;
 
 
     @PostMapping("/signIn")
@@ -58,6 +62,12 @@ public class AuthController {
     @GetMapping("/hello-world")
     public String helloWorld(){
         return "Hello World!";
+    }
+
+    @GetMapping("/mail")
+    public String testMail(){
+        emailService.sendSimpleMessage("pariis78@gmail.com","TEST!", "Viva chavez!!!!");
+        return "sent!!";
     }
 
 }
