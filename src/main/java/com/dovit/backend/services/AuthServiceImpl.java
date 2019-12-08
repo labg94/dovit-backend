@@ -17,6 +17,7 @@ import com.dovit.backend.security.JwtTokenProvider;
 import com.dovit.backend.security.UserPrincipal;
 import com.dovit.backend.util.Constants;
 import com.dovit.backend.util.RoleName;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
  * @since 02-10-2019
  */
 @Service
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
@@ -80,7 +82,8 @@ public class AuthServiceImpl implements AuthService {
             List<RoleName> roles = Arrays.stream(RoleName.values()).filter(r -> rolesString.contains(r.name())).collect(Collectors.toList());
 
             if (roleRepository.findAllByNameIn(roles).size() == 0){
-                throw new CustomAccessDeniedException("User doesn't have a valid role");
+                log.error("User " +userPrincipal.getUsername()+ " doesn't have a valid role to access");
+                throw new CustomAccessDeniedException("User doesn't have a valid role to access");
             }
 
             AuthResponse response = new AuthResponse(jwt, userPrincipal.getFirstName(), userPrincipal.getLastName(), rolesString, Constants.CLEVER_IT, 0L);
