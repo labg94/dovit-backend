@@ -27,6 +27,8 @@ public class MemberResponse {
 
     private String memberLastName;
 
+    private Boolean active;
+
     private List<ProfileResponse> profiles;
 
     private List<ToolProfileResponse> tools;
@@ -38,6 +40,7 @@ public class MemberResponse {
         this.companyName = member.getCompany().getName();
         this.memberName = member.getName();
         this.memberLastName = member.getLastName();
+        this.active = member.getActive();
         this.profiles = member.getProfiles().stream().map(ProfileResponse::new).collect(Collectors.toList());
         this.tools = member.getToolProfile().stream().map(ToolProfileResponse::new).collect(Collectors.toList());
 

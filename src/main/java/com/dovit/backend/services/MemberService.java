@@ -15,4 +15,6 @@ public interface MemberService {
     MemberResponse findById(Long memberId) throws ResourceNotFoundException;
 
     List<MemberResponse> findAllByCompanyId(Long companyId) throws ResourceNotFoundException;
+
+    Member update(MemberRequest request);
 }

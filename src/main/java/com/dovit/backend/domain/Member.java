@@ -14,29 +14,33 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(
-    name = "members")
+        name = "members")
 public class Member {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @ManyToOne private Company company;
+    @ManyToOne
+    private Company company;
 
-  @NotBlank private String name;
+    @NotBlank
+    private String name;
 
-  @NotBlank private String lastName;
+    @NotBlank
+    private String lastName;
 
-  @ManyToMany
-  @JoinTable(name = "member_profiles",
-          joinColumns = @JoinColumn(name = "member_id"),
-          inverseJoinColumns =  @JoinColumn(name = "profile_id")
-  )
-  private List<Profile> profiles;
+    private Boolean active;
 
-  @OneToMany(mappedBy = "member")
-  private List<ToolProfile> toolProfile;
+    @ManyToMany
+    @JoinTable(name = "member_profiles",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "profile_id")
+    )
+    private List<Profile> profiles;
 
+    @OneToMany(mappedBy = "member")
+    private List<ToolProfile> toolProfile;
 
 
 }
