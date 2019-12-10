@@ -6,6 +6,5 @@ package com.dovit.backend.repositories;
  */
 public interface CustomRepository {
 
-//    public List<LicenseR>
 
 }

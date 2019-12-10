@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,5 +38,8 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Member> members;
 
+
+    @OneToMany(mappedBy = "company")
+    private Collection<Project> projects;
 
 }

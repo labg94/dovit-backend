@@ -42,5 +42,8 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<ToolProfile> toolProfile;
 
+    @OneToMany(mappedBy = "member")
+    private List<ProjectMember> projects;
+
 
 }

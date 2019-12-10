@@ -30,4 +30,8 @@ public class DevOpsCategory {
     @OneToMany(mappedBy = "devOpsCategory", fetch = FetchType.EAGER)
     private List<DevOpsSubcategory> subcategories;
 
+    @OneToMany(mappedBy = "devOpsCategories")
+    private List<ProjectMember> projectMembers;
+
+
 }
