@@ -1,6 +1,7 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Project;
+import com.dovit.backend.domain.ProjectMember;
 import com.dovit.backend.domain.ToolProfile;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.ProjectRequest;
@@ -14,10 +15,12 @@ import com.dovit.backend.repositories.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,6 +50,34 @@ public class ProjectServiceImpl implements ProjectService {
         project.getMembers().forEach(m -> m.setProjectId(projectId));
         projectMemberRepository.saveAll(project.getMembers());
 
+        return project;
+    }
+
+    @Override
+    @Transactional
+    public Project updateProject(ProjectRequest request) {
+        Project project = projectRepository.findById(request.getId()).orElseThrow(()->new ResourceNotFoundException("Project", "id", request.getId()));
+        projectMemberRepository.deleteAllByProjectId(request.getId());
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setCollectionsMergeEnabled(false);
+
+        PropertyMap<ProjectRequest, Project> skipModelMapper = new PropertyMap<ProjectRequest, Project>() {
+            protected void configure() {
+                skip().setMembers(null);
+            }
+        };
+
+        modelMapper.addMappings(skipModelMapper);
+        modelMapper.map(request, project);
+
+        project = projectRepository.save(project);
+
+        List<ProjectMember> members = request.getMembers().stream().map(m->new ModelMapper().map(m, ProjectMember.class)).collect(Collectors.toList());
+        members.forEach(m->{
+            m.setProject(null);
+            m.setProjectId(request.getId());
+        });
+        projectMemberRepository.saveAll(members);
         return project;
     }
 

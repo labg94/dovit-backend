@@ -18,4 +18,5 @@ public interface ProjectService {
 
     ProjectResponse findByProjectId(Long projectId);
 
+    Project updateProject(ProjectRequest request);
 }

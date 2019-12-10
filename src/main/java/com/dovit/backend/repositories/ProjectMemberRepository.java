@@ -1,5 +1,6 @@
 package com.dovit.backend.repositories;
 
+import com.dovit.backend.domain.Project;
 import com.dovit.backend.domain.ProjectMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Long> {
 
-
+    void deleteAllByProjectId(Long projectId);
 
 
 }

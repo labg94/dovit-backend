@@ -49,4 +49,16 @@ public class ProjectController {
 
     }
 
+    @PutMapping("/project")
+    public ResponseEntity<?> updateProject(@RequestBody ProjectRequest request){
+        Project response = projectService.updateProject(request);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(response.getId()).toUri();
+
+        return ResponseEntity.created(location).body(new ApiResponse(true, "Project updated successfully"));
+
+    }
+
 }
