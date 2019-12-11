@@ -37,6 +37,9 @@ public class ProjectController {
         return projectService.findByProjectId(projectId);
     }
 
+//    @GetMapping("/company/{companyId}/project/availableMembers")
+//    public List<>
+
     @PostMapping("/project")
     public ResponseEntity<?> createProject(@RequestBody ProjectRequest request){
         Project response = projectService.saveProject(request);

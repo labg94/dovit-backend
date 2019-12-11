@@ -2,7 +2,6 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Project;
 import com.dovit.backend.domain.ProjectMember;
-import com.dovit.backend.domain.ToolProfile;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.ProjectRequest;
 import com.dovit.backend.model.responses.MemberParticipationResponse;
@@ -16,12 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -115,7 +111,7 @@ public class ProjectServiceImpl implements ProjectService {
                 participation.setDevopsCategoryName(m2.getDevOpsCategories().getDescription());
 
                 List<ToolProfileResponse>
-                        knowingToolsOfDevOpsCat = m2.getMember()
+                        toolsOfDevOpsCat = m2.getMember()
                         .getToolProfile()
                         .stream()
                         .filter(toolProfile -> toolProfile.getTool()
@@ -125,7 +121,7 @@ public class ProjectServiceImpl implements ProjectService {
                         .map(ToolProfileResponse::new)
                         .collect(Collectors.toList());
 
-                participation.setTools(knowingToolsOfDevOpsCat);
+                participation.setTools(toolsOfDevOpsCat);
                 return participation;
             }).collect(Collectors.toList());
             m.setParticipation(participations);
