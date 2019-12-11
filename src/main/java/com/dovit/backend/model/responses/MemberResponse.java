@@ -33,7 +33,7 @@ public class MemberResponse {
 
     private List<ToolProfileResponse> tools;
 
-    public MemberResponse(Member member) {
+    public MemberResponse(Member member, String BASE_URL) {
 
         this.id = member.getId();
         this.companyId = member.getCompany().getId();
@@ -43,6 +43,7 @@ public class MemberResponse {
         this.active = member.getActive();
         this.profiles = member.getProfiles().stream().map(ProfileResponse::new).collect(Collectors.toList());
         this.tools = member.getToolProfile().stream().map(ToolProfileResponse::new).collect(Collectors.toList());
+        this.tools.forEach(t -> t.setUrlImg(BASE_URL + t.getUrlImg()));
 
     }
 }

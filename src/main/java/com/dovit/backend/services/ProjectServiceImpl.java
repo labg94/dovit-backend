@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,9 @@ public class ProjectServiceImpl implements ProjectService {
     private final MemberRepository memberRepository;
     private final DevOpsCategoryRepository devOpsCategoryRepository;
     private final ModelMapper modelMapper = new ModelMapper();
+
+    @Value("${api.image.route}")
+    private String BASE_IMAGE_URL;
 
     @Override
     @Transactional
@@ -149,7 +153,7 @@ public class ProjectServiceImpl implements ProjectService {
                                     .stream()
                                     .anyMatch(sub -> sub.getDevOpsCategory().getId().equals(r.getDevOpsCategoryId()))
                             ))
-                    .map(MemberResponse::new)
+                    .map(m->new MemberResponse(m, BASE_IMAGE_URL))
                     .collect(Collectors.toList());
 
             r.setMembersRecommendation(membersRecommendation);

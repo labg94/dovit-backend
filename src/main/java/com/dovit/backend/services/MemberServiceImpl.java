@@ -9,6 +9,7 @@ import com.dovit.backend.repositories.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,9 @@ public class MemberServiceImpl implements MemberService {
     private final ToolProfileRepository toolProfileRepository;
     private final ProfileRepository profileRepository;
     private final ModelMapper modelMapper = new ModelMapper();
+
+    @Value("${api.image.route}")
+    private String BASE_IMAGE_URL;
 
     @Override
     @Transactional
@@ -55,13 +59,13 @@ public class MemberServiceImpl implements MemberService {
                 .findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId", memberId));
 
-        return new MemberResponse(member);
+        return new MemberResponse(member, BASE_IMAGE_URL);
     }
 
     @Override
     @Transactional
     public List<MemberResponse> findAllByCompanyId(Long companyId) throws ResourceNotFoundException {
-        return memberRepository.findAllByCompanyId(companyId).stream().map(MemberResponse::new).collect(Collectors.toList());
+        return memberRepository.findAllByCompanyId(companyId).stream().map(m->new MemberResponse(m, BASE_IMAGE_URL)).collect(Collectors.toList());
     }
 
     @Override
