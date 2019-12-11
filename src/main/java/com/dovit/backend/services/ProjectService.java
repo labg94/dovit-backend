@@ -2,6 +2,7 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Project;
 import com.dovit.backend.model.requests.ProjectRequest;
+import com.dovit.backend.model.responses.ProjectMemberRecommendation;
 import com.dovit.backend.model.responses.ProjectResponse;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface ProjectService {
     ProjectResponse findByProjectId(Long projectId);
 
     Project updateProject(ProjectRequest request);
+
+    List<ProjectMemberRecommendation> findMemberRecommendation(Long companyId);
 }

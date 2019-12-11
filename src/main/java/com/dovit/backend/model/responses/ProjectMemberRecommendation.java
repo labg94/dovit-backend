@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author Ramón París
  * @since 10-12-2019
@@ -14,7 +16,8 @@ import lombok.NoArgsConstructor;
 public class ProjectMemberRecommendation {
 
     private Long devOpsCategoryId;
-    private String devOpsCategoryDesc;
+    private String devOpsCategoryDescription;
+    private List<MemberResponse> membersRecommendation;
 
 
 }

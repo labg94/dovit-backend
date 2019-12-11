@@ -3,6 +3,7 @@ package com.dovit.backend.controllers;
 import com.dovit.backend.domain.Project;
 import com.dovit.backend.model.requests.ProjectRequest;
 import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.model.responses.ProjectMemberRecommendation;
 import com.dovit.backend.model.responses.ProjectResponse;
 import com.dovit.backend.services.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,10 @@ public class ProjectController {
         return projectService.findByProjectId(projectId);
     }
 
-//    @GetMapping("/company/{companyId}/project/availableMembers")
-//    public List<>
+    @GetMapping("/company/{companyId}/project/availableMembers")
+    public List<ProjectMemberRecommendation> getMembersRecommendation(@PathVariable Long companyId){
+        return projectService.findMemberRecommendation(companyId);
+    }
 
     @PostMapping("/project")
     public ResponseEntity<?> createProject(@RequestBody ProjectRequest request){
