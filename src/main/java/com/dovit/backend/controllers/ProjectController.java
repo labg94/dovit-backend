@@ -22,6 +22,7 @@ import java.util.List;
 @RequestMapping("/api")
 @Secured({"ROLE_ADMIN","ROLE_CLIENT"})
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 @RestController
 public class ProjectController {
 
