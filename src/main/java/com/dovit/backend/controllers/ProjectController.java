@@ -3,6 +3,7 @@ package com.dovit.backend.controllers;
 import com.dovit.backend.domain.Project;
 import com.dovit.backend.model.requests.ProjectRequest;
 import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.model.responses.ProjectMemberRecommendation;
 import com.dovit.backend.model.responses.ProjectResponse;
 import com.dovit.backend.services.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping("/api")
 @Secured({"ROLE_ADMIN","ROLE_CLIENT"})
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 @RestController
 public class ProjectController {
 
@@ -35,6 +37,11 @@ public class ProjectController {
     @GetMapping("/project/{projectId}")
     public ProjectResponse findByProjectId(@PathVariable Long projectId){
         return projectService.findByProjectId(projectId);
+    }
+
+    @GetMapping("/company/{companyId}/project/availableMembers")
+    public List<ProjectMemberRecommendation> getMembersRecommendation(@PathVariable Long companyId){
+        return projectService.findMemberRecommendation(companyId);
     }
 
     @PostMapping("/project")

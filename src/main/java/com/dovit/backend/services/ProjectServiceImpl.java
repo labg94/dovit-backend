@@ -1,27 +1,20 @@
 package com.dovit.backend.services;
 
+import com.dovit.backend.domain.DevOpsCategory;
+import com.dovit.backend.domain.Member;
 import com.dovit.backend.domain.Project;
 import com.dovit.backend.domain.ProjectMember;
-import com.dovit.backend.domain.ToolProfile;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.ProjectRequest;
-import com.dovit.backend.model.responses.MemberParticipationResponse;
-import com.dovit.backend.model.responses.ProjectMemberResponse;
-import com.dovit.backend.model.responses.ProjectResponse;
-import com.dovit.backend.model.responses.ToolProfileResponse;
-import com.dovit.backend.repositories.CustomRepository;
-import com.dovit.backend.repositories.ProjectMemberRepository;
-import com.dovit.backend.repositories.ProjectRepository;
+import com.dovit.backend.model.responses.*;
+import com.dovit.backend.repositories.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +29,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
-    private final CustomRepository customRepository;
+    private final MemberRepository memberRepository;
+    private final DevOpsCategoryRepository devOpsCategoryRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
@@ -56,7 +50,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public Project updateProject(ProjectRequest request) {
-        Project project = projectRepository.findById(request.getId()).orElseThrow(()->new ResourceNotFoundException("Project", "id", request.getId()));
+        Project project = projectRepository.findById(request.getId()).orElseThrow(() -> new ResourceNotFoundException("Project", "id", request.getId()));
         projectMemberRepository.deleteAllByProjectId(request.getId());
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setCollectionsMergeEnabled(false);
@@ -72,8 +66,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         project = projectRepository.save(project);
 
-        List<ProjectMember> members = request.getMembers().stream().map(m->new ModelMapper().map(m, ProjectMember.class)).collect(Collectors.toList());
-        members.forEach(m->{
+        List<ProjectMember> members = request.getMembers().stream().map(m -> new ModelMapper().map(m, ProjectMember.class)).collect(Collectors.toList());
+        members.forEach(m -> {
             m.setProject(null);
             m.setProjectId(request.getId());
         });
@@ -115,7 +109,7 @@ public class ProjectServiceImpl implements ProjectService {
                 participation.setDevopsCategoryName(m2.getDevOpsCategories().getDescription());
 
                 List<ToolProfileResponse>
-                        knowingToolsOfDevOpsCat = m2.getMember()
+                        toolsOfDevOpsCat = m2.getMember()
                         .getToolProfile()
                         .stream()
                         .filter(toolProfile -> toolProfile.getTool()
@@ -125,7 +119,7 @@ public class ProjectServiceImpl implements ProjectService {
                         .map(ToolProfileResponse::new)
                         .collect(Collectors.toList());
 
-                participation.setTools(knowingToolsOfDevOpsCat);
+                participation.setTools(toolsOfDevOpsCat);
                 return participation;
             }).collect(Collectors.toList());
             m.setParticipation(participations);
@@ -133,5 +127,34 @@ public class ProjectServiceImpl implements ProjectService {
 
         response.setMembers(members);
         return response;
+    }
+
+    @Override
+    @Transactional
+    public List<ProjectMemberRecommendation> findMemberRecommendation(Long companyId) {
+        List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAll();
+        List<Member> members = memberRepository.findAllByCompanyId(companyId);
+        ModelMapper modelMapper = new ModelMapper();
+        List<ProjectMemberRecommendation> recommendations = devOpsCategories.stream().map(d -> modelMapper.map(d, ProjectMemberRecommendation.class)).collect(Collectors.toList());
+
+        //TODO optimizar este código desde una query en la base de datos!
+        recommendations.forEach(r -> {
+            List<MemberResponse> membersRecommendation = members
+                    .stream()
+                    .filter(m -> m.getToolProfile()
+                            .stream()
+                            .anyMatch(toolProfile -> toolProfile
+                                    .getTool()
+                                    .getSubcategories()
+                                    .stream()
+                                    .anyMatch(sub -> sub.getDevOpsCategory().getId().equals(r.getDevOpsCategoryId()))
+                            ))
+                    .map(MemberResponse::new)
+                    .collect(Collectors.toList());
+
+            r.setMembersRecommendation(membersRecommendation);
+        });
+
+        return recommendations;
     }
 }
