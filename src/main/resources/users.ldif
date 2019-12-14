@@ -34,7 +34,7 @@ givenName: Bob
 sn: Hamilton
 uid: bob
 mail: bob@cleverit.cl
-userPassword: bobspassword
+userPassword: 123456
 
 dn: uid=joe,ou=people,dc=springframework,dc=org
 objectclass: top

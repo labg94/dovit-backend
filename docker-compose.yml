@@ -4,6 +4,25 @@ version: "3.3"
 
 # Define services
 services:
+  # Frontend Service
+  dovit-frontend:
+    build:
+      context: ../dovit-frontend # Use an image built from the specified dockerfile
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_HOST: ${DOVIT_API_BASE_DOMAIN:-http://localhost:8080/api}
+        REACT_APP_API_PORT: 8080
+        REACT_APP_ROOT_PATH: http://comercialmao.cl
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - dovit-backend
+    networks:
+      - frontend
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
   # App backend service
   dovit-backend:
     # Configuration for building the docker image for the backend service
@@ -21,28 +40,9 @@ services:
       DB_PASSWORD: w3E8D8CCqmuLmuQt
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - backend
-#      - frontend
+      - frontend
     volumes:
       - /etc/localtime:/etc/localtime:ro
-
-  # Frontend Service
-#  dovit-frontend:
-#    build:
-#      context: ../dovit-frontend # Use an image built from the specified dockerfile
-#      dockerfile: Dockerfile
-#      args:
-#        REACT_APP_API_HOST: localhost
-#        REACT_APP_API_PORT: 8080
-#      #   REACT_APP_ROOT_PATH: http://comercialmao.cl
-#    ports:
-#      - "80:80"
-#    restart: always
-#    depends_on:
-#      - dovit-backend
-#    networks:
-#      - frontend
-#    volumes:
-#      - /etc/localtime:/etc/localtime:ro
 
   # Database Service (Mysql)
   db:
