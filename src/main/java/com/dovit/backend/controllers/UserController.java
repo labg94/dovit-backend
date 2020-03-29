@@ -48,6 +48,7 @@ public class UserController {
         return userService.createUserToken(request);
     }
 
+    @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
     @GetMapping("/user/{userId}")
     public UserResponse findById(@PathVariable Long userId){
         return userService.findResponseById(userId);
@@ -65,6 +66,7 @@ public class UserController {
 
     }
 
+    @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
     @PutMapping("/user")
     public ResponseEntity<?> updateUser(@Valid @RequestBody UserRequest userRequest){
         User response = userService.updateUser(userRequest);
