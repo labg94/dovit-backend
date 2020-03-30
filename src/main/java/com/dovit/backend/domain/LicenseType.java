@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
  * Master table/entity that stores the type of licenses. It can be: hosted, free or paid
+ *
  * @author Ramón París
  * @since 01-10-2019
  */

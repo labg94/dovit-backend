@@ -13,6 +13,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class LicenseRequest {
 
-    private Long id;
-
+  private Long id;
 }

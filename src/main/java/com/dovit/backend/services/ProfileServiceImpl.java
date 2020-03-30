@@ -22,6 +22,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<ProfileResponse> findAll() {
-        return profileRepository.findAll().stream().map(ProfileResponse::new).collect(Collectors.toList());
+        return profileRepository.findAll().stream()
+                .map(ProfileResponse::new)
+                .collect(Collectors.toList());
     }
 }

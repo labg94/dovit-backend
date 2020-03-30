@@ -6,15 +6,13 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Collection;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(
-        name = "members")
+@Table(name = "members")
 public class Member {
 
     @Id
@@ -33,10 +31,10 @@ public class Member {
     private Boolean active;
 
     @ManyToMany
-    @JoinTable(name = "member_profiles",
+    @JoinTable(
+            name = "member_profiles",
             joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "profile_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "profile_id"))
     private List<Profile> profiles;
 
     @OneToMany(mappedBy = "member")
@@ -44,6 +42,4 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<ProjectMember> projects;
-
-
 }

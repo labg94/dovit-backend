@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Entity class that refers "client's company" table.
+ *
  * @author Ramón París
  * @since 29-09-2019
  */
@@ -38,8 +39,6 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Member> members;
 
-
     @OneToMany(mappedBy = "company")
     private Collection<Project> projects;
-
 }

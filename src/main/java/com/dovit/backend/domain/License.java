@@ -3,11 +3,11 @@ package com.dovit.backend.domain;
 import com.dovit.backend.domain.audit.DateAudit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -16,6 +16,7 @@ import java.util.List;
  * @author Ramón París
  * @since 01-10-2019
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,10 +45,9 @@ public class License extends DateAudit {
     private List<CompanyLicense> companyLicenses;
 
     @ManyToOne
-    @JoinColumn(name="tool_id", nullable = false)
+    @JoinColumn(name = "tool_id", nullable = false)
     private Tool tool;
 
     @OneToMany(mappedBy = "license")
     private List<LicensePricing> pricings;
-
 }

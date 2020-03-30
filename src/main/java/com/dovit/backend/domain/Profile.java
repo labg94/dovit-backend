@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -23,8 +22,6 @@ public class Profile {
     @NotBlank
     private String description;
 
-
     @ManyToMany(mappedBy = "profiles")
     private List<Member> members;
-
 }

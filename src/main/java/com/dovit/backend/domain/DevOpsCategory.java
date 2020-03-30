@@ -9,7 +9,10 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
- * This entity define the "Parent" category. This can be: Planning, Build, Test, CI/CD, Configuration, Monitoring... This entity has "child" category that are technologies of this "parent" category.
+ * This entity define the "Parent" category. This can be: Planning, Build, Test, CI/CD,
+ * Configuration, Monitoring... This entity has "child" category that are technologies of this
+ * "parent" category.
+ *
  * @author Ramón París
  * @since 01-10-2019
  */
@@ -32,6 +35,4 @@ public class DevOpsCategory {
 
     @OneToMany(mappedBy = "devOpsCategories")
     private List<ProjectMember> projectMembers;
-
-
 }

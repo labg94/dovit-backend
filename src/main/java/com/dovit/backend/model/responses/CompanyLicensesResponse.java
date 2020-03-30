@@ -21,5 +21,4 @@ public class CompanyLicensesResponse extends LicenseDTO {
     private Long companyLicenseId;
     private Instant start;
     private Instant expiration;
-
 }

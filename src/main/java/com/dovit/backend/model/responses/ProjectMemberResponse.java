@@ -19,6 +19,4 @@ public class ProjectMemberResponse {
     private String memberName;
     private String memberLastName;
     private List<MemberParticipationResponse> participation;
-
-
 }

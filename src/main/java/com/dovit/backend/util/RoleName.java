@@ -10,7 +10,7 @@ public enum RoleName {
 
     private final String label;
 
-    private RoleName(String label){
+    RoleName(String label) {
         this.label = label;
     }
 }

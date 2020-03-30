@@ -14,6 +14,7 @@ import java.time.Instant;
 
 /**
  * Util class to audit creation or change DATE of some entities
+ *
  * @author Ramón París
  * @since 29-09-2019
  */
@@ -21,8 +22,7 @@ import java.time.Instant;
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(
         value = {"createdAt", "updatedAt"},
-        allowGetters = true
-)
+        allowGetters = true)
 @Data
 public class DateAudit implements Serializable {
 
@@ -32,5 +32,4 @@ public class DateAudit implements Serializable {
 
     @LastModifiedDate
     private Instant updatedAt;
-
 }

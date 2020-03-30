@@ -18,6 +18,4 @@ public class ProjectMemberRecommendation {
     private Long devOpsCategoryId;
     private String devOpsCategoryDescription;
     private List<MemberResponse> membersRecommendation;
-
-
 }

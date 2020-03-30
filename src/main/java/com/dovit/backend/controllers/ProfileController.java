@@ -3,7 +3,6 @@ package com.dovit.backend.controllers;
 import com.dovit.backend.model.responses.ProfileResponse;
 import com.dovit.backend.services.ProfileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,7 @@ import java.util.List;
  * @since 10-12-2019
  */
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN","ROLE_CLIENT"})
+@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RestController
@@ -26,8 +25,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping("/profiles")
-    public List<ProfileResponse> findAll(){
+    public List<ProfileResponse> findAll() {
         return profileService.findAll();
     }
-
 }

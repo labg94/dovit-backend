@@ -1,7 +1,6 @@
 package com.dovit.backend.model.responses;
 
 import com.dovit.backend.domain.Member;
-import com.dovit.backend.domain.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,9 +40,10 @@ public class MemberResponse {
         this.memberName = member.getName();
         this.memberLastName = member.getLastName();
         this.active = member.getActive();
-        this.profiles = member.getProfiles().stream().map(ProfileResponse::new).collect(Collectors.toList());
-        this.tools = member.getToolProfile().stream().map(ToolProfileResponse::new).collect(Collectors.toList());
+        this.profiles =
+                member.getProfiles().stream().map(ProfileResponse::new).collect(Collectors.toList());
+        this.tools =
+                member.getToolProfile().stream().map(ToolProfileResponse::new).collect(Collectors.toList());
         this.tools.forEach(t -> t.setUrlImg(BASE_URL + t.getUrlImg()));
-
     }
 }

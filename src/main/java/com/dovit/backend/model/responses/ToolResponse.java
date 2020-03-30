@@ -15,9 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ToolResponse {
 
-    private Long toolId;
-    private String toolName;
-    private String urlImg;
-    private List<String> tags;
-
+  private Long toolId;
+  private String toolName;
+  private String urlImg;
+  private List<String> tags;
 }

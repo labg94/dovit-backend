@@ -55,9 +55,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberResponse findById(Long memberId) throws ResourceNotFoundException {
-        Member member = memberRepository
-                .findById(memberId)
-                .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId", memberId));
+        Member member =
+                memberRepository
+                        .findById(memberId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId", memberId));
 
         return new MemberResponse(member, BASE_IMAGE_URL);
     }
@@ -65,7 +66,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public List<MemberResponse> findAllByCompanyId(Long companyId) throws ResourceNotFoundException {
-        return memberRepository.findAllByCompanyId(companyId).stream().map(m->new MemberResponse(m, BASE_IMAGE_URL)).collect(Collectors.toList());
+        return memberRepository.findAllByCompanyId(companyId).stream()
+                .map(m -> new MemberResponse(m, BASE_IMAGE_URL))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -73,9 +76,11 @@ public class MemberServiceImpl implements MemberService {
     public Member update(MemberRequest memberRequest) {
         toolProfileRepository.deleteAllByMemberId(memberRequest.getId());
 
-        Member member = memberRepository
-                .findById(memberRequest.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId", memberRequest.getId()));
+        Member member =
+                memberRepository
+                        .findById(memberRequest.getId())
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException("Member", "MemberId", memberRequest.getId()));
 
         member.setName(memberRequest.getName());
         member.setLastName(memberRequest.getLastName());

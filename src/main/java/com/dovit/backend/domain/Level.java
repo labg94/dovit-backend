@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -25,5 +24,4 @@ public class Level {
 
     @OneToMany(mappedBy = "level")
     private List<ToolProfile> toolProfile;
-
 }

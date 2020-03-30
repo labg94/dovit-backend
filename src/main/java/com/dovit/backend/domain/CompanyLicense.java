@@ -5,12 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.awt.*;
 import java.time.Instant;
 
 /**
  * Licenses that a company have with their initial and expiration date
+ *
  * @author Ramón París
  * @since 29-09-2019
  */
@@ -38,10 +37,4 @@ public class CompanyLicense {
     @ManyToOne
     @JoinColumn(name = "license_id")
     private License license;
-
-
-
-
-
-
 }

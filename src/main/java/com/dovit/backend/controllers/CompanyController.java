@@ -5,7 +5,7 @@ import com.dovit.backend.model.requests.CompanyRequest;
 import com.dovit.backend.model.responses.ApiResponse;
 import com.dovit.backend.model.responses.CompanyResponse;
 import com.dovit.backend.services.CompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -23,44 +23,47 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @Secured("ROLE_ADMIN")
+@RequiredArgsConstructor
 public class CompanyController {
 
-    @Autowired
-    private CompanyService companyService;
+    private final CompanyService companyService;
 
     @GetMapping("/companies")
-    public List<CompanyResponse> findAll(){
+    public List<CompanyResponse> findAll() {
         return companyService.findAll();
     }
 
     @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
     @GetMapping("/company/{companyId}")
-    public CompanyResponse findById(@PathVariable Long companyId){
+    public CompanyResponse findById(@PathVariable Long companyId) {
         return companyService.findCompanyResponseById(companyId);
     }
 
     @PostMapping("/company")
-    public ResponseEntity<?> createCompany(@Valid @RequestBody CompanyRequest companyRequest){
+    public ResponseEntity<?> createCompany(@Valid @RequestBody CompanyRequest companyRequest) {
         Company response = companyService.createCompany(companyRequest);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(response.getId()).toUri();
+        URI location =
+                ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(response.getId())
+                        .toUri();
 
-        return ResponseEntity.created(location).body(new ApiResponse(true, "Company created successfully"));
-
+        return ResponseEntity.created(location)
+                .body(new ApiResponse(true, "Company created successfully"));
     }
 
     @PutMapping("/company")
-    public ResponseEntity<?> updateCompany(@Valid @RequestBody CompanyRequest companyRequest){
+    public ResponseEntity<?> updateCompany(@Valid @RequestBody CompanyRequest companyRequest) {
         Company response = companyService.updateCompany(companyRequest);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(response.getId()).toUri();
+        URI location =
+                ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(response.getId())
+                        .toUri();
 
-        return ResponseEntity.created(location).body(new ApiResponse(true, "Company updated successfully"));
-
+        return ResponseEntity.created(location)
+                .body(new ApiResponse(true, "Company updated successfully"));
     }
-
 }

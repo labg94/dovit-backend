@@ -16,7 +16,7 @@ import java.util.List;
  * @since 10-12-2019
  */
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN","ROLE_CLIENT"})
+@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RestController
@@ -25,8 +25,7 @@ public class LevelController {
     private final LevelService levelService;
 
     @GetMapping("/levels")
-    public List<LevelResponse> findAll(){
-        return  levelService.findAll();
+    public List<LevelResponse> findAll() {
+        return levelService.findAll();
     }
-
 }

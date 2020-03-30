@@ -28,5 +28,4 @@ public class CompanyLicenseRequest {
     private Date startDate;
 
     private Date expirationDate;
-
 }

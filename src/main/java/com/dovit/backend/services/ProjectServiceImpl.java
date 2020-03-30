@@ -7,7 +7,10 @@ import com.dovit.backend.domain.ProjectMember;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.ProjectRequest;
 import com.dovit.backend.model.responses.*;
-import com.dovit.backend.repositories.*;
+import com.dovit.backend.repositories.DevOpsCategoryRepository;
+import com.dovit.backend.repositories.MemberRepository;
+import com.dovit.backend.repositories.ProjectMemberRepository;
+import com.dovit.backend.repositories.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -54,27 +57,35 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public Project updateProject(ProjectRequest request) {
-        Project project = projectRepository.findById(request.getId()).orElseThrow(() -> new ResourceNotFoundException("Project", "id", request.getId()));
+        Project project =
+                projectRepository
+                        .findById(request.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Project", "id", request.getId()));
         projectMemberRepository.deleteAllByProjectId(request.getId());
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setCollectionsMergeEnabled(false);
 
-        PropertyMap<ProjectRequest, Project> skipModelMapper = new PropertyMap<ProjectRequest, Project>() {
-            protected void configure() {
-                skip().setMembers(null);
-            }
-        };
+        PropertyMap<ProjectRequest, Project> skipModelMapper =
+                new PropertyMap<>() {
+                    protected void configure() {
+                        skip().setMembers(null);
+                    }
+                };
 
         modelMapper.addMappings(skipModelMapper);
         modelMapper.map(request, project);
 
         project = projectRepository.save(project);
 
-        List<ProjectMember> members = request.getMembers().stream().map(m -> new ModelMapper().map(m, ProjectMember.class)).collect(Collectors.toList());
-        members.forEach(m -> {
-            m.setProject(null);
-            m.setProjectId(request.getId());
-        });
+        List<ProjectMember> members =
+                request.getMembers().stream()
+                        .map(m -> new ModelMapper().map(m, ProjectMember.class))
+                        .collect(Collectors.toList());
+        members.forEach(
+                m -> {
+                    m.setProject(null);
+                    m.setProjectId(request.getId());
+                });
         projectMemberRepository.saveAll(members);
         return project;
     }
@@ -85,49 +96,67 @@ public class ProjectServiceImpl implements ProjectService {
         List<Project> projects = projectRepository.findAllByCompanyId(companyId);
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setAmbiguityIgnored(true);
-        List<ProjectResponse> responses = projects.stream().map(p -> mapper.map(p, ProjectResponse.class)).collect(Collectors.toList());
-        return responses;
+        return projects.stream()
+                .map(p -> mapper.map(p, ProjectResponse.class))
+                .collect(Collectors.toList());
     }
 
     @Transactional
     @Override
     public ProjectResponse findByProjectId(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
+        Project project =
+                projectRepository
+                        .findById(projectId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setAmbiguityIgnored(true);
         ProjectResponse response = mapper.map(project, ProjectResponse.class);
-        //TODO mejorar este código de mierda xd.. no programen de madrugada :)
-        List<ProjectMemberResponse> members = project
-                .getMembers()
-                .stream().collect(Collectors.groupingBy(p -> p.getMember())).keySet().stream().map(m -> {
-                    ProjectMemberResponse memberResponse = new ProjectMemberResponse();
-                    memberResponse.setMemberId(m.getId());
-                    memberResponse.setMemberName(m.getName());
-                    memberResponse.setMemberLastName(m.getLastName());
-                    return memberResponse;
-                }).collect(Collectors.toList());
-
-        members.forEach(m -> {
-            List<MemberParticipationResponse> participations = project.getMembers().stream().filter(m1 -> m1.getMemberId().equals(m.getMemberId())).map(m2 -> {
-                MemberParticipationResponse participation = new MemberParticipationResponse();
-                participation.setDevopsCategoryName(m2.getDevOpsCategories().getDescription());
-
-                List<ToolProfileResponse>
-                        toolsOfDevOpsCat = m2.getMember()
-                        .getToolProfile()
+        // TODO mejorar este código de mierda xd.. no programen de madrugada :)
+        List<ProjectMemberResponse> members =
+                project.getMembers().stream()
+                        .collect(Collectors.groupingBy(ProjectMember::getMember))
+                        .keySet()
                         .stream()
-                        .filter(toolProfile -> toolProfile.getTool()
-                                .getSubcategories()
-                                .stream()
-                                .collect(Collectors.groupingBy(sub -> sub.getDevOpsCategory().getId())).containsKey(m2.getDevOpsCategoryId()))
-                        .map(ToolProfileResponse::new)
+                        .map(
+                                m -> {
+                                    ProjectMemberResponse memberResponse = new ProjectMemberResponse();
+                                    memberResponse.setMemberId(m.getId());
+                                    memberResponse.setMemberName(m.getName());
+                                    memberResponse.setMemberLastName(m.getLastName());
+                                    return memberResponse;
+                                })
                         .collect(Collectors.toList());
 
-                participation.setTools(toolsOfDevOpsCat);
-                return participation;
-            }).collect(Collectors.toList());
-            m.setParticipation(participations);
-        });
+        members.forEach(
+                m -> {
+                    List<MemberParticipationResponse> participations =
+                            project.getMembers().stream()
+                                    .filter(m1 -> m1.getMemberId().equals(m.getMemberId()))
+                                    .map(
+                                            m2 -> {
+                                                MemberParticipationResponse participation =
+                                                        new MemberParticipationResponse();
+                                                participation.setDevopsCategoryName(
+                                                        m2.getDevOpsCategories().getDescription());
+
+                                                List<ToolProfileResponse> toolsOfDevOpsCat =
+                                                        m2.getMember().getToolProfile().stream()
+                                                                .filter(
+                                                                        toolProfile ->
+                                                                                toolProfile.getTool().getSubcategories().stream()
+                                                                                        .collect(
+                                                                                                Collectors.groupingBy(
+                                                                                                        sub -> sub.getDevOpsCategory().getId()))
+                                                                                        .containsKey(m2.getDevOpsCategoryId()))
+                                                                .map(ToolProfileResponse::new)
+                                                                .collect(Collectors.toList());
+
+                                                participation.setTools(toolsOfDevOpsCat);
+                                                return participation;
+                                            })
+                                    .collect(Collectors.toList());
+                    m.setParticipation(participations);
+                });
 
         response.setMembers(members);
         return response;
@@ -139,25 +168,32 @@ public class ProjectServiceImpl implements ProjectService {
         List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAll();
         List<Member> members = memberRepository.findAllByCompanyId(companyId);
         ModelMapper modelMapper = new ModelMapper();
-        List<ProjectMemberRecommendation> recommendations = devOpsCategories.stream().map(d -> modelMapper.map(d, ProjectMemberRecommendation.class)).collect(Collectors.toList());
+        List<ProjectMemberRecommendation> recommendations =
+                devOpsCategories.stream()
+                        .map(d -> modelMapper.map(d, ProjectMemberRecommendation.class))
+                        .collect(Collectors.toList());
 
-        //TODO optimizar este código desde una query en la base de datos!
-        recommendations.forEach(r -> {
-            List<MemberResponse> membersRecommendation = members
-                    .stream()
-                    .filter(m -> m.getToolProfile()
-                            .stream()
-                            .anyMatch(toolProfile -> toolProfile
-                                    .getTool()
-                                    .getSubcategories()
-                                    .stream()
-                                    .anyMatch(sub -> sub.getDevOpsCategory().getId().equals(r.getDevOpsCategoryId()))
-                            ))
-                    .map(m->new MemberResponse(m, BASE_IMAGE_URL))
-                    .collect(Collectors.toList());
+        // TODO optimizar este código desde una query en la base de datos!
+        recommendations.forEach(
+                r -> {
+                    List<MemberResponse> membersRecommendation =
+                            members.stream()
+                                    .filter(
+                                            m ->
+                                                    m.getToolProfile().stream()
+                                                            .anyMatch(
+                                                                    toolProfile ->
+                                                                            toolProfile.getTool().getSubcategories().stream()
+                                                                                    .anyMatch(
+                                                                                            sub ->
+                                                                                                    sub.getDevOpsCategory()
+                                                                                                            .getId()
+                                                                                                            .equals(r.getDevOpsCategoryId()))))
+                                    .map(m -> new MemberResponse(m, BASE_IMAGE_URL))
+                                    .collect(Collectors.toList());
 
-            r.setMembersRecommendation(membersRecommendation);
-        });
+                    r.setMembersRecommendation(membersRecommendation);
+                });
 
         return recommendations;
     }

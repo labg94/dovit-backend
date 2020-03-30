@@ -9,8 +9,7 @@ import java.util.List;
 
 public interface MemberService {
 
-
-    Member save(MemberRequest member);
+  Member save(MemberRequest member);
 
     MemberResponse findById(Long memberId) throws ResourceNotFoundException;
 

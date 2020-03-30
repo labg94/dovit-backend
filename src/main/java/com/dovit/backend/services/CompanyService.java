@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface CompanyService {
 
-    Company findById(Long id);
+  Company findById(Long id);
 
     CompanyResponse findCompanyResponseById(Long id);
 
@@ -21,5 +21,4 @@ public interface CompanyService {
     Company createCompany(CompanyRequest companyRequest);
 
     Company updateCompany(CompanyRequest companyRequest);
-
 }

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
  * @author Ramón París
  * @since 08-12-2019
  */
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -19,7 +18,7 @@ public class ProfileResponse {
     private String desc;
 
     public ProfileResponse(Profile profile) {
-        this.id =  profile.getId();
+        this.id = profile.getId();
         this.desc = profile.getDescription();
     }
 }

@@ -5,7 +5,6 @@ import com.dovit.backend.model.requests.AuthRequest;
 import com.dovit.backend.model.requests.RegisterTokenRequest;
 import com.dovit.backend.model.requests.SignUpRequest;
 import com.dovit.backend.model.responses.AuthResponse;
-import com.dovit.backend.model.responses.RegisterTokenResponse;
 
 /**
  * @author Ramón París
@@ -13,10 +12,9 @@ import com.dovit.backend.model.responses.RegisterTokenResponse;
  */
 public interface AuthService {
 
-    AuthResponse authenticateUser(AuthRequest authRequest);
+  AuthResponse authenticateUser(AuthRequest authRequest);
 
     User registerUser(SignUpRequest signUpRequest);
 
     RegisterTokenRequest getRegisterTokenInfo(String token);
-
 }

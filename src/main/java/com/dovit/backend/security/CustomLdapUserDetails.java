@@ -1,9 +1,6 @@
 package com.dovit.backend.security;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
@@ -14,7 +11,6 @@ import java.util.Collection;
  * @author Ramón París
  * @since 07-12-2019
  */
-
 @Data
 public class CustomLdapUserDetails implements UserDetails {
 

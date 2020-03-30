@@ -19,5 +19,4 @@ public class CompanyRequest {
 
     @NotEmpty(message = "Nombre de empresa no puede estar vacío")
     private String name;
-
 }

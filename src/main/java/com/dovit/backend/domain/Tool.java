@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * IT Tools that solve a certain problem. Example: Jenkins, Gitlab, Github, JMeter, ....
+ *
  * @author Ramón París
  * @since 29-09-2019
  */
@@ -41,8 +41,6 @@ public class Tool {
             inverseJoinColumns = @JoinColumn(name = "subcategory_id"))
     private List<DevOpsSubcategory> subcategories;
 
-
     @OneToMany(mappedBy = "tool")
     private List<ToolProfile> toolProfile;
-
 }

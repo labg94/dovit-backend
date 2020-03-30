@@ -23,5 +23,4 @@ public class LicenseDTO {
     private Long licenseTypeId;
     private String licenseTypeDesc;
     private List<LicensePricingResponse> licensePricing;
-
 }

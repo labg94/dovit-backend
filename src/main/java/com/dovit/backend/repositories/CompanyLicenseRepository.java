@@ -11,6 +11,5 @@ import java.util.List;
  */
 public interface CompanyLicenseRepository extends JpaRepository<CompanyLicense, Long> {
 
-    List<CompanyLicense> findAllByCompanyIdAndLicenseToolId(Long companyId, Long toolId);
-
+  List<CompanyLicense> findAllByCompanyIdAndLicenseToolId(Long companyId, Long toolId);
 }

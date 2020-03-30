@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * User's roles.
+ *
  * @author Ramón París
  * @since 01-10-2019
  */
@@ -17,7 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="roles")
+@Table(name = "roles")
 public class Role {
 
     @Id
@@ -28,6 +29,4 @@ public class Role {
 
     @OneToMany(mappedBy = "role")
     private List<User> users;
-
-
 }

@@ -1,16 +1,16 @@
 package com.dovit.backend.model.requests;
 
-import com.dovit.backend.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.*;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 /**
  * This class is for the sign up of the client only
+ *
  * @author Ramón París
  * @since 02-10-2019
  */
@@ -31,7 +31,4 @@ public class SignUpRequest {
     @NotBlank(message = "Password no debe estar vacío")
     @Size(message = "Contraseña inválida", min = 6, max = 20)
     private String password;
-
-
-
 }

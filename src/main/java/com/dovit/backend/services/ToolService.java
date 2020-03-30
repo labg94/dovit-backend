@@ -11,12 +11,11 @@ import java.util.List;
  */
 public interface ToolService {
 
-    List<ToolResponse> findAllToolsOfCompany(Long companyId);
+  List<ToolResponse> findAllToolsOfCompany(Long companyId);
 
-    List<DevopsCategoryResponse> findAllToolsGroupedByCats();
+  List<DevopsCategoryResponse> findAllToolsGroupedByCats();
 
-    List<ToolResponse> findAllTools();
+  List<ToolResponse> findAllTools();
 
-    ToolResponse findById(Long toolId);
-
+  ToolResponse findById(Long toolId);
 }

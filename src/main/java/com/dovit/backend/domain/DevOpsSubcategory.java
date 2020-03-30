@@ -9,7 +9,9 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
- * Subarea that this tool is part. Example: Issue Tracking, Kanban Dashboards, Repository, Automatized test, ....
+ * Subarea that this tool is part. Example: Issue Tracking, Kanban Dashboards, Repository,
+ * Automatized test, ....
+ *
  * @author Ramón París
  * @since 01-10-2019
  */
@@ -34,5 +36,4 @@ public class DevOpsSubcategory {
     @ManyToOne
     @JoinColumn(nullable = false, name = "devops_category_id")
     private DevOpsCategory devOpsCategory;
-
 }

@@ -12,7 +12,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -21,7 +20,7 @@ import java.util.List;
  * @since 09-12-2019
  */
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN","ROLE_CLIENT"})
+@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RestController
@@ -30,42 +29,45 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/company/{companyId}/projects")
-    public List<ProjectResponse> findAllByCompanyId(@PathVariable Long companyId){
+    public List<ProjectResponse> findAllByCompanyId(@PathVariable Long companyId) {
         return projectService.findAllByCompanyId(companyId);
     }
 
     @GetMapping("/project/{projectId}")
-    public ProjectResponse findByProjectId(@PathVariable Long projectId){
+    public ProjectResponse findByProjectId(@PathVariable Long projectId) {
         return projectService.findByProjectId(projectId);
     }
 
     @GetMapping("/company/{companyId}/project/availableMembers")
-    public List<ProjectMemberRecommendation> getMembersRecommendation(@PathVariable Long companyId){
+    public List<ProjectMemberRecommendation> getMembersRecommendation(@PathVariable Long companyId) {
         return projectService.findMemberRecommendation(companyId);
     }
 
     @PostMapping("/project")
-    public ResponseEntity<?> createProject(@RequestBody ProjectRequest request){
+    public ResponseEntity<?> createProject(@RequestBody ProjectRequest request) {
         Project response = projectService.saveProject(request);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(response.getId()).toUri();
+        URI location =
+                ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(response.getId())
+                        .toUri();
 
-        return ResponseEntity.created(location).body(new ApiResponse(true, "Project created successfully"));
-
+        return ResponseEntity.created(location)
+                .body(new ApiResponse(true, "Project created successfully"));
     }
 
     @PutMapping("/project")
-    public ResponseEntity<?> updateProject(@RequestBody ProjectRequest request){
+    public ResponseEntity<?> updateProject(@RequestBody ProjectRequest request) {
         Project response = projectService.updateProject(request);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(response.getId()).toUri();
+        URI location =
+                ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(response.getId())
+                        .toUri();
 
-        return ResponseEntity.created(location).body(new ApiResponse(true, "Project updated successfully"));
-
+        return ResponseEntity.created(location)
+                .body(new ApiResponse(true, "Project updated successfully"));
     }
-
 }

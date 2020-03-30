@@ -14,16 +14,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ToolProfileResponse extends ToolResponse{
+public class ToolProfileResponse extends ToolResponse {
 
-    private Long levelId;
-    private String levelDesc;
+  private Long levelId;
+  private String levelDesc;
 
-    public ToolProfileResponse(ToolProfile toolProfile) {
-        this.setToolId(toolProfile.getToolId());
-        this.setToolName(toolProfile.getTool().getName());
-        this.setUrlImg(toolProfile.getTool().getImageUrl());
-        this.levelId = toolProfile.getLevelId();
-        this.levelDesc = toolProfile.getLevel().getDescription();
-    }
+  public ToolProfileResponse(ToolProfile toolProfile) {
+    this.setToolId(toolProfile.getToolId());
+    this.setToolName(toolProfile.getTool().getName());
+    this.setUrlImg(toolProfile.getTool().getImageUrl());
+    this.levelId = toolProfile.getLevelId();
+    this.levelDesc = toolProfile.getLevel().getDescription();
+  }
 }

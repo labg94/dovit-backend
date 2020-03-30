@@ -5,7 +5,4 @@ package com.dovit.backend.model.responses;
  * @since 15-10-2019
  */
 public class LicenseResponse {
-
-
-
 }

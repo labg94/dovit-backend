@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@Secured({"ROLE_ADMIN","ROLE_CLIENT"})
+@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
 @CrossOrigin(origins = "*")
 public class MemberController {
 
@@ -35,28 +35,30 @@ public class MemberController {
     }
 
     @PostMapping("/member")
-    public ResponseEntity<?> addMember(@Valid @RequestBody MemberRequest member){
+    public ResponseEntity<?> addMember(@Valid @RequestBody MemberRequest member) {
         Member response = memberService.save(member);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(response.getId()).toUri();
+        URI location =
+                ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(response.getId())
+                        .toUri();
 
-        return ResponseEntity.created(location).body(new ApiResponse(true, "Member created successfully"));
+        return ResponseEntity.created(location)
+                .body(new ApiResponse(true, "Member created successfully"));
     }
 
     @PutMapping("/member")
-    public ResponseEntity<?> updateMember(@Valid @RequestBody MemberRequest request){
+    public ResponseEntity<?> updateMember(@Valid @RequestBody MemberRequest request) {
         Member response = memberService.update(request);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(response.getId()).toUri();
+        URI location =
+                ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(response.getId())
+                        .toUri();
 
-        return ResponseEntity.created(location).body(new ApiResponse(true, "Member updated successfully"));
+        return ResponseEntity.created(location)
+                .body(new ApiResponse(true, "Member updated successfully"));
     }
-
-
-
-
 }

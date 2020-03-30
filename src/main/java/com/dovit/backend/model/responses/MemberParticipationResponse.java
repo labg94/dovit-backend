@@ -17,5 +17,4 @@ public class MemberParticipationResponse {
 
     private List<ToolProfileResponse> tools;
     private String devopsCategoryName;
-
 }

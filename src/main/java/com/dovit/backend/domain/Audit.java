@@ -18,7 +18,7 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TypeDef(name="jsonb", typeClass = JsonBinaryType.class)
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Audit {
 
     @Id
@@ -40,6 +40,4 @@ public class Audit {
     private Object data;
 
     private String databaseUser;
-
-
 }

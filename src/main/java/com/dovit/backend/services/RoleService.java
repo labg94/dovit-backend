@@ -7,5 +7,5 @@ import com.dovit.backend.domain.Role;
  * @since 02-10-2019
  */
 public interface RoleService {
-    Role findById(Long id);
+  Role findById(Long id);
 }

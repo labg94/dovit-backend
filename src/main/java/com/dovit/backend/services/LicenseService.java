@@ -2,8 +2,6 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.domain.License;
 import com.dovit.backend.model.LicenseDTO;
-import com.dovit.backend.model.responses.CompanyLicensesResponse;
-import com.dovit.backend.model.responses.LicenseResponse;
 
 import java.util.List;
 
@@ -13,12 +11,7 @@ import java.util.List;
  */
 public interface LicenseService {
 
-    License findById(Long licenseId);
+  License findById(Long licenseId);
 
     List<LicenseDTO> findAllByToolId(Long toolId);
-
-
-
-
-
 }
