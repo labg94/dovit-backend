@@ -1,15 +1,13 @@
 package com.dovit.backend.controllers;
 
-import com.dovit.backend.model.responses.ProfileResponse;
 import com.dovit.backend.services.ProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @author Ramón París
@@ -22,10 +20,10 @@ import java.util.List;
 @RestController
 public class ProfileController {
 
-    private final ProfileService profileService;
+  private final ProfileService profileService;
 
-    @GetMapping("/profiles")
-    public List<ProfileResponse> findAll() {
-        return profileService.findAll();
-    }
+  @GetMapping("/profiles")
+  public ResponseEntity<?> findAll() {
+    return ResponseEntity.ok(profileService.findAll());
+  }
 }

@@ -1,6 +1,7 @@
 package com.dovit.backend.model.requests;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,18 +18,19 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SignUpRequest {
 
-    @NotEmpty(message = "Token no debe estar vacío")
-    private String registrationToken;
+  @NotEmpty(message = "Token no debe estar vacío")
+  private String registrationToken;
 
-    @NotBlank(message = "Nombre no debe estar vacío")
-    private String name;
+  @NotBlank(message = "Nombre no debe estar vacío")
+  private String name;
 
-    @NotBlank(message = "Apellido no debe estar vacío")
-    private String lastName;
+  @NotBlank(message = "Apellido no debe estar vacío")
+  private String lastName;
 
-    @NotBlank(message = "Password no debe estar vacío")
-    @Size(message = "Contraseña inválida", min = 6, max = 20)
-    private String password;
+  @NotBlank(message = "Password no debe estar vacío")
+  @Size(message = "Contraseña inválida", min = 6, max = 20)
+  private String password;
 }

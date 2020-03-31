@@ -1,6 +1,7 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,25 +21,25 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "companies")
+@Builder
 public class Company {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "company_id")
+  private Long id;
 
-    @NotEmpty
-    private String name;
+  @NotEmpty private String name;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CompanyLicense> licenses;
+  @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<CompanyLicense> licenses;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<User> users;
+  @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<User> users;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Member> members;
+  @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Member> members;
 
-    @OneToMany(mappedBy = "company")
-    private Collection<Project> projects;
+  @OneToMany(mappedBy = "company")
+  private Collection<Project> projects;
 }

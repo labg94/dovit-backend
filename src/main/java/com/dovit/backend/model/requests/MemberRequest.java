@@ -1,6 +1,7 @@
 package com.dovit.backend.model.requests;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,12 +12,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class MemberRequest {
 
   private long id;
 
-  @NotNull
-  private long companyId;
+  @NotNull private long companyId;
 
   @NotBlank private String name;
 

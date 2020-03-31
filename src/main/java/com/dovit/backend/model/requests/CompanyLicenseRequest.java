@@ -1,6 +1,7 @@
 package com.dovit.backend.model.requests;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,18 +15,19 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CompanyLicenseRequest {
 
-    private Long id;
+  private Long id;
 
-    @NotNull(message = "Debe seleccionar una empresa")
-    private Long companyId;
+  @NotNull(message = "Debe seleccionar una empresa")
+  private Long companyId;
 
-    @NotNull(message = "Debe seleccionar una licencia")
-    private Long licenseId;
+  @NotNull(message = "Debe seleccionar una licencia")
+  private Long licenseId;
 
-    @NotNull(message = "Seleccione una fecha de inicio")
-    private Date startDate;
+  //  @NotNull(message = "Seleccione una fecha de inicio")
+  private Date startDate;
 
-    private Date expirationDate;
+  private Date expirationDate;
 }

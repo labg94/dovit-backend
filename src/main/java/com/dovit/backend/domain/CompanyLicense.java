@@ -1,6 +1,7 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,23 +19,24 @@ import java.time.Instant;
 @AllArgsConstructor
 @Entity
 @Table(name = "company_licenses")
+@Builder
 public class CompanyLicense {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_license_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "company_license_id")
+  private Long id;
 
-    @Column(nullable = false)
-    private Instant startDate;
+  @Column(nullable = false)
+  private Instant startDate;
 
-    private Instant expirationDate;
+  private Instant expirationDate;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+  @ManyToOne
+  @JoinColumn(name = "company_id")
+  private Company company;
 
-    @ManyToOne
-    @JoinColumn(name = "license_id")
-    private License license;
+  @ManyToOne
+  @JoinColumn(name = "license_id")
+  private License license;
 }

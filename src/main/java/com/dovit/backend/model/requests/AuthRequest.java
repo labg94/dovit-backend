@@ -1,6 +1,7 @@
 package com.dovit.backend.model.requests;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,12 +16,13 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AuthRequest {
 
-    @NotEmpty(message = "Email no puede estar vacío")
-    //    @Email
-    private String email;
+  @NotEmpty(message = "Email no puede estar vacío")
+  //    @Email
+  private String email;
 
-    @NotEmpty(message = "Contraseña no puede estar vacío")
-    private String password;
+  @NotEmpty(message = "Contraseña no puede estar vacío")
+  private String password;
 }

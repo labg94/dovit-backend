@@ -1,13 +1,10 @@
 package com.dovit.backend.controllers;
 
-import com.dovit.backend.model.responses.DevopsCategoryResponse;
-import com.dovit.backend.model.responses.ToolResponse;
 import com.dovit.backend.services.ToolService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Controller to show the TOOLS in different ways
@@ -22,25 +19,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ToolController {
 
-    private final ToolService toolService;
+  private final ToolService toolService;
 
-    @GetMapping("/tools")
-    public List<ToolResponse> findAll() {
-        return toolService.findAllTools();
-    }
+  @GetMapping("/tools")
+  public ResponseEntity<?> findAll() {
+    return ResponseEntity.ok(toolService.findAllTools());
+  }
 
-    @GetMapping("/tools/categories")
-    public List<DevopsCategoryResponse> findAllToolsGroupedBy() {
-        return toolService.findAllToolsGroupedByCats();
-    }
+  @GetMapping("/tools/categories")
+  public ResponseEntity<?> findAllToolsGroupedBy() {
+    return ResponseEntity.ok(toolService.findAllToolsGroupedByCats());
+  }
 
-    @GetMapping("/company/{companyId}/tools")
-    public List<ToolResponse> findAllToolsByCompany(@PathVariable Long companyId) {
-        return toolService.findAllToolsOfCompany(companyId);
-    }
+  @GetMapping("/company/{companyId}/tools")
+  public ResponseEntity<?> findAllToolsByCompany(@PathVariable Long companyId) {
+    return ResponseEntity.ok(toolService.findAllToolsOfCompany(companyId));
+  }
 
-    @GetMapping("/tool/{toolId}")
-    public ToolResponse findById(@PathVariable Long toolId) {
-        return toolService.findById(toolId);
-    }
+  @GetMapping("/tool/{toolId}")
+  public ResponseEntity<?> findById(@PathVariable Long toolId) {
+    return ResponseEntity.ok(toolService.findById(toolId));
+  }
 }

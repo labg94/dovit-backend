@@ -1,10 +1,7 @@
 package com.dovit.backend.domain;
 
 import com.dovit.backend.domain.audit.DateAudit;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -25,6 +22,7 @@ import java.util.List;
     uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User extends DateAudit {
 
   @Id

@@ -1,6 +1,7 @@
 package com.dovit.backend.model.requests;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,13 +15,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ProjectRequest {
 
-    private Long id;
-    private String name;
-    private Date start;
-    private String observation;
-    private Long companyId;
-    private Boolean finished;
-    private List<ProjectMemberRequest> members;
+  private Long id;
+  private String name;
+  private Date start;
+  private String observation;
+  private Long companyId;
+  private Boolean finished;
+  private List<ProjectMemberRequest> members;
 }
