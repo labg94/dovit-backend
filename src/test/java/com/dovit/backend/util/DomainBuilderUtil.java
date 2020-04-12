@@ -10,6 +10,10 @@ import java.time.LocalDate;
  */
 public class DomainBuilderUtil {
 
+  public static Role role = Role.builder().id(1L).name(RoleName.ROLE_ADMIN).build();
+  public static Profile profile = Profile.builder().id(1L).description("Backend Developer").build();
+  public static Level level = Level.builder().levelId(1L).description("Senior").build();
+
   public static Tool tool = Tool.builder().id(1L).imageUrl("/url").name("Gitlab").build();
 
   public static LicenseType licenseType =

@@ -70,11 +70,12 @@ class CompanyLicenseServiceImplTest {
   @Test
   void updateCompanyLicense_OK() {
     when(companyLicenseRepository.findById(anyLong())).thenReturn(Optional.of(companyLicense));
-    when(companyLicenseRepository.save(any())).thenReturn(companyLicense);
-
+    when(companyLicenseRepository.save(any())).thenAnswer(i -> i.getArgument(0));
     CompanyLicense response = companyLicenseService.updateCompanyLicense(companyLicenseRequest);
 
     assertNotNull(response);
+    assertEquals(response.getExpirationDate(), companyLicenseRequest.getExpirationDate());
+    assertEquals(response.getStartDate(), companyLicenseRequest.getStartDate());
   }
 
   @Test

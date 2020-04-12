@@ -1,6 +1,7 @@
 package com.dovit.backend.util;
 
 import com.dovit.backend.model.requests.CompanyLicenseRequest;
+import com.dovit.backend.model.requests.CompanyRequest;
 
 import java.time.LocalDate;
 
@@ -19,4 +20,7 @@ public class RequestBuilderUtil {
           .startDate(LocalDate.now())
           .expirationDate(LocalDate.now())
           .build();
+
+  public static CompanyRequest companyRequest =
+      CompanyRequest.builder().id(1L).name("RetailSBS").build();
 }

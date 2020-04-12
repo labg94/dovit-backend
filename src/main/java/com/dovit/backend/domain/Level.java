@@ -1,6 +1,7 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,14 +15,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Level {
 
-    @Id
-    @Column(name = "level_id")
-    private Long levelId;
+  @Id
+  @Column(name = "level_id")
+  private Long levelId;
 
-    private String description;
+  private String description;
 
-    @OneToMany(mappedBy = "level")
-    private List<ToolProfile> toolProfile;
+  @OneToMany(mappedBy = "level")
+  private List<ToolProfile> toolProfile;
 }

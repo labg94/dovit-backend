@@ -15,11 +15,11 @@ public interface ProjectService {
 
   Project saveProject(ProjectRequest request);
 
-    List<ProjectResponse> findAllByCompanyId(Long companyId);
+  List<ProjectResponse> findAllByCompanyId(Long companyId);
 
-    ProjectResponse findByProjectId(Long projectId);
+  ProjectResponse findByProjectId(Long projectId);
 
-    Project updateProject(ProjectRequest request);
+  Project updateProject(ProjectRequest request);
 
-    List<ProjectMemberRecommendation> findMemberRecommendation(Long companyId);
+  List<ProjectMemberRecommendation> findMemberRecommendation(Long companyId);
 }

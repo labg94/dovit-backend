@@ -1,7 +1,6 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.License;
-import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.responses.LicenseResponse;
 import com.dovit.backend.repositories.LicenseRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +29,5 @@ public class LicenseServiceImpl implements LicenseService {
     return licenses.stream()
         .map(l -> modelMapper.map(l, LicenseResponse.class))
         .collect(Collectors.toList());
-  }
-
-  @Override
-  public License findById(Long licenseId) {
-    return licenseRepository
-        .findById(licenseId)
-        .orElseThrow(() -> new ResourceNotFoundException("License", "id", licenseId));
   }
 }
