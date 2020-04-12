@@ -1,11 +1,17 @@
 package com.dovit.backend.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.MultiValueMap;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,6 +21,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 30-03-20
  */
 public class TestUtils {
+
+  private static Gson gson =
+      new GsonBuilder()
+          .registerTypeAdapter(
+              LocalDate.class,
+              (JsonSerializer<LocalDate>)
+                  (date, type, jsonSerializationContext) ->
+                      new JsonPrimitive(date.format(DateTimeFormatter.ISO_LOCAL_DATE)))
+          .create();
 
   public static void testGetRequest(
       MockMvc mockMvc, String endpoint, MultiValueMap<String, String> params) {
@@ -47,7 +62,7 @@ public class TestUtils {
   }
 
   public static void testPostRequest(MockMvc mockMvc, String endpoint, Object requestObject) {
-    String request = new Gson().toJson(requestObject);
+    String request = gson.toJson(requestObject);
     MvcResult mvcResult;
     try {
       mvcResult =
@@ -65,7 +80,7 @@ public class TestUtils {
   }
 
   public static void testPutRequest(MockMvc mockMvc, String endpoint, Object requestObject) {
-    String request = new Gson().toJson(requestObject);
+    String request = gson.toJson(requestObject);
     MvcResult mvcResult;
     try {
       mvcResult =

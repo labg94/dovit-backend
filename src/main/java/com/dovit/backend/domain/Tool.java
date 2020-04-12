@@ -33,7 +33,7 @@ public class Tool {
   @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<License> licenses;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany
   @JoinTable(
       name = "tool_subcategory",
       joinColumns = @JoinColumn(name = "tool_id"),

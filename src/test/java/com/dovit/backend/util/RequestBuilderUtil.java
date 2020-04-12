@@ -16,7 +16,6 @@ public class RequestBuilderUtil {
           .id(1L)
           .licenseId(1L)
           .companyId(1L)
-          .companyId(1L)
           .startDate(LocalDate.now())
           .expirationDate(LocalDate.now())
           .build();

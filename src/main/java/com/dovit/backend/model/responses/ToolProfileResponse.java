@@ -22,7 +22,7 @@ public class ToolProfileResponse extends ToolResponse {
   public ToolProfileResponse(ToolProfile toolProfile) {
     this.setToolId(toolProfile.getToolId());
     this.setToolName(toolProfile.getTool().getName());
-    this.setUrlImg(toolProfile.getTool().getImageUrl());
+    this.setImageUrl(toolProfile.getTool().getImageUrl());
     this.levelId = toolProfile.getLevelId();
     this.levelDesc = toolProfile.getLevel().getDescription();
   }

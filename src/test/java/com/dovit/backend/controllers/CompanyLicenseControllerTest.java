@@ -3,6 +3,8 @@ package com.dovit.backend.controllers;
 import com.dovit.backend.domain.CompanyLicense;
 import com.dovit.backend.model.requests.CompanyLicenseRequest;
 import com.dovit.backend.services.CompanyLicenseServiceImpl;
+import com.dovit.backend.util.DomainBuilderUtil;
+import com.dovit.backend.util.RequestBuilderUtil;
 import com.dovit.backend.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,10 +36,9 @@ class CompanyLicenseControllerTest {
   @Mock CompanyLicenseServiceImpl companyService;
   private MockMvc mockMvc;
 
-  private CompanyLicenseRequest companyLicenseRequest =
-      CompanyLicenseRequest.builder().companyId(1L).licenseId(1L).build();
+  private CompanyLicenseRequest companyLicenseRequest = RequestBuilderUtil.companyLicenseRequest;
 
-  private CompanyLicense companyLicense = CompanyLicense.builder().id(1L).build();
+  private CompanyLicense companyLicense = DomainBuilderUtil.companyLicense;
 
   @BeforeEach
   void setUp() {
@@ -60,15 +61,15 @@ class CompanyLicenseControllerTest {
   @Test
   void createCompanyLicense() {
     Mockito.when(companyService.createCompanyLicense(any(CompanyLicenseRequest.class)))
-        .thenReturn(this.companyLicense);
-    TestUtils.testPostRequest(mockMvc, "/company/license", this.companyLicenseRequest);
+        .thenReturn(companyLicense);
+    TestUtils.testPostRequest(mockMvc, "/company/license", companyLicenseRequest);
   }
 
   @Test
   void updateCompanyLicense() {
     Mockito.when(companyService.updateCompanyLicense(any(CompanyLicenseRequest.class)))
-        .thenReturn(this.companyLicense);
-    TestUtils.testPutRequest(mockMvc, "/company/license", this.companyLicenseRequest);
+        .thenReturn(companyLicense);
+    TestUtils.testPutRequest(mockMvc, "/company/license", companyLicenseRequest);
   }
 
   @Test

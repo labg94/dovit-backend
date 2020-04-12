@@ -1,6 +1,7 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,18 +22,18 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name = "devops_categories")
+@Builder
 public class DevOpsCategory {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @NotEmpty
-    private String description;
+  @NotEmpty private String description;
 
-    @OneToMany(mappedBy = "devOpsCategory", fetch = FetchType.EAGER)
-    private List<DevOpsSubcategory> subcategories;
+  @OneToMany(mappedBy = "devOpsCategory")
+  private List<DevOpsSubcategory> subcategories;
 
-    @OneToMany(mappedBy = "devOpsCategories")
-    private List<ProjectMember> projectMembers;
+  @OneToMany(mappedBy = "devOpsCategories")
+  private List<ProjectMember> projectMembers;
 }

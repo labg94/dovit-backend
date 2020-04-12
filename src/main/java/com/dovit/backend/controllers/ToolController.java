@@ -26,11 +26,6 @@ public class ToolController {
     return ResponseEntity.ok(toolService.findAllTools());
   }
 
-  @GetMapping("/tools/categories")
-  public ResponseEntity<?> findAllToolsGroupedBy() {
-    return ResponseEntity.ok(toolService.findAllToolsGroupedByCats());
-  }
-
   @GetMapping("/company/{companyId}/tools")
   public ResponseEntity<?> findAllToolsByCompany(@PathVariable Long companyId) {
     return ResponseEntity.ok(toolService.findAllToolsOfCompany(companyId));

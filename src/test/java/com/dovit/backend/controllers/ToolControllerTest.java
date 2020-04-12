@@ -40,12 +40,6 @@ class ToolControllerTest {
   }
 
   @Test
-  void findAllToolsGroupedBy() {
-    Mockito.when(toolService.findAllToolsGroupedByCats()).thenReturn(new ArrayList<>());
-    TestUtils.testGetRequest(mockMvc, "/tools/categories");
-  }
-
-  @Test
   void findAllToolsByCompany() {
     Mockito.when(toolService.findAllToolsOfCompany(anyLong())).thenReturn(new ArrayList<>());
     TestUtils.testGetRequest(mockMvc, "/company/1/tools");

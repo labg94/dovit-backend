@@ -17,6 +17,6 @@ public class ToolResponse {
 
   private Long toolId;
   private String toolName;
-  private String urlImg;
+  private String imageUrl;
   private List<String> tags;
 }
