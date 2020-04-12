@@ -24,21 +24,21 @@ public class UserRequest {
 
   @Nullable private Long id;
 
-  @NotBlank(message = "Nombre no debe estar vacío")
+  @NotBlank(message = "Name cannot be null")
   private String name;
 
-  @NotBlank(message = "Apellido no debe estar vacío")
+  @NotBlank(message = "Last name cannot be null")
   private String lastName;
 
-  @NotBlank(message = "Correo electrónico no debe estar vacío")
-  @Email
+  @NotBlank(message = "Email cannot be null")
+  @Email(message = "Email does not have a valid format")
   private String email;
 
   private String password;
 
   @NotNull private Boolean active;
 
-  @NotNull(message = "Debe seleccionar al menos un rol")
+  @NotNull(message = "Remember to select at least one role")
   private Long roleId;
 
   private Long companyId;

@@ -21,16 +21,16 @@ import javax.validation.constraints.Size;
 @Builder
 public class SignUpRequest {
 
-  @NotEmpty(message = "Token no debe estar vacío")
+  @NotEmpty(message = "Token cannot be empty")
   private String registrationToken;
 
-  @NotBlank(message = "Nombre no debe estar vacío")
+  @NotBlank(message = "Name cannot be empty")
   private String name;
 
-  @NotBlank(message = "Apellido no debe estar vacío")
+  @NotBlank(message = "Last name cannot be empty")
   private String lastName;
 
-  @NotBlank(message = "Password no debe estar vacío")
-  @Size(message = "Contraseña inválida", min = 6, max = 20)
+  @NotBlank(message = "Password cannot be empty")
+  @Size(message = "Password length must be between 6 and 20 characters.", min = 6, max = 20)
   private String password;
 }

@@ -19,6 +19,6 @@ public class CompanyRequest {
 
   private Long id;
 
-  @NotEmpty(message = "Nombre de empresa no puede estar vacío")
+  @NotEmpty(message = "Company name cannot be empty")
   private String name;
 }

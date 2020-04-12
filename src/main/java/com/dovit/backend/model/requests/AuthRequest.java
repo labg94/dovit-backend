@@ -19,10 +19,10 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class AuthRequest {
 
-  @NotEmpty(message = "Email no puede estar vacío")
+  @NotEmpty(message = "Email cannot be empty")
   //    @Email
   private String email;
 
-  @NotEmpty(message = "Contraseña no puede estar vacío")
+  @NotEmpty(message = "Password cannot be empty")
   private String password;
 }

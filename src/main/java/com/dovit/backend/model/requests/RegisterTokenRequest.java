@@ -22,10 +22,10 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class RegisterTokenRequest {
 
-  @Email
-  @NotEmpty
+  @Email(message = "Email does not have a valid format")
+  @NotEmpty(message = "Email cannot be null")
   private String email;
 
-  @NotNull
+  @NotNull(message = "companyId cannot be null")
   private Long companyId;
 }
