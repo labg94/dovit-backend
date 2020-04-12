@@ -20,6 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "licenses")
 @ToString
+@Builder
 public class License extends DateAudit {
 
   @Id

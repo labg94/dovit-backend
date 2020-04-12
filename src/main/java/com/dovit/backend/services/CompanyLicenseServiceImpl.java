@@ -7,6 +7,7 @@ import com.dovit.backend.model.responses.CompanyLicensesResponse;
 import com.dovit.backend.repositories.CompanyLicenseRepository;
 import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +21,10 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CompanyLicenseServiceImpl implements CompanyLicenseService {
 
   private final CompanyLicenseRepository companyLicenseRepository;
-  private final CompanyService companyService;
-  private final LicenseService licenseService;
   private final ValidatorUtil validatorUtil;
   private final ModelMapper modelMapper;
 
@@ -45,6 +45,11 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
     validatorUtil.canActOnCompany(request.getCompanyId());
     CompanyLicense companyLicense = modelMapper.map(request, CompanyLicense.class);
     companyLicense = companyLicenseRepository.save(companyLicense);
+    log.info(
+        "License {} associated to company {}. ID: {}",
+        request.getLicenseId(),
+        request.getCompanyId(),
+        companyLicense.getId());
     return companyLicense;
   }
 
@@ -56,13 +61,11 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
             .findById(request.getId())
             .orElseThrow(
                 () -> new ResourceNotFoundException("CompanyLicense", "id", request.getId()));
-    //    companyLicense.setStartDate(request.getStartDate().toInstant());
-    if (request.getExpirationDate() != null) {
-      //      companyLicense.setExpirationDate(request.getExpirationDate().toInstant());
-    } else {
-      companyLicense.setExpirationDate(null);
-    }
+
+    companyLicense.setStartDate(request.getStartDate());
+    companyLicense.setExpirationDate(request.getExpirationDate());
     companyLicense = companyLicenseRepository.save(companyLicense);
+    log.info("CompanyLicense {} updated", companyLicense.getId());
     return companyLicense;
   }
 
@@ -75,6 +78,7 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
                 () -> new ResourceNotFoundException("CompanyLicense", "id", companyLicenseId));
     validatorUtil.canActOnCompany(companyLicense.getCompany().getId());
     companyLicenseRepository.delete(companyLicense);
+    log.info("CompanyLicense {} deleted", companyLicense.getId());
     return true;
   }
 }

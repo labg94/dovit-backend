@@ -8,7 +8,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * @author Ramón París
@@ -32,5 +31,5 @@ public class CompanyLicenseRequest {
   @NotNull(message = "Remember to select a start date")
   private LocalDate startDate;
 
-  private LocalDateTime expirationDate;
+  private LocalDate expirationDate;
 }

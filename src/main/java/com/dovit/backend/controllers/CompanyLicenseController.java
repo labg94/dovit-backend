@@ -54,7 +54,7 @@ public class CompanyLicenseController {
   }
 
   @PutMapping("/company/license")
-  public ResponseEntity<?> updateCompanyLicense(@RequestBody CompanyLicenseRequest request) {
+  public ResponseEntity<?> updateCompanyLicense(@RequestBody @Valid CompanyLicenseRequest request) {
     CompanyLicense response = companyLicenseService.updateCompanyLicense(request);
 
     URI location =
