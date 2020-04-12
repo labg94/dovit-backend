@@ -8,7 +8,7 @@ import com.dovit.backend.model.responses.DevopsCategoryResponse;
 import com.dovit.backend.model.responses.ToolResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.ToolRepository;
-import com.dovit.backend.util.ModelMapper;
+import com.dovit.backend.util.ModelMapperUtil;
 import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,20 +38,20 @@ public class ToolServiceImpl implements ToolService {
   public List<ToolResponse> findAllToolsOfCompany(Long companyId) {
     validatorUtil.canActOnCompany(companyId);
     List<Tool> tools = toolRepository.findAllByCompanyId(companyId);
-    return ModelMapper.mapToolToResponse(tools, BASE_IMAGE_URL);
+    return ModelMapperUtil.mapToolToResponse(tools, BASE_IMAGE_URL);
   }
 
   @Override
   @Transactional
   public List<DevopsCategoryResponse> findAllToolsGroupedByCats() {
     List<DevOpsCategory> categories = devOpsCategoryRepository.findAll();
-    return ModelMapper.mapDevOpsCategoryToResponse(categories, BASE_IMAGE_URL);
+    return ModelMapperUtil.mapDevOpsCategoryToResponse(categories, BASE_IMAGE_URL);
   }
 
   @Override
   public List<ToolResponse> findAllTools() {
     List<Tool> tools = toolRepository.findAll();
-    return ModelMapper.mapToolToResponse(tools, BASE_IMAGE_URL);
+    return ModelMapperUtil.mapToolToResponse(tools, BASE_IMAGE_URL);
   }
 
   @Override

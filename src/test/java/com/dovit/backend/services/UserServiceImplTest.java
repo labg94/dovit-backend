@@ -7,7 +7,6 @@ import com.dovit.backend.model.responses.UserResponse;
 import com.dovit.backend.repositories.UserRepository;
 import com.dovit.backend.security.JwtTokenProvider;
 import com.dovit.backend.util.ValidatorUtil;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,9 +49,6 @@ class UserServiceImplTest {
   private Page<User> pages;
   private UserRequest admin = UserRequest.builder().id(1L).roleId(1L).password("12345678").build();
   private UserRequest client = UserRequest.builder().id(1L).companyId(1L).roleId(2L).build();
-
-  @BeforeEach
-  void setUp() {}
 
   @Test
   void findAllAdmins() {

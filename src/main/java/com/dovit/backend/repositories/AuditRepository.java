@@ -11,10 +11,11 @@ import org.springframework.data.repository.query.Param;
  */
 public interface AuditRepository extends JpaRepository<Audit, Long> {
 
-    @Procedure("registerAudit")
-    Boolean registerAudit(
-            @Param("data") String data,
-            @Param("message") String message,
-            @Param("status") String status,
-            @Param("user_id") Long user_id);
+  @Procedure("registerAudit")
+  Boolean registerAudit(
+      @Param("data") String data,
+      @Param("message") String message,
+      @Param("status") String status,
+      @Param("user_id") Long user_id)
+      throws Exception;
 }

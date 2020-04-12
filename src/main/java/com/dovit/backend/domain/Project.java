@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -27,7 +27,7 @@ public class Project {
 
   @NotBlank private String name;
 
-  private Instant start;
+  private LocalDateTime start;
 
   private String observation;
 

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDate;
 
 /**
  * Licenses that a company have with their initial and expiration date
@@ -28,9 +28,9 @@ public class CompanyLicense {
   private Long id;
 
   @Column(nullable = false)
-  private Instant startDate;
+  private LocalDate startDate;
 
-  private Instant expirationDate;
+  private LocalDate expirationDate;
 
   @ManyToOne
   @JoinColumn(name = "company_id")

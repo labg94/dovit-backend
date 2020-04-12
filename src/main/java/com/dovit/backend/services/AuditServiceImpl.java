@@ -15,18 +15,25 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AuditServiceImpl implements AuditService {
 
-    private final AuditRepository auditRepository;
+  private final AuditRepository auditRepository;
+  private Gson gson = new Gson();
 
-    @Override
-    public void registerAudit(Object data, String message, String status, Long userId) {
-        new Thread(
-                () -> {
-                    try {
-                        auditRepository.registerAudit(new Gson().toJson(data), message, status, userId);
-                    } catch (Exception e) {
-                        log.error("Error al ingresar la siguiente bitácora");
-                    }
-                })
-                .start();
-    }
+  @Override
+  public void registerAudit(Object data, String message, String status, Long userId) {
+    new Thread(
+            () -> {
+              String dataString = gson.toJson(data);
+              try {
+                auditRepository.registerAudit(dataString, message, status, userId);
+              } catch (Exception e) {
+                log.error(
+                    "Error al ingresar la siguiente bitácora: {}. Message: {}. Status: {}. UserId: {}",
+                    dataString,
+                    message,
+                    status,
+                    userId);
+              }
+            })
+        .start();
+  }
 }

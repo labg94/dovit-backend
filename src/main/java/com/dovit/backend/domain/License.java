@@ -1,10 +1,7 @@
 package com.dovit.backend.domain;
 
 import com.dovit.backend.domain.audit.DateAudit;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -22,32 +19,31 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "licenses")
+@ToString
 public class License extends DateAudit {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "license_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "license_id")
+  private Long id;
 
-    @NotEmpty
-    private String name;
+  @NotEmpty private String name;
 
-    @NotEmpty
-    private String payCycle;
+  @NotEmpty private String payCycle;
 
-    private String observation;
+  private String observation;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private LicenseType licenseType;
+  @ManyToOne
+  @JoinColumn(nullable = false)
+  private LicenseType licenseType;
 
-    @OneToMany(mappedBy = "license")
-    private List<CompanyLicense> companyLicenses;
+  @OneToMany(mappedBy = "license")
+  private List<CompanyLicense> companyLicenses;
 
-    @ManyToOne
-    @JoinColumn(name = "tool_id", nullable = false)
-    private Tool tool;
+  @ManyToOne
+  @JoinColumn(name = "tool_id", nullable = false)
+  private Tool tool;
 
-    @OneToMany(mappedBy = "license")
-    private List<LicensePricing> pricings;
+  @OneToMany(mappedBy = "license")
+  private List<LicensePricing> licensePrices;
 }

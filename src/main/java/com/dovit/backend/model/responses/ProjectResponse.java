@@ -17,22 +17,22 @@ import java.util.List;
 @AllArgsConstructor
 public class ProjectResponse {
 
-    private Long id;
-    private String name;
-    private Date start;
-    private String observation;
-    private Long companyId;
-    private String companyName;
-    private Boolean finished;
-    private List<ProjectMemberResponse> members;
+  private Long id;
+  private String name;
+  private Date start;
+  private String observation;
+  private Long companyId;
+  private String companyName;
+  private Boolean finished;
+  private List<ProjectMemberResponse> members;
 
-    public ProjectResponse(Project project) {
-        this.id = project.getId();
-        this.name = project.getName();
-        this.start = Date.from(project.getStart());
-        this.observation = project.getObservation();
-        this.companyId = project.getCompany().getId();
-        this.companyName = project.getCompany().getName();
-        this.finished = project.getFinished();
-    }
+  public ProjectResponse(Project project) {
+    this.id = project.getId();
+    this.name = project.getName();
+    //        this.start = Date.from(project.getStart());
+    this.observation = project.getObservation();
+    this.companyId = project.getCompany().getId();
+    this.companyName = project.getCompany().getName();
+    this.finished = project.getFinished();
+  }
 }
