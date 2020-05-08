@@ -7,8 +7,7 @@ import com.dovit.backend.model.responses.CompanyResponse;
 import com.dovit.backend.repositories.CompanyRepository;
 import com.dovit.backend.util.ValidatorUtil;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -46,6 +45,11 @@ class CompanyServiceImplTest {
     when(validatorUtil.canActOnCompany(anyLong())).thenReturn(true);
   }
 
+  @AfterEach
+  void tearDown(TestInfo info) {
+    if (!info.getTags().contains("SkipAfter")) modelMapper.validate();
+  }
+
   @Test
   void findById_OK() {
     when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
@@ -78,6 +82,7 @@ class CompanyServiceImplTest {
   }
 
   @Test
+  @Tag("SkipAfter")
   void createCompany() {
     when(companyRepository.save(any())).thenAnswer(i -> i.getArgument(0));
     Company response = companyService.createCompany(companyRequest);
@@ -85,6 +90,7 @@ class CompanyServiceImplTest {
   }
 
   @Test
+  @Tag("SkipAfter")
   void updateCompany() {
     when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
     when(companyRepository.save(any())).thenAnswer(i -> i.getArgument(0));

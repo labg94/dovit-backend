@@ -4,7 +4,9 @@ import com.dovit.backend.config.ModelMapperConfig;
 import com.dovit.backend.model.responses.LevelResponse;
 import com.dovit.backend.repositories.LevelRepository;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -29,6 +31,11 @@ class LevelServiceImplTest {
   @InjectMocks LevelServiceImpl levelService;
   @Mock LevelRepository levelRepository;
   @Spy ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
+
+  @AfterEach
+  void tearDown(TestInfo info) {
+    if (!info.getTags().contains("SkipAfter")) modelMapper.validate();
+  }
 
   @Test
   void findAll() {

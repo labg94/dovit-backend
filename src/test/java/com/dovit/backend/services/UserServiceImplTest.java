@@ -7,7 +7,9 @@ import com.dovit.backend.model.responses.UserResponse;
 import com.dovit.backend.repositories.UserRepository;
 import com.dovit.backend.security.JwtTokenProvider;
 import com.dovit.backend.util.ValidatorUtil;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -49,6 +51,11 @@ class UserServiceImplTest {
   private Page<User> pages;
   private UserRequest admin = UserRequest.builder().id(1L).roleId(1L).password("12345678").build();
   private UserRequest client = UserRequest.builder().id(1L).companyId(1L).roleId(2L).build();
+
+  @AfterEach
+  void tearDown(TestInfo info) {
+    if (!info.getTags().contains("SkipAfter")) modelMapper.validate();
+  }
 
   @Test
   void findAllAdmins() {

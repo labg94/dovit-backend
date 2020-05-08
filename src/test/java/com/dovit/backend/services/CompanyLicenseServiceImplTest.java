@@ -7,8 +7,7 @@ import com.dovit.backend.model.responses.CompanyLicensesResponse;
 import com.dovit.backend.repositories.CompanyLicenseRepository;
 import com.dovit.backend.util.ValidatorUtil;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -46,6 +45,11 @@ class CompanyLicenseServiceImplTest {
     when(validatorUtil.canActOnCompany(anyLong())).thenReturn(true);
   }
 
+  @AfterEach
+  void tearDown(TestInfo info) {
+    if (!info.getTags().contains("SkipAfter")) modelMapper.validate();
+  }
+
   @Test
   void findAllByCompanyIdAndToolId() {
     when(companyLicenseRepository.findAllByCompanyIdAndLicenseToolId(anyLong(), anyLong()))
@@ -59,6 +63,7 @@ class CompanyLicenseServiceImplTest {
   }
 
   @Test
+  @Tag("SkipAfter")
   void createCompanyLicense() {
     when(companyLicenseRepository.save(any())).thenReturn(companyLicense);
     CompanyLicense response = companyLicenseService.createCompanyLicense(companyLicenseRequest);

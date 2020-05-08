@@ -1,5 +1,6 @@
 package com.dovit.backend.model.requests;
 
+import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,5 +32,7 @@ public class CompanyLicenseRequest {
   @NotNull(message = "Remember to select a start date")
   private LocalDate startDate;
 
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+  @Nullable
   private LocalDate expirationDate;
 }

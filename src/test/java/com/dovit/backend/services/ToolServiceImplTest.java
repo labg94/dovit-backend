@@ -6,8 +6,10 @@ import com.dovit.backend.model.responses.ToolResponse;
 import com.dovit.backend.repositories.ToolRepository;
 import com.dovit.backend.util.ValidatorUtil;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,7 +17,6 @@ import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -39,12 +40,13 @@ class ToolServiceImplTest {
   @Spy ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
 
   @BeforeEach
-  void setUp() throws NoSuchFieldException, IllegalAccessException {
-    Field BASE_IMAGE_URL = toolService.getClass().getDeclaredField("BASE_IMAGE_URL");
-    BASE_IMAGE_URL.setAccessible(true);
-    BASE_IMAGE_URL.set(toolService, "http://localhost:8080/images");
-
+  void setUp() {
     when(validatorUtil.canActOnCompany(anyLong())).thenReturn(true);
+  }
+
+  @AfterEach
+  void tearDown(TestInfo info) {
+    if (!info.getTags().contains("SkipAfter")) modelMapper.validate();
   }
 
   @Test

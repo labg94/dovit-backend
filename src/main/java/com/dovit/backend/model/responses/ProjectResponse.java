@@ -1,6 +1,5 @@
 package com.dovit.backend.model.responses;
 
-import com.dovit.backend.domain.Project;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,14 +24,4 @@ public class ProjectResponse {
   private String companyName;
   private Boolean finished;
   private List<ProjectMemberResponse> members;
-
-  public ProjectResponse(Project project) {
-    this.id = project.getId();
-    this.name = project.getName();
-    //        this.start = Date.from(project.getStart());
-    this.observation = project.getObservation();
-    this.companyId = project.getCompany().getId();
-    this.companyName = project.getCompany().getName();
-    this.finished = project.getFinished();
-  }
 }

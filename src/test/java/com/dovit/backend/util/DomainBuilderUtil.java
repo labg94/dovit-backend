@@ -76,7 +76,10 @@ public class DomainBuilderUtil {
       CompanyLicense.builder()
           .id(1L)
           .startDate(LocalDate.of(2020, 11, 10))
+          .expirationDate(LocalDate.now())
           .license(license)
           .company(company)
           .build();
+
+  public static Member member = Member.builder().build();
 }

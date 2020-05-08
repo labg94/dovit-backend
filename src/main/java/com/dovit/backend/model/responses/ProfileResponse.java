@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @Data
 public class ProfileResponse {
 
-    private Long id;
-    private String desc;
+  private Long id;
+  private String description;
 
-    public ProfileResponse(Profile profile) {
-        this.id = profile.getId();
-        this.desc = profile.getDescription();
-    }
+  public ProfileResponse(Profile profile) {
+    this.id = profile.getId();
+    this.description = profile.getDescription();
+  }
 }

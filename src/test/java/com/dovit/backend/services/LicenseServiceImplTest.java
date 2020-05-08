@@ -4,7 +4,9 @@ import com.dovit.backend.config.ModelMapperConfig;
 import com.dovit.backend.model.responses.LicenseResponse;
 import com.dovit.backend.repositories.LicenseRepository;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,6 +32,11 @@ class LicenseServiceImplTest {
   @InjectMocks LicenseServiceImpl licenseService;
   @Mock LicenseRepository licenseRepository;
   @Spy ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
+
+  @AfterEach
+  void tearDown(TestInfo info) {
+    if (!info.getTags().contains("SkipAfter")) modelMapper.validate();
+  }
 
   @Test
   void findAllByToolId() {

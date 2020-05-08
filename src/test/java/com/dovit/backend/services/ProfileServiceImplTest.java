@@ -5,7 +5,9 @@ import com.dovit.backend.model.responses.ProfileResponse;
 import com.dovit.backend.repositories.ProfileRepository;
 import com.dovit.backend.util.DomainBuilderUtil;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -29,6 +31,11 @@ class ProfileServiceImplTest {
   @Spy ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
   @InjectMocks ProfileServiceImpl profileService;
   @Mock ProfileRepository profileRepository;
+
+  @AfterEach
+  void tearDown(TestInfo info) {
+    if (!info.getTags().contains("SkipAfter")) modelMapper.validate();
+  }
 
   @Test
   void findAll() {

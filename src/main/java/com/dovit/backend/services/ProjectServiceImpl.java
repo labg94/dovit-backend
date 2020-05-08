@@ -35,7 +35,7 @@ public class ProjectServiceImpl implements ProjectService {
   private final ProjectMemberRepository projectMemberRepository;
   private final MemberRepository memberRepository;
   private final DevOpsCategoryRepository devOpsCategoryRepository;
-  private final ModelMapper modelMapper = new ModelMapper();
+  private final ModelMapper modelMapper;
 
   @Value("${api.image.route}")
   private String BASE_IMAGE_URL;
@@ -94,10 +94,8 @@ public class ProjectServiceImpl implements ProjectService {
   @Transactional
   public List<ProjectResponse> findAllByCompanyId(Long companyId) {
     List<Project> projects = projectRepository.findAllByCompanyId(companyId);
-    ModelMapper mapper = new ModelMapper();
-    mapper.getConfiguration().setAmbiguityIgnored(true);
     return projects.stream()
-        .map(p -> mapper.map(p, ProjectResponse.class))
+        .map(p -> modelMapper.map(p, ProjectResponse.class))
         .collect(Collectors.toList());
   }
 
