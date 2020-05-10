@@ -4,6 +4,7 @@ import com.dovit.backend.domain.*;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author Ramón París
@@ -81,5 +82,36 @@ public class DomainBuilderUtil {
           .company(company)
           .build();
 
-  public static Member member = Member.builder().build();
+  public static ToolProfile toolProfile =
+      ToolProfile.builder().level(level).levelId(1L).tool(tool).toolId(1L).build();
+
+  public static Member member =
+      Member.builder()
+          .id(1L)
+          .active(true)
+          .company(company)
+          .name("Pepe")
+          .lastName("Lota")
+          .profiles(Collections.singletonList(profile))
+          .toolProfile(Collections.singletonList(toolProfile))
+          .build();
+
+  public static ProjectMember projectMember =
+      ProjectMember.builder()
+          .member(member)
+          .memberId(1L)
+          .devOpsCategories(devOpsCategoryPlanning)
+          .devOpsCategoryId(1L)
+          .build();
+
+  public static Project project =
+      Project.builder()
+          .company(company)
+          .finished(false)
+          .id(1L)
+          .name("Dov IT")
+          .observation("Project!")
+          .start(LocalDate.now())
+          .members(Collections.singletonList(projectMember))
+          .build();
 }

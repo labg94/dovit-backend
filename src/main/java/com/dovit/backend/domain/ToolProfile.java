@@ -1,6 +1,7 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(ToolProfileId.class)
+@Builder
 public class ToolProfile {
 
   @Id
