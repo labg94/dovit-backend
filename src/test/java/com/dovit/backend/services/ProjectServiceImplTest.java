@@ -33,17 +33,21 @@ class ProjectServiceImplTest {
   }
 
   @Test
-  void saveProject() {}
+  void testSaveProject() {}
 
   @Test
-  void updateProject() {}
+  void testUpdateProject() {}
 
   @Test
-  void findAllByCompanyId() {}
+  void testFindAllByCompanyId() {
+    // TODO TEST
+  }
 
   @Test
-  void findByProjectId() {}
+  void testFindByProjectId() {
+    // TODO TEST
+  }
 
   @Test
-  void findMemberRecommendation() {}
+  void testFindMemberRecommendation() {}
 }

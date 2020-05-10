@@ -1,9 +1,8 @@
 package com.dovit.backend.config;
 
-import com.dovit.backend.domain.DevOpsCategory;
-import com.dovit.backend.domain.DevOpsSubcategory;
-import com.dovit.backend.domain.Tool;
-import com.dovit.backend.model.responses.ToolResponse;
+import com.dovit.backend.domain.*;
+import com.dovit.backend.model.responses.*;
+import com.dovit.backend.util.DateUtil;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +31,81 @@ public class ModelMapperConfig {
     ModelMapper modelMapper = new ModelMapper();
     modelMapper.getConfiguration().setDeepCopyEnabled(false).setSkipNullEnabled(true);
     modelMapper.addMappings(this.toolResponsePropertyMap(BASE_IMAGE_URL));
+    modelMapper.addMappings(this.projectResponsePropertyMap(BASE_IMAGE_URL));
     return modelMapper;
+  }
+
+  /** Property map used in ProjectMember - ProjectMemberResponse mapping */
+  private PropertyMap<Project, ProjectResponse> projectResponsePropertyMap(String BASE_IMAGE_URL) {
+    Converter<List<ProjectMember>, List<ProjectMemberResponse>> memberConverter =
+        mappingContext ->
+            mappingContext.getSource().stream()
+                .collect(Collectors.groupingBy(ProjectMember::getMember))
+                .entrySet()
+                .stream()
+                .map(
+                    entrySet -> {
+                      Member member = entrySet.getKey();
+                      List<ProjectMember> memberValues = entrySet.getValue();
+                      return ProjectMemberResponse.builder()
+                          .memberId(member.getId())
+                          .memberName(member.getName())
+                          .memberLastName(member.getLastName())
+                          .participation(
+                              memberValues.stream()
+                                  .map(
+                                      memberValue ->
+                                          MemberParticipationResponse.builder()
+                                              .devopsCategoryName(
+                                                  memberValue
+                                                      .getDevOpsCategories()
+                                                      .getDescription())
+                                              .tools(
+                                                  member.getToolProfile().stream()
+                                                      .filter(
+                                                          toolProfile ->
+                                                              toolProfile.getTool()
+                                                                  .getSubcategories().stream()
+                                                                  .collect(
+                                                                      Collectors.groupingBy(
+                                                                          sub ->
+                                                                              sub.getDevOpsCategory()
+                                                                                  .getId()))
+                                                                  .containsKey(
+                                                                      memberValue
+                                                                          .getDevOpsCategoryId()))
+                                                      .map(
+                                                          tool ->
+                                                              ToolProfileResponse.builder()
+                                                                  .toolId(tool.getToolId())
+                                                                  .toolName(
+                                                                      tool.getTool().getName())
+                                                                  .imageUrl(
+                                                                      BASE_IMAGE_URL
+                                                                          + tool.getTool()
+                                                                              .getImageUrl())
+                                                                  .levelId(tool.getLevelId())
+                                                                  .levelDesc(
+                                                                      tool.getLevel()
+                                                                          .getDescription())
+                                                                  .build())
+                                                      .collect(Collectors.toList()))
+                                              .build())
+                                  .collect(Collectors.toList()))
+                          .build();
+                    })
+                .collect(Collectors.toList());
+
+    Converter<LocalDate, String> dateConverter =
+        mappingContext -> DateUtil.formatDateToString(mappingContext.getSource());
+
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        using(memberConverter).map(source.getMembers()).setMembers(new ArrayList<>());
+        using(dateConverter).map(source.getStart()).setStart("");
+      }
+    };
   }
 
   /** Property Map used to map DevOpsSubcategory and DevOpsCategory into tags */

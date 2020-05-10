@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,7 +17,7 @@ public class ProjectResponse {
 
   private Long id;
   private String name;
-  private Date start;
+  private String start;
   private String observation;
   private Long companyId;
   private String companyName;
