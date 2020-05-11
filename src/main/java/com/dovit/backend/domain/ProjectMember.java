@@ -1,9 +1,7 @@
 package com.dovit.backend.domain;
 
 import com.dovit.backend.domain.audit.DateAudit;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -18,6 +16,8 @@ import javax.persistence.*;
 @Data
 @Table(name = "project_members")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProjectMember extends DateAudit {
 
   @Id

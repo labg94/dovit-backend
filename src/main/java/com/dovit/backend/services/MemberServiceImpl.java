@@ -26,7 +26,7 @@ public class MemberServiceImpl implements MemberService {
   private final ToolRepository toolRepository;
   private final ToolProfileRepository toolProfileRepository;
   private final ProfileRepository profileRepository;
-  private final ModelMapper modelMapper = new ModelMapper();
+  private final ModelMapper modelMapper;
 
   @Value("${api.image.route}")
   private String BASE_IMAGE_URL;
@@ -63,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
   @Transactional
   public List<MemberResponse> findAllByCompanyId(Long companyId) throws ResourceNotFoundException {
     return memberRepository.findAllByCompanyId(companyId).stream()
-        .map(m -> new MemberResponse(m, BASE_IMAGE_URL))
+        .map(m -> modelMapper.map(m, MemberResponse.class))
         .collect(Collectors.toList());
   }
 

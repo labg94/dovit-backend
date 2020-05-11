@@ -35,6 +35,39 @@ public class ModelMapperConfig {
     return modelMapper;
   }
 
+  private PropertyMap<Member, MemberResponse> memberResponsePropertyMap(String BASE_IMAGE_URL) {
+    Converter<List<ToolProfile>, List<ToolProfileResponse>> converter =
+        mappingContext ->
+            mappingContext.getSource().stream()
+                .map(
+                    t ->
+                        ToolProfileResponse.builder()
+                            .toolId(t.getToolId())
+                            .toolName(t.getTool().getName())
+                            .levelId(t.getLevelId())
+                            .levelDesc(t.getLevel().getDescription())
+                            .imageUrl(BASE_IMAGE_URL + t.getTool().getImageUrl())
+                            .build())
+                .collect(Collectors.toList());
+
+    return new PropertyMap<Member, MemberResponse>() {
+      @Override
+      protected void configure() {
+        using(converter).map(source.getToolProfile()).setTools(new ArrayList<>());
+      }
+    };
+  }
+
+  private ToolProfileResponse createToolProfile(ToolProfile toolProfile, String BASE_IMAGE_URL) {
+    return ToolProfileResponse.builder()
+        .toolId(toolProfile.getToolId())
+        .toolName(toolProfile.getTool().getName())
+        .levelId(toolProfile.getLevelId())
+        .levelDesc(toolProfile.getLevel().getDescription())
+        .imageUrl(BASE_IMAGE_URL + toolProfile.getTool().getImageUrl())
+        .build();
+  }
+
   /** Property map used in ProjectMember - ProjectMemberResponse mapping */
   private PropertyMap<Project, ProjectResponse> projectResponsePropertyMap(String BASE_IMAGE_URL) {
     Converter<List<ProjectMember>, List<ProjectMemberResponse>> memberConverter =
@@ -76,19 +109,8 @@ public class ModelMapperConfig {
                                                                           .getDevOpsCategoryId()))
                                                       .map(
                                                           tool ->
-                                                              ToolProfileResponse.builder()
-                                                                  .toolId(tool.getToolId())
-                                                                  .toolName(
-                                                                      tool.getTool().getName())
-                                                                  .imageUrl(
-                                                                      BASE_IMAGE_URL
-                                                                          + tool.getTool()
-                                                                              .getImageUrl())
-                                                                  .levelId(tool.getLevelId())
-                                                                  .levelDesc(
-                                                                      tool.getLevel()
-                                                                          .getDescription())
-                                                                  .build())
+                                                              this.createToolProfile(
+                                                                  tool, BASE_IMAGE_URL))
                                                       .collect(Collectors.toList()))
                                               .build())
                                   .collect(Collectors.toList()))
