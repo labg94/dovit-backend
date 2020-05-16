@@ -21,120 +21,121 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private final MemberRepository memberRepository;
-    private final LevelRepository levelRepository;
-    private final ToolRepository toolRepository;
-    private final ToolProfileRepository toolProfileRepository;
-    private final ProfileRepository profileRepository;
-    private final ModelMapper modelMapper = new ModelMapper();
+  private final MemberRepository memberRepository;
+  private final LevelRepository levelRepository;
+  private final ToolRepository toolRepository;
+  private final ToolProfileRepository toolProfileRepository;
+  private final ProfileRepository profileRepository;
+  private final ModelMapper modelMapper;
 
-    @Value("${api.image.route}")
-    private String BASE_IMAGE_URL;
+  @Value("${api.image.route}")
+  private String BASE_IMAGE_URL;
 
-    @Override
-    @Transactional
-    public Member save(MemberRequest member) {
-        Member mappedMember = mapMemberRequestToMember(member);
-        Member saved = memberRepository.save(mappedMember);
-        saved.getToolProfile().forEach(toolProfile -> toolProfile.setMemberId(saved.getId()));
-        List<ToolProfile> toolProfiles = toolProfileRepository.saveAll(saved.getToolProfile());
-        return saved;
-    }
+  @Override
+  @Transactional
+  public Member save(MemberRequest member) {
+    Member mappedMember = mapMemberRequestToMember(member);
+    Member saved = memberRepository.save(mappedMember);
+    saved.getToolProfile().forEach(toolProfile -> toolProfile.setMemberId(saved.getId()));
+    List<ToolProfile> toolProfiles = toolProfileRepository.saveAll(saved.getToolProfile());
+    return saved;
+  }
 
-    private Member mapMemberRequestToMember(MemberRequest memberRequest) {
+  private Member mapMemberRequestToMember(MemberRequest memberRequest) {
+    Member member = modelMapper.map(memberRequest, Member.class);
+    mapToolProfile(memberRequest, member);
+    member.setProfiles(profileRepository.findAllByIdIn(memberRequest.getProfiles()));
+    return member;
+  }
 
-        Member member = modelMapper.map(memberRequest, Member.class);
+  @Override
+  @Transactional
+  public MemberResponse findById(Long memberId) throws ResourceNotFoundException {
+    Member member =
+        memberRepository
+            .findById(memberId)
+            .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId", memberId));
 
-        mapToolProfile(memberRequest, member);
+    return new MemberResponse(member, BASE_IMAGE_URL);
+  }
 
-        member.setProfiles(profileRepository.findAllByIdIn(memberRequest.getProfiles()));
+  @Override
+  @Transactional
+  public List<MemberResponse> findAllByCompanyId(Long companyId) throws ResourceNotFoundException {
+    return memberRepository.findAllByCompanyId(companyId).stream()
+        .map(m -> modelMapper.map(m, MemberResponse.class))
+        .collect(Collectors.toList());
+  }
 
-        return member;
-    }
+  @Override
+  @Transactional
+  public Member update(MemberRequest memberRequest) {
+    toolProfileRepository.deleteAllByMemberId(memberRequest.getId());
 
-    @Override
-    @Transactional
-    public MemberResponse findById(Long memberId) throws ResourceNotFoundException {
-        Member member = memberRepository
-                .findById(memberId)
-                .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId", memberId));
+    Member member =
+        memberRepository
+            .findById(memberRequest.getId())
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Member", "MemberId", memberRequest.getId()));
 
-        return new MemberResponse(member, BASE_IMAGE_URL);
-    }
+    member.setName(memberRequest.getName());
+    member.setLastName(memberRequest.getLastName());
+    member.setActive(memberRequest.getActive());
 
-    @Override
-    @Transactional
-    public List<MemberResponse> findAllByCompanyId(Long companyId) throws ResourceNotFoundException {
-        return memberRepository.findAllByCompanyId(companyId).stream().map(m->new MemberResponse(m, BASE_IMAGE_URL)).collect(Collectors.toList());
-    }
+    List<Profile> profiles = profileRepository.findAllByIdIn(memberRequest.getProfiles());
+    member.setProfiles(profiles);
 
-    @Override
-    @Transactional
-    public Member update(MemberRequest memberRequest) {
-        toolProfileRepository.deleteAllByMemberId(memberRequest.getId());
+    mapToolProfile(memberRequest, member);
 
-        Member member = memberRepository
-                .findById(memberRequest.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId", memberRequest.getId()));
+    member.getToolProfile().forEach(toolProfile -> toolProfile.setMemberId(memberRequest.getId()));
 
-        member.setName(memberRequest.getName());
-        member.setLastName(memberRequest.getLastName());
-        member.setActive(memberRequest.getActive());
+    toolProfileRepository.saveAll(member.getToolProfile());
+    member = memberRepository.save(member);
+    return member;
+  }
 
-        List<Profile> profiles = profileRepository.findAllByIdIn(memberRequest.getProfiles());
-        member.setProfiles(profiles);
+  private void mapToolProfile(MemberRequest memberRequest, Member member) {
+    List<Long> levelsIds =
+        memberRequest.getToolProfile().stream()
+            .map(ToolProfileRequest::getLevelId)
+            .collect(Collectors.toList());
 
-        mapToolProfile(memberRequest, member);
+    List<Long> toolsIds =
+        memberRequest.getToolProfile().stream()
+            .map(ToolProfileRequest::getToolId)
+            .collect(Collectors.toList());
 
-        member.getToolProfile().forEach(toolProfile -> toolProfile.setMemberId(memberRequest.getId()));
+    List<Level> levels = levelRepository.findAllById(levelsIds);
+    List<Tool> tools = toolRepository.findAllById(toolsIds);
 
-        toolProfileRepository.saveAll(member.getToolProfile());
-        member = memberRepository.save(member);
-        return member;
-    }
+    List<ToolProfile> collect =
+        memberRequest.getToolProfile().stream()
+            .map(
+                toolProfileRequest -> {
+                  Level levelGotten =
+                      levels.stream()
+                          .filter(
+                              level -> level.getLevelId().equals(toolProfileRequest.getLevelId()))
+                          .findFirst()
+                          .orElseGet(Level::new);
 
-    private void mapToolProfile(MemberRequest memberRequest, Member member) {
-        List<Long> levelsIds =
-                memberRequest.getToolProfile().stream()
-                        .map(ToolProfileRequest::getLevelId)
-                        .collect(Collectors.toList());
+                  Tool toolGotten =
+                      tools.stream()
+                          .filter(tool -> tool.getId().equals(toolProfileRequest.getToolId()))
+                          .findFirst()
+                          .orElseGet(Tool::new);
 
-        List<Long> toolsIds =
-                memberRequest.getToolProfile().stream()
-                        .map(ToolProfileRequest::getToolId)
-                        .collect(Collectors.toList());
+                  ToolProfile toolProfile = new ToolProfile();
+                  toolProfile.setLevel(levelGotten);
+                  toolProfile.setLevelId(levelGotten.getLevelId());
+                  toolProfile.setMember(member);
+                  toolProfile.setTool(toolGotten);
+                  toolProfile.setToolId(toolGotten.getId());
 
-        List<Level> levels = levelRepository.findAllById(levelsIds);
-        List<Tool> tools = toolRepository.findAllById(toolsIds);
+                  return toolProfile;
+                })
+            .collect(Collectors.toList());
 
-        List<ToolProfile> collect =
-                memberRequest.getToolProfile().stream()
-                        .map(
-                                toolProfileRequest -> {
-                                    Level levelGotten =
-                                            levels.stream()
-                                                    .filter(
-                                                            level -> level.getLevelId().equals(toolProfileRequest.getLevelId()))
-                                                    .findFirst()
-                                                    .orElseGet(Level::new);
-
-                                    Tool toolGotten =
-                                            tools.stream()
-                                                    .filter(tool -> tool.getId().equals(toolProfileRequest.getToolId()))
-                                                    .findFirst()
-                                                    .orElseGet(Tool::new);
-
-                                    ToolProfile toolProfile = new ToolProfile();
-                                    toolProfile.setLevel(levelGotten);
-                                    toolProfile.setLevelId(levelGotten.getLevelId());
-                                    toolProfile.setMember(member);
-                                    toolProfile.setTool(toolGotten);
-                                    toolProfile.setToolId(toolGotten.getId());
-
-                                    return toolProfile;
-                                })
-                        .collect(Collectors.toList());
-
-        member.setToolProfile(collect);
-    }
+    member.setToolProfile(collect);
+  }
 }

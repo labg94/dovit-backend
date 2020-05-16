@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ToolProfileRequest {
 
-  private  Long memberId;
-  private  Long toolId;
-  private  Long levelId;
+    private Long memberId;
+    private Long toolId;
+    private Long levelId;
 }

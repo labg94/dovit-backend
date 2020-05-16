@@ -1,26 +1,30 @@
 package com.dovit.backend.model.requests;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class MemberRequest {
 
   private long id;
 
-  @NotNull
+  @NotNull(message = "Company cannot be empty")
   private long companyId;
 
-  @NotBlank private String name;
+  @NotEmpty(message = "Member name cannot be empty")
+  private String name;
 
-  @NotBlank private String lastName;
+  @NotEmpty(message = "Member last name cannot be empty")
+  private String lastName;
 
   private Boolean active;
 

@@ -1,11 +1,14 @@
 package com.dovit.backend.model.requests;
 
+import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * @author Ramón París
@@ -14,19 +17,22 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CompanyLicenseRequest {
 
-    private Long id;
+  private Long id;
 
-    @NotNull(message = "Debe seleccionar una empresa")
-    private Long companyId;
+  @NotNull(message = "Remember to select a company")
+  private Long companyId;
 
-    @NotNull(message = "Debe seleccionar una licencia")
-    private Long licenseId;
+  @NotNull(message = "Remember to select a license")
+  private Long licenseId;
 
-    @NotNull(message = "Seleccione una fecha de inicio")
-    private Date startDate;
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+  @NotNull(message = "Remember to select a start date")
+  private LocalDate startDate;
 
-    private Date expirationDate;
-
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+  @Nullable
+  private LocalDate expirationDate;
 }

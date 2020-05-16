@@ -2,6 +2,7 @@ package com.dovit.backend.domain;
 
 import com.dovit.backend.util.RoleName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 /**
  * User's roles.
+ *
  * @author Ramón París
  * @since 01-10-2019
  */
@@ -17,17 +19,15 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="roles")
+@Table(name = "roles")
+@Builder
 public class Role {
 
-    @Id
-    private Long id;
+  @Id private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private RoleName name;
+  @Enumerated(EnumType.STRING)
+  private RoleName name;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> users;
-
-
+  @OneToMany(mappedBy = "role")
+  private List<User> users;
 }

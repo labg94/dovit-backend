@@ -13,17 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserResponse {
 
-    private Long id;
-    private String name;
-    private String lastName;
-    private String email;
+  private Long id;
+  private String name;
+  private String lastName;
+  private String email;
 
-    private String roleName;
-    private Long roleId;
+  private String roleName;
+  private Long roleId;
 
-    private boolean active;
-    private Long companyId;
-    private String companyName;
-
-
+  private boolean active;
+  private Long companyId;
+  private String companyName;
 }

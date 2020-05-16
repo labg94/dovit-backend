@@ -6,6 +6,5 @@ package com.dovit.backend.services;
  */
 public interface AuditService {
 
-    void registerAudit(Object data, String message, String status, Long userId);
-
+  void registerAudit(Object data, String message, String status, Long userId);
 }

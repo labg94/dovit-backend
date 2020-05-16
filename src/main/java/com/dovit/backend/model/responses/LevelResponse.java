@@ -15,5 +15,4 @@ public class LevelResponse {
 
     private Long levelId;
     private String description;
-
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Payload to give responses in Create, Update and Delete operations
+ *
  * @author Ramón París
  * @since 02-10-2019
  */
@@ -16,5 +17,4 @@ public class ApiResponse {
 
     private Boolean success;
     private String message;
-
 }

@@ -1,12 +1,10 @@
 package com.dovit.backend.config;
 
-import com.dovit.backend.exceptions.ApiExceptionHandler;
 import com.dovit.backend.security.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,31 +19,21 @@ import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 
 /**
  * @author Ramón París
  * @since 02-10-2019
  */
-
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true
-)
+@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    CustomUserDetailsService customUserDetailsService;
-
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
-
-    @Autowired
-    private JwtAccessDeniedHandler accessDeniedHandler;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -63,21 +51,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .contextSource(contextSource())
                 .userDetailsContextMapper(userDetailsContextMapper())
                 .passwordCompare()
-//                .passwordEncoder(passwordEncoder())
+                //                .passwordEncoder(passwordEncoder())
                 .passwordAttribute("userPassword");
 
-        auth
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder());
+        auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
     public DefaultSpringSecurityContextSource contextSource() {
-        return  new DefaultSpringSecurityContextSource(
+        return new DefaultSpringSecurityContextSource(
                 Collections.singletonList(LDAP_SERVER), "dc=springframework,dc=org");
     }
 
-    public UserDetailsContextMapper userDetailsContextMapper(){
+    public UserDetailsContextMapper userDetailsContextMapper() {
         return new CustomLdapMapper();
     }
 
@@ -94,9 +80,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors().and()
-                .csrf().disable()
+        http.cors()
+                .and()
+                .csrf()
+                .disable()
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(unauthorizedHandler)
@@ -105,7 +92,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/",
+                .antMatchers(
+                        "/",
                         "/favicon.ico",
                         "/**/*.png",
                         "/**/*.gif",
@@ -113,9 +101,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.jpg",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/actuator/**").permitAll()
+                        "/**/*.js")
+                .permitAll()
+                .antMatchers("/api/auth/**")
+                .permitAll()
+                .antMatchers("/actuator/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 

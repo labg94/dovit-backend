@@ -1,13 +1,10 @@
 package com.dovit.backend.model.requests;
 
-import com.dovit.backend.domain.Company;
-import com.dovit.backend.domain.ProjectMember;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.util.Date;
 import java.util.List;
 
@@ -18,14 +15,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ProjectRequest {
 
-    private Long id;
-    private String name;
-    private Date start;
-    private String observation;
-    private Long companyId;
-    private Boolean finished;
-    private List<ProjectMemberRequest> members;
-
+  private Long id;
+  private String name;
+  private Date start;
+  private String observation;
+  private Long companyId;
+  private Boolean finished;
+  private List<ProjectMemberRequest> members;
 }

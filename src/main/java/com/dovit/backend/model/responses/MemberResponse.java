@@ -1,7 +1,6 @@
 package com.dovit.backend.model.responses;
 
 import com.dovit.backend.domain.Member;
-import com.dovit.backend.domain.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,32 +17,33 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MemberResponse {
 
-    private Long id;
+  private Long id;
 
-    private Long companyId;
-    private String companyName;
+  private Long companyId;
+  private String companyName;
 
-    private String memberName;
+  private String memberName;
 
-    private String memberLastName;
+  private String memberLastName;
 
-    private Boolean active;
+  private Boolean active;
 
-    private List<ProfileResponse> profiles;
+  private List<ProfileResponse> profiles;
 
-    private List<ToolProfileResponse> tools;
+  private List<ToolProfileResponse> tools;
 
-    public MemberResponse(Member member, String BASE_URL) {
+  public MemberResponse(Member member, String BASE_URL) {
 
-        this.id = member.getId();
-        this.companyId = member.getCompany().getId();
-        this.companyName = member.getCompany().getName();
-        this.memberName = member.getName();
-        this.memberLastName = member.getLastName();
-        this.active = member.getActive();
-        this.profiles = member.getProfiles().stream().map(ProfileResponse::new).collect(Collectors.toList());
-        this.tools = member.getToolProfile().stream().map(ToolProfileResponse::new).collect(Collectors.toList());
-        this.tools.forEach(t -> t.setUrlImg(BASE_URL + t.getUrlImg()));
-
-    }
+    this.id = member.getId();
+    this.companyId = member.getCompany().getId();
+    this.companyName = member.getCompany().getName();
+    this.memberName = member.getName();
+    this.memberLastName = member.getLastName();
+    this.active = member.getActive();
+    this.profiles =
+        member.getProfiles().stream().map(ProfileResponse::new).collect(Collectors.toList());
+    this.tools =
+        member.getToolProfile().stream().map(ToolProfileResponse::new).collect(Collectors.toList());
+    this.tools.forEach(t -> t.setImageUrl(BASE_URL + t.getImageUrl()));
+  }
 }

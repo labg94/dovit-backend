@@ -9,17 +9,16 @@ import lombok.NoArgsConstructor;
  * @author Ramón París
  * @since 08-12-2019
  */
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class ProfileResponse {
 
-    private Long id;
-    private String desc;
+  private Long id;
+  private String description;
 
-    public ProfileResponse(Profile profile) {
-        this.id =  profile.getId();
-        this.desc = profile.getDescription();
-    }
+  public ProfileResponse(Profile profile) {
+    this.id = profile.getId();
+    this.description = profile.getDescription();
+  }
 }

@@ -1,25 +1,34 @@
 package com.dovit.backend.model.responses;
 
-import com.dovit.backend.model.LicenseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.util.List;
 
 /**
  * @author Ramón París
  * @since 04-10-2019
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyLicensesResponse extends LicenseDTO {
+public class CompanyLicensesResponse {
 
-    private Long companyLicenseId;
-    private Instant start;
-    private Instant expiration;
+  private Long id;
+  private String startDate;
+  private String expirationDate;
 
+  private Long licenseId;
+  private String licenseName;
+  private String licensePayCycle;
+  private String licenseObservation;
+  private String licenseTypeId;
+  private String licenseTypeDescription;
+
+  private String licenseToolId;
+  private String licenseToolName;
+  private String licenseToolImageUrl;
+
+  private List<LicensePricingResponse> licensePrices;
 }

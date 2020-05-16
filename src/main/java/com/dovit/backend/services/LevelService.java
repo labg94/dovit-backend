@@ -10,6 +10,5 @@ import java.util.List;
  */
 public interface LevelService {
 
-    List<LevelResponse> findAll();
-
+  List<LevelResponse> findAll();
 }

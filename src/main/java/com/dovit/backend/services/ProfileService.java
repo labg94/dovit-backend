@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface ProfileService {
 
-    List<ProfileResponse> findAll();
+  List<ProfileResponse> findAll();
 }

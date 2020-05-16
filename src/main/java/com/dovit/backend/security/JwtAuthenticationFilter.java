@@ -1,6 +1,5 @@
 package com.dovit.backend.security;
 
-import com.dovit.backend.domain.Role;
 import com.dovit.backend.exceptions.CustomAccessDeniedException;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.util.LdapUtil;
@@ -21,15 +20,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.util.Map;
 
 /**
- * To get the JWT token from the request, validate it, load the user associated with the token, and pass it to Spring Security
+ * To get the JWT token from the request, validate it, load the user associated with the token, and
+ * pass it to Spring Security
  *
  * @author Ramón París
  */
-
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -44,7 +42,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
 
@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Map<String, Object> translatedToken = tokenProvider.getUserIdFromJWT(jwt);
                 boolean isLdapUser = ((boolean) translatedToken.getOrDefault("isLdapUser", false));
 
-                UserDetails userDetails = null;
+                UserDetails userDetails;
                 if (!isLdapUser) {
                     Long userId = (Long.parseLong(translatedToken.get("subject").toString()));
                     userDetails = customUserDetailsService.loadUserById(userId);
@@ -61,11 +61,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     userDetails = ldapUtil.findDataByUsername(username);
                 }
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
             }
         } catch (Exception e) {
             logger.error("Could not set user authentication in security context", e);
@@ -83,16 +83,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     public static Boolean canActOnCompany(Long companyId) {
-        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String roleName = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst().orElseThrow(() -> new ResourceNotFoundException("Role", "name", ""));
-        if (RoleName.ROLE_ADMIN.name().equals(roleName))
-            return true;
+        UserPrincipal userPrincipal =
+                (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String roleName =
+                userPrincipal.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .findFirst()
+                        .orElseThrow(() -> new ResourceNotFoundException("Role", "name", ""));
+        if (RoleName.ROLE_ADMIN.name().equals(roleName)) return true;
 
         if (companyId.equals(userPrincipal.getCompanyId())) {
             return true;
         } else {
             throw new CustomAccessDeniedException("Access denied");
         }
-
     }
 }

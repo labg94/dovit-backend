@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface CompanyLicenseService {
 
-    List<CompanyLicensesResponse> findAllByCompanyIdAndToolId(Long companyId, Long toolId);
+  List<CompanyLicensesResponse> findAllByCompanyIdAndToolId(Long companyId, Long toolId);
 
     CompanyLicense createCompanyLicense(CompanyLicenseRequest request);
 

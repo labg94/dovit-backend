@@ -8,7 +8,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * @author Ramón París
@@ -18,28 +18,25 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TypeDef(name="jsonb", typeClass = JsonBinaryType.class)
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Audit {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "audit_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "audit_id")
+  private Long id;
 
-    private Instant actionDate;
+  private LocalDateTime actionDate;
 
-    @ManyToOne
-    private User user;
+  @ManyToOne private User user;
 
-    private String status;
+  private String status;
 
-    private String message;
+  private String message;
 
-    @Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private Object data;
+  @Type(type = "jsonb")
+  @Column(columnDefinition = "jsonb")
+  private Object data;
 
-    private String databaseUser;
-
-
+  private String databaseUser;
 }

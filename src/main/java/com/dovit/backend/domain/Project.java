@@ -1,12 +1,13 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -17,27 +18,23 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Project {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    @NotBlank
-    private String name;
+  @NotBlank private String name;
 
-    private Instant start;
+  private LocalDate start;
 
-    private String observation;
+  private String observation;
 
-    private Boolean finished;
+  private Boolean finished;
 
-    @ManyToOne
-    private Company company;
+  @ManyToOne private Company company;
 
-    @OneToMany(mappedBy = "project")
-    private List<ProjectMember> members;
-
-
-
+  @OneToMany(mappedBy = "project")
+  private List<ProjectMember> members;
 }

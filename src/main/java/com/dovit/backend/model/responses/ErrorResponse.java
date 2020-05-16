@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Payload class to response all errors caught in the API
+ *
  * @author Ramón París
  * @since 02-10-2019
  */
