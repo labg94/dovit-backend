@@ -1,10 +1,21 @@
 package com.dovit.backend.services;
 
+import com.dovit.backend.domain.Audit;
+import com.dovit.backend.model.responses.AuditResponse;
+import com.dovit.backend.model.responses.PagedResponse;
 import com.dovit.backend.repositories.AuditRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Ramón París
@@ -16,7 +27,8 @@ import org.springframework.stereotype.Service;
 public class AuditServiceImpl implements AuditService {
 
   private final AuditRepository auditRepository;
-  private Gson gson = new Gson();
+  private final Gson gson = new Gson();
+  private final ModelMapper modelMapper;
 
   @Override
   public void registerAudit(Object data, String message, String status, Long userId) {
@@ -35,5 +47,25 @@ public class AuditServiceImpl implements AuditService {
               }
             })
         .start();
+  }
+
+  @Override
+  public PagedResponse<AuditResponse> findAllBetweenDates(
+      LocalDateTime from, LocalDateTime to, int page, int size) {
+
+    Pageable pageable = PageRequest.of(page, size);
+    Page<Audit> auditsPage = auditRepository.findAllByActionDateBetween(from, to, pageable);
+    List<AuditResponse> auditResponses =
+        auditsPage.getContent().stream()
+            .map(u -> modelMapper.map(u, AuditResponse.class))
+            .collect(Collectors.toList());
+
+    return new PagedResponse<>(
+        auditResponses,
+        auditsPage.getNumber(),
+        auditsPage.getSize(),
+        auditsPage.getTotalElements(),
+        auditsPage.getTotalPages(),
+        auditsPage.isLast());
   }
 }

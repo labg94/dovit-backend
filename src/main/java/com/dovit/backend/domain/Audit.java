@@ -2,6 +2,7 @@ package com.dovit.backend.domain;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -18,7 +19,9 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@Table(indexes = {@Index(name = "status_index", columnList = "status")})
 public class Audit {
 
   @Id

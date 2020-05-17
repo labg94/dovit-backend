@@ -3,6 +3,7 @@ package com.dovit.backend.config;
 import com.dovit.backend.domain.*;
 import com.dovit.backend.model.responses.*;
 import com.dovit.backend.util.DateUtil;
+import com.google.gson.Gson;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,16 +25,48 @@ import java.util.stream.Stream;
 @Configuration
 public class ModelMapperConfig {
 
+  private final Gson gson = new Gson();
+
   @Value("${api.image.route}")
   private String BASE_IMAGE_URL;
 
   @Bean
   public ModelMapper modelMapper() {
     ModelMapper modelMapper = new ModelMapper();
-    modelMapper.getConfiguration().setDeepCopyEnabled(false).setSkipNullEnabled(true);
+    modelMapper
+        .getConfiguration()
+        .setDeepCopyEnabled(false)
+        .setSkipNullEnabled(true)
+        .setSkipNullEnabled(true);
     modelMapper.addMappings(this.toolResponsePropertyMap(BASE_IMAGE_URL));
     modelMapper.addMappings(this.projectResponsePropertyMap(BASE_IMAGE_URL));
+    modelMapper.addMappings(this.auditResponsePropertyMap());
     return modelMapper;
+  }
+
+  private PropertyMap<Audit, AuditResponse> auditResponsePropertyMap() {
+    Converter<User, String> fullNameConverter =
+        mappingContext ->
+            mappingContext.getSource() != null
+                ? mappingContext.getSource().getName()
+                    + " "
+                    + mappingContext.getSource().getLastName()
+                : null;
+
+    Converter<LocalDateTime, String> dateConverter =
+        mappingContext -> DateUtil.formatDateToString(mappingContext.getSource());
+
+    Converter<Object, String> jsonConverter =
+        mappingContext -> gson.toJson(mappingContext.getSource());
+
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        using(fullNameConverter).map(source.getUser()).setUserFullName("");
+        using(dateConverter).map(source.getActionDate()).setActionDate("");
+        using(jsonConverter).map(source.getData()).setData("");
+      }
+    };
   }
 
   private PropertyMap<Member, MemberResponse> memberResponsePropertyMap(String BASE_IMAGE_URL) {
