@@ -1,6 +1,7 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,9 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
- * Subarea that this tool is part. Example: Issue Tracking, Kanban Dashboards, Repository, Automatized test, ....
+ * Subarea that this tool is part. Example: Issue Tracking, Kanban Dashboards, Repository,
+ * Automatized test, ....
+ *
  * @author Ramón París
  * @since 01-10-2019
  */
@@ -18,21 +21,20 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "devops_subcategories")
+@Builder
 public class DevOpsSubcategory {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "devops_subcategory_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "devops_subcategory_id")
+  private Long id;
 
-    @NotEmpty
-    private String description;
+  @NotEmpty private String description;
 
-    @ManyToMany(mappedBy = "subcategories", fetch = FetchType.EAGER)
-    List<Tool> tools;
+  @ManyToMany(mappedBy = "subcategories")
+  List<Tool> tools;
 
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "devops_category_id")
-    private DevOpsCategory devOpsCategory;
-
+  @ManyToOne
+  @JoinColumn(nullable = false, name = "devops_category_id")
+  private DevOpsCategory devOpsCategory;
 }

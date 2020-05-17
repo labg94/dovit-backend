@@ -1,6 +1,5 @@
 package com.dovit.backend.services;
 
-import com.dovit.backend.model.responses.DevopsCategoryResponse;
 import com.dovit.backend.model.responses.ToolResponse;
 
 import java.util.List;
@@ -11,12 +10,9 @@ import java.util.List;
  */
 public interface ToolService {
 
-    List<ToolResponse> findAllToolsOfCompany(Long companyId);
+  List<ToolResponse> findAllToolsOfCompany(Long companyId);
 
-    List<DevopsCategoryResponse> findAllToolsGroupedByCats();
+  List<ToolResponse> findAllTools();
 
-    List<ToolResponse> findAllTools();
-
-    ToolResponse findById(Long toolId);
-
+  ToolResponse findById(Long toolId);
 }

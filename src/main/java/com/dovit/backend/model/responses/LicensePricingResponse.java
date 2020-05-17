@@ -17,5 +17,4 @@ public class LicensePricingResponse {
     private Long minUsers;
     private Long maxUsers;
     private Double price;
-
 }

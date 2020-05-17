@@ -12,13 +12,13 @@ import java.util.List;
  */
 public interface DevOpsCategoryRepository extends JpaRepository<DevOpsCategory, Long> {
 
-    @Query("SELECT DISTINCT cat FROM DevOpsCategory cat " +
-            "JOIN cat.subcategories sub " +
-            "JOIN sub.tools tools " +
-            "JOIN tools.licenses license " +
-            "JOIN license.companyLicenses companyLicense " +
-            "WHERE companyLicense.company.id = :companyId " +
-            "ORDER BY cat.id " )
-    List<DevOpsCategory> findAllByCompanyId(Long companyId);
-
+  @Query(
+          "SELECT DISTINCT cat FROM DevOpsCategory cat "
+                  + "JOIN cat.subcategories sub "
+                  + "JOIN sub.tools tools "
+                  + "JOIN tools.licenses license "
+                  + "JOIN license.companyLicenses companyLicense "
+                  + "WHERE companyLicense.company.id = :companyId "
+                  + "ORDER BY cat.id ")
+  List<DevOpsCategory> findAllByCompanyId(Long companyId);
 }

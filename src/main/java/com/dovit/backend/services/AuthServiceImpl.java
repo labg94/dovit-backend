@@ -4,19 +4,20 @@ import com.dovit.backend.domain.Company;
 import com.dovit.backend.domain.Role;
 import com.dovit.backend.domain.User;
 import com.dovit.backend.exceptions.BadRequestException;
-import com.dovit.backend.exceptions.ResourceNotFoundException;
+import com.dovit.backend.exceptions.CustomAccessDeniedException;
 import com.dovit.backend.model.requests.AuthRequest;
 import com.dovit.backend.model.requests.RegisterTokenRequest;
 import com.dovit.backend.model.requests.SignUpRequest;
 import com.dovit.backend.model.responses.AuthResponse;
-import com.dovit.backend.model.responses.RegisterTokenResponse;
 import com.dovit.backend.repositories.RoleRepository;
 import com.dovit.backend.repositories.UserRepository;
+import com.dovit.backend.security.CustomLdapUserDetails;
 import com.dovit.backend.security.JwtTokenProvider;
 import com.dovit.backend.security.UserPrincipal;
 import com.dovit.backend.util.Constants;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import com.dovit.backend.util.RoleName;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -32,71 +35,100 @@ import java.util.stream.Collectors;
  * @since 02-10-2019
  */
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
+  private final UserRepository userRepository;
+  private final RoleService roleService;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtTokenProvider tokenProvider;
+  private final CompanyService companyService;
+  private final AuditService auditService;
+  private final RoleRepository roleRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+  @Override
+  public AuthResponse authenticateUser(AuthRequest request) {
+    Authentication authentication =
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    if (UserPrincipal.class
+            == authentication.getPrincipal().getClass()) { // If the authentication was made by database
+      UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+      String jwt = tokenProvider.generateAuthToken(authentication);
 
-    @Autowired
-    private RoleService roleService;
+      AuthResponse response =
+              new AuthResponse(
+                      jwt,
+                      userPrincipal.getName(),
+                      userPrincipal.getLastName(),
+                      authentication.getAuthorities().stream()
+                              .map(Object::toString)
+                              .collect(Collectors.joining(", ")),
+                      userPrincipal.getCompanyName(),
+                      userPrincipal.getId());
+      auditService.registerAudit(response, "INICIO DE SESIÓN", "OK", userPrincipal.getId());
+      return response;
+    } else { // If the authentication was made by ldap service
+      CustomLdapUserDetails userPrincipal = (CustomLdapUserDetails) authentication.getPrincipal();
+      String jwt = tokenProvider.generateAuthToken(userPrincipal);
+      String rolesString =
+              authentication.getAuthorities().stream()
+                      .map(Object::toString)
+                      .collect(Collectors.joining(", "));
+      List<RoleName> roles =
+              Arrays.stream(RoleName.values())
+                      .filter(r -> rolesString.contains(r.name()))
+                      .collect(Collectors.toList());
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+      if (roleRepository.findAllByNameIn(roles).size() == 0) {
+        log.error("User " + userPrincipal.getUsername() + " doesn't have a valid role to access");
+        throw new CustomAccessDeniedException("User doesn't have a valid role to access");
+      }
 
-    @Autowired
-    private JwtTokenProvider tokenProvider;
-
-    @Autowired
-    private CompanyService companyService;
-
-    @Autowired
-    private AuditService auditService;
-
-    @Override
-    public AuthResponse authenticateUser(AuthRequest request) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        String jwt = tokenProvider.generateAuthToken(authentication);
-
-        AuthResponse response = new AuthResponse(jwt, userPrincipal.getName(), userPrincipal.getLastName(), authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.joining(", ")), userPrincipal.getCompanyName(), userPrincipal.getId());
-        auditService.registerAudit(response, "INICIO DE SESIÓN", "OK", userPrincipal.getId());
-        return response;
+      AuthResponse response =
+              new AuthResponse(
+                      jwt,
+                      userPrincipal.getFirstName(),
+                      userPrincipal.getLastName(),
+                      rolesString,
+                      Constants.CLEVER_IT,
+                      0L);
+      auditService.registerAudit(response, "INICIO DE SESIÓN", "OK", null);
+      return response;
     }
+  }
 
-    @Override
-    @Transactional
-    public User registerUser(SignUpRequest signUpRequest) {
-        RegisterTokenRequest tokenInfo = this.getRegisterTokenInfo(signUpRequest.getRegistrationToken());
-        Company company = companyService.findById(tokenInfo.getCompanyId());
-        Role role = roleService.findById(Constants.ROLE_CLIENT_ID);
+  @Override
+  @Transactional
+  public User registerUser(SignUpRequest signUpRequest) {
+    RegisterTokenRequest tokenInfo =
+            this.getRegisterTokenInfo(signUpRequest.getRegistrationToken());
+    Company company = companyService.findById(tokenInfo.getCompanyId());
+    Role role = roleService.findById(Constants.ROLE_CLIENT_ID);
 
-        User user = new User();
-        user.setName(signUpRequest.getName());
-        user.setLastName(signUpRequest.getLastName());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+    User user = new User();
+    user.setName(signUpRequest.getName());
+    user.setLastName(signUpRequest.getLastName());
+    user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
-        user.setEmail(tokenInfo.getEmail());
-        user.setCompany(company);
-        user.setRole(role);
-        user.setActive(true);
+    user.setEmail(tokenInfo.getEmail());
+    user.setCompany(company);
+    user.setRole(role);
+    user.setActive(true);
 
+    user = userRepository.save(user);
+    return user;
+  }
 
-        user = userRepository.save(user);
-        return user;
+  @Override
+  public RegisterTokenRequest getRegisterTokenInfo(String token) {
+    if (tokenProvider.validateToken(token)) {
+      return tokenProvider.getRegisterRequestFromJWT(token);
+    } else {
+      throw new BadRequestException("Token no válido");
     }
-
-    @Override
-    public RegisterTokenRequest getRegisterTokenInfo(String token) {
-        if (tokenProvider.validateToken(token)) {
-            return tokenProvider.getRegisterRequestFromJWT(token);
-        } else {
-            throw new BadRequestException("Token no válido");
-        }
-
-    }
-
+  }
 }

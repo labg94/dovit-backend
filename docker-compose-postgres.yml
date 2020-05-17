@@ -1,0 +1,17 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+services:
+  postgres-dovit:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: DOVIT2019
+      POSTGRES_USER: dovit
+      POSTGRES_DB: dovit
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+volumes:
+  postgres:

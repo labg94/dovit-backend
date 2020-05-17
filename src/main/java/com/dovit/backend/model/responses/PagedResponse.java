@@ -18,7 +18,8 @@ public class PagedResponse<T> {
     private long totalPages;
     private boolean last;
 
-    public PagedResponse(List<T> content, int page, int size, long totalElements, long totalPages, boolean last) {
+    public PagedResponse(
+            List<T> content, int page, int size, long totalElements, long totalPages, boolean last) {
         this.content = content;
         this.page = page;
         this.size = size;

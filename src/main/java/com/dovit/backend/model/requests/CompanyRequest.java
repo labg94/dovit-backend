@@ -1,6 +1,7 @@
 package com.dovit.backend.model.requests;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,11 +14,11 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class CompanyRequest {
 
-    private Long id;
+  private Long id;
 
-    @NotEmpty(message = "Nombre de empresa no puede estar vacío")
-    private String name;
-
+  @NotEmpty(message = "Company name cannot be empty")
+  private String name;
 }

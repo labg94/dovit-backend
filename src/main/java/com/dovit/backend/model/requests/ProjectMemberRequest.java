@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Ramón París
- * @since 04-10-2019
+ * @since 09-12-2019
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class LicenseRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProjectMemberRequest {
 
-    private Long id;
-
+    private Long memberId;
+    private Long devOpsCategoryId;
 }

@@ -1,15 +1,18 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Entity class that refers "client's company" table.
+ *
  * @author Ramón París
  * @since 29-09-2019
  */
@@ -18,26 +21,25 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "companies")
+@Builder
 public class Company {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "company_id")
+  private Long id;
 
-    @NotEmpty
-    private String name;
+  @NotEmpty private String name;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CompanyLicense> licenses;
+  @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<CompanyLicense> licenses;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<User> users;
+  @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<User> users;
 
+  @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Member> members;
 
-
-
-
-
-
+  @OneToMany(mappedBy = "company")
+  private Collection<Project> projects;
 }

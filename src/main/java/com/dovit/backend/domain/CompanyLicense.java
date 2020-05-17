@@ -1,16 +1,16 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.awt.*;
-import java.time.Instant;
+import java.time.LocalDate;
 
 /**
  * Licenses that a company have with their initial and expiration date
+ *
  * @author Ramón París
  * @since 29-09-2019
  */
@@ -19,29 +19,24 @@ import java.time.Instant;
 @AllArgsConstructor
 @Entity
 @Table(name = "company_licenses")
+@Builder
 public class CompanyLicense {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_license_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "company_license_id")
+  private Long id;
 
-    @Column(nullable = false)
-    private Instant startDate;
+  @Column(nullable = false)
+  private LocalDate startDate;
 
-    private Instant expirationDate;
+  private LocalDate expirationDate;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+  @ManyToOne
+  @JoinColumn(name = "company_id")
+  private Company company;
 
-    @ManyToOne
-    @JoinColumn(name = "license_id")
-    private License license;
-
-
-
-
-
-
+  @ManyToOne
+  @JoinColumn(name = "license_id")
+  private License license;
 }

@@ -9,12 +9,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
  * A custom UserDetailsService to use in AuthenticationManagerBuilder
+ *
  * @author Ramón París
  */
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -24,13 +23,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User not found with email: " + email));
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(
+                                () -> new UsernameNotFoundException("User not found with email: " + email));
         return UserPrincipal.create(user);
     }
 
     @Transactional
-    public UserDetails loadUserById(Long id){
-        User user = userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found with id: " + id));
+    public UserDetails loadUserById(Long id) {
+        User user =
+                userRepository
+                        .findById(id)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
         return UserPrincipal.create(user);
     }
 }

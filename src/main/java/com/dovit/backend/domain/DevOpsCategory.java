@@ -1,6 +1,7 @@
 package com.dovit.backend.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,10 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
- * This entity define the "Parent" category. This can be: Planning, Build, Test, CI/CD, Configuration, Monitoring... This entity has "child" category that are technologies of this "parent" category.
+ * This entity define the "Parent" category. This can be: Planning, Build, Test, CI/CD,
+ * Configuration, Monitoring... This entity has "child" category that are technologies of this
+ * "parent" category.
+ *
  * @author Ramón París
  * @since 01-10-2019
  */
@@ -18,16 +22,18 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name = "devops_categories")
+@Builder
 public class DevOpsCategory {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @NotEmpty
-    private String description;
+  @NotEmpty private String description;
 
-    @OneToMany(mappedBy = "devOpsCategory", fetch = FetchType.EAGER)
-    private List<DevOpsSubcategory> subcategories;
+  @OneToMany(mappedBy = "devOpsCategory")
+  private List<DevOpsSubcategory> subcategories;
 
+  @OneToMany(mappedBy = "devOpsCategories")
+  private List<ProjectMember> projectMembers;
 }

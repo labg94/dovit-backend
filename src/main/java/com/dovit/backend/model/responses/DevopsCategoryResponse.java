@@ -18,6 +18,4 @@ public class DevopsCategoryResponse {
     private Long categoryId;
     private String categoryName;
     private List<DevopsSubCategoryResponse> subcategories;
-
-
 }

@@ -6,17 +6,16 @@ import com.dovit.backend.model.requests.UserRequest;
 import com.dovit.backend.model.responses.ApiResponse;
 import com.dovit.backend.model.responses.PagedResponse;
 import com.dovit.backend.model.responses.UserResponse;
-import com.dovit.backend.services.AuthService;
 import com.dovit.backend.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.net.URI;
-import java.util.List;
 
 /**
  * @author Ramón París
@@ -26,11 +25,10 @@ import java.util.List;
 @RequestMapping("/api")
 @Secured("ROLE_ADMIN")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-
+  private final UserService userService;
 
     @GetMapping("/users/admin")
     public PagedResponse<UserResponse> findAllAdmin(@RequestParam int page, @RequestParam int size){
@@ -48,6 +46,7 @@ public class UserController {
         return userService.createUserToken(request);
     }
 
+    @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
     @GetMapping("/user/{userId}")
     public UserResponse findById(@PathVariable Long userId){
         return userService.findResponseById(userId);
@@ -65,6 +64,7 @@ public class UserController {
 
     }
 
+    @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
     @PutMapping("/user")
     public ResponseEntity<?> updateUser(@Valid @RequestBody UserRequest userRequest){
         User response = userService.updateUser(userRequest);
