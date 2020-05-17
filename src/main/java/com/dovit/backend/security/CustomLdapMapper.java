@@ -13,16 +13,16 @@ import java.util.Collection;
  */
 public class CustomLdapMapper extends LdapUserDetailsMapper {
 
-    @Override
-    public CustomLdapUserDetails mapUserFromContext(
-            DirContextOperations ctx,
-            String username,
-            Collection<? extends GrantedAuthority> authorities) {
-        LdapUserDetailsImpl userDetails =
-                (LdapUserDetailsImpl) super.mapUserFromContext(ctx, username, authorities);
-        CustomLdapUserDetails asd = new CustomLdapUserDetails(userDetails);
-        asd.setFirstName(ctx.getStringAttribute("givenName"));
-        asd.setLastName(ctx.getStringAttribute("sn"));
-        return asd;
-    }
+  @Override
+  public CustomLdapUserDetails mapUserFromContext(
+      DirContextOperations ctx,
+      String username,
+      Collection<? extends GrantedAuthority> authorities) {
+    LdapUserDetailsImpl userDetails =
+        (LdapUserDetailsImpl) super.mapUserFromContext(ctx, username, authorities);
+    CustomLdapUserDetails customLdapUserDetails = new CustomLdapUserDetails(userDetails);
+    customLdapUserDetails.setFirstName(ctx.getStringAttribute("givenName"));
+    customLdapUserDetails.setLastName(ctx.getStringAttribute("sn"));
+    return customLdapUserDetails;
+  }
 }

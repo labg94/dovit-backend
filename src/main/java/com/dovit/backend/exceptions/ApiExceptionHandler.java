@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -57,15 +56,15 @@ public class ApiExceptionHandler {
   }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(BadCredentialsException.class)
-  public ResponseEntity<?> handleBadCredentials(BadCredentialsException e) {
-    List<String> errorsMessages = new ArrayList<>();
-    errorsMessages.add("Usuario y password no coinciden");
+  @ExceptionHandler(CustomBadCredentialsException.class)
+  public ResponseEntity<?> handleBadCredentials(CustomBadCredentialsException e) {
+    List<String> errorsMessages = Collections.singletonList(e.getMessage());
     ErrorResponse errorResponse =
         new ErrorResponse(new Date(), HttpStatus.BAD_REQUEST.value(), errorsMessages);
 
     //    ApiExceptionHandler apiExceptionHandler = get();
-    auditService.registerAudit(new Object(), "INICIO DE SESIÓN", Constants.AUDIT_STATUS_NOK, null);
+    e.getRequest().setPassword(null);
+    auditService.registerAudit(e.getRequest(), "Login", Constants.AUDIT_STATUS_NOK, null);
 
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }

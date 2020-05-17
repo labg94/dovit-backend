@@ -5,6 +5,7 @@ import com.dovit.backend.domain.Role;
 import com.dovit.backend.domain.User;
 import com.dovit.backend.exceptions.BadRequestException;
 import com.dovit.backend.exceptions.CustomAccessDeniedException;
+import com.dovit.backend.exceptions.CustomBadCredentialsException;
 import com.dovit.backend.model.requests.AuthRequest;
 import com.dovit.backend.model.requests.RegisterTokenRequest;
 import com.dovit.backend.model.requests.SignUpRequest;
@@ -19,6 +20,7 @@ import com.dovit.backend.util.RoleName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,38 +52,44 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public AuthResponse authenticateUser(AuthRequest request) {
-    Authentication authentication =
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    Authentication authentication;
+    try {
+      authentication =
+          authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    } catch (BadCredentialsException badCredentialsException) {
+      throw new CustomBadCredentialsException("User or password are wrong", request);
+    }
+
     SecurityContextHolder.getContext().setAuthentication(authentication);
     if (UserPrincipal.class
-            == authentication.getPrincipal().getClass()) { // If the authentication was made by database
+        == authentication.getPrincipal().getClass()) { // If the authentication was made by database
       UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
       String jwt = tokenProvider.generateAuthToken(authentication);
 
       AuthResponse response =
-              new AuthResponse(
-                      jwt,
-                      userPrincipal.getName(),
-                      userPrincipal.getLastName(),
-                      authentication.getAuthorities().stream()
-                              .map(Object::toString)
-                              .collect(Collectors.joining(", ")),
-                      userPrincipal.getCompanyName(),
-                      userPrincipal.getId());
-      auditService.registerAudit(response, "INICIO DE SESIÓN", "OK", userPrincipal.getId());
+          new AuthResponse(
+              jwt,
+              userPrincipal.getName(),
+              userPrincipal.getLastName(),
+              authentication.getAuthorities().stream()
+                  .map(Object::toString)
+                  .collect(Collectors.joining(", ")),
+              userPrincipal.getCompanyName(),
+              userPrincipal.getId());
+      auditService.registerAudit(response, "Login", "OK", userPrincipal.getId());
       return response;
     } else { // If the authentication was made by ldap service
       CustomLdapUserDetails userPrincipal = (CustomLdapUserDetails) authentication.getPrincipal();
       String jwt = tokenProvider.generateAuthToken(userPrincipal);
       String rolesString =
-              authentication.getAuthorities().stream()
-                      .map(Object::toString)
-                      .collect(Collectors.joining(", "));
+          authentication.getAuthorities().stream()
+              .map(Object::toString)
+              .collect(Collectors.joining(", "));
       List<RoleName> roles =
-              Arrays.stream(RoleName.values())
-                      .filter(r -> rolesString.contains(r.name()))
-                      .collect(Collectors.toList());
+          Arrays.stream(RoleName.values())
+              .filter(r -> rolesString.contains(r.name()))
+              .collect(Collectors.toList());
 
       if (roleRepository.findAllByNameIn(roles).size() == 0) {
         log.error("User " + userPrincipal.getUsername() + " doesn't have a valid role to access");
@@ -89,14 +97,14 @@ public class AuthServiceImpl implements AuthService {
       }
 
       AuthResponse response =
-              new AuthResponse(
-                      jwt,
-                      userPrincipal.getFirstName(),
-                      userPrincipal.getLastName(),
-                      rolesString,
-                      Constants.CLEVER_IT,
-                      0L);
-      auditService.registerAudit(response, "INICIO DE SESIÓN", "OK", null);
+          new AuthResponse(
+              jwt,
+              userPrincipal.getFirstName(),
+              userPrincipal.getLastName(),
+              rolesString,
+              Constants.CLEVER_IT,
+              0L);
+      auditService.registerAudit(response, "Login", "OK", null);
       return response;
     }
   }
@@ -105,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
   @Transactional
   public User registerUser(SignUpRequest signUpRequest) {
     RegisterTokenRequest tokenInfo =
-            this.getRegisterTokenInfo(signUpRequest.getRegistrationToken());
+        this.getRegisterTokenInfo(signUpRequest.getRegistrationToken());
     Company company = companyService.findById(tokenInfo.getCompanyId());
     Role role = roleService.findById(Constants.ROLE_CLIENT_ID);
 

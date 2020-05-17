@@ -31,85 +31,86 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final CustomUserDetailsService customUserDetailsService;
-    private final JwtAuthenticationEntryPoint unauthorizedHandler;
-    private final JwtAccessDeniedHandler accessDeniedHandler;
+  private final CustomUserDetailsService customUserDetailsService;
+  private final JwtAuthenticationEntryPoint unauthorizedHandler;
+  private final JwtAccessDeniedHandler accessDeniedHandler;
 
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
-    }
+  @Bean
+  public JwtAuthenticationFilter jwtAuthenticationFilter() {
+    return new JwtAuthenticationFilter();
+  }
 
-    @Value("${api.ldap.server}")
-    public String LDAP_SERVER;
+  @Value("${api.ldap.server}")
+  public String LDAP_SERVER;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.ldapAuthentication()
-                .userDnPatterns("uid={0},ou=people")
-                .groupSearchBase("ou=groups")
-                .contextSource(contextSource())
-                .userDetailsContextMapper(userDetailsContextMapper())
-                .passwordCompare()
-                //                .passwordEncoder(passwordEncoder())
-                .passwordAttribute("userPassword");
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.ldapAuthentication()
+        .userDnPatterns("uid={0},ou=people")
+        .userSearchFilter("(|(uid={0})(mail={0}))")
+        .groupSearchBase("ou=groups")
+        .contextSource(contextSource())
+        .userDetailsContextMapper(userDetailsContextMapper())
+        .passwordCompare()
+        // .passwordEncoder(passwordEncoder()) // TODO activar cuando conecte real
+        .passwordAttribute("userPassword");
 
-        auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
-    }
+    auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
+  }
 
-    @Bean
-    public DefaultSpringSecurityContextSource contextSource() {
-        return new DefaultSpringSecurityContextSource(
-                Collections.singletonList(LDAP_SERVER), "dc=springframework,dc=org");
-    }
+  @Bean
+  public DefaultSpringSecurityContextSource contextSource() {
+    return new DefaultSpringSecurityContextSource(
+        Collections.singletonList(LDAP_SERVER), "dc=springframework,dc=org");
+  }
 
-    public UserDetailsContextMapper userDetailsContextMapper() {
-        return new CustomLdapMapper();
-    }
+  public UserDetailsContextMapper userDetailsContextMapper() {
+    return new CustomLdapMapper();
+  }
 
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+  @Bean(BeanIds.AUTHENTICATION_MANAGER)
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors()
-                .and()
-                .csrf()
-                .disable()
-                .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler)
-                .authenticationEntryPoint(unauthorizedHandler)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers(
-                        "/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
-                .antMatchers("/api/auth/**")
-                .permitAll()
-                .antMatchers("/actuator/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.cors()
+        .and()
+        .csrf()
+        .disable()
+        .exceptionHandling()
+        .accessDeniedHandler(accessDeniedHandler)
+        .authenticationEntryPoint(unauthorizedHandler)
+        .and()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .authorizeRequests()
+        .antMatchers(
+            "/",
+            "/favicon.ico",
+            "/**/*.png",
+            "/**/*.gif",
+            "/**/*.svg",
+            "/**/*.jpg",
+            "/**/*.html",
+            "/**/*.css",
+            "/**/*.js")
+        .permitAll()
+        .antMatchers("/api/auth/**")
+        .permitAll()
+        .antMatchers("/actuator/**")
+        .permitAll()
+        .anyRequest()
+        .authenticated();
 
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
+    http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+  }
 }

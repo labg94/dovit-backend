@@ -19,10 +19,9 @@ public class LdapUtil {
 
   private final LdapTemplate ldapTemplate;
 
-  public UserDetails findDataByUsername(String username) {
+  public UserDetails findDataByUsername(String mail) {
 
-    List<? extends User> users =
-        ldapTemplate.search("ou=people", "uid=" + username, new LdapMapper());
+    List<? extends User> users = ldapTemplate.search("ou=people", "mail=" + mail, new LdapMapper());
     return UserPrincipal.create(users.get(0));
   }
 }
