@@ -1,5 +1,6 @@
 package com.dovit.backend.model.requests;
 
+import com.dovit.backend.annotations.Rut;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import org.springframework.lang.Nullable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * To register new users from the administrator site. It can create / update any type of users
@@ -33,6 +35,13 @@ public class UserRequest {
   @NotBlank(message = "Email cannot be null")
   @Email(message = "Email does not have a valid format")
   private String email;
+
+  @NotBlank
+  @Pattern(
+      message = "RUT's format is wrong. Please write it without dots (.) and with dashes (-)",
+      regexp = "^[0-9]+[-|‐][0-9kK]$")
+  @Rut
+  private String rut;
 
   private String password;
 

@@ -42,6 +42,7 @@ class UserControllerTest {
           .lastName("París")
           .email("ramon.paris@inacapmail.cl")
           .password("password")
+          .rut("25412683-7")
           .active(true)
           .build();
 
@@ -53,6 +54,7 @@ class UserControllerTest {
           .name("Ramón")
           .lastName("París")
           .email("ramon.paris@inacapmail.cl")
+          .rut("25412683-7")
           .active(true)
           .roleId(1L)
           .companyId(null)

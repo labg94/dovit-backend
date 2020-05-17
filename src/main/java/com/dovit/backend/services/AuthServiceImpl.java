@@ -121,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
     user.setName(signUpRequest.getName());
     user.setLastName(signUpRequest.getLastName());
     user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-
+    user.setRut(signUpRequest.getRut());
     user.setEmail(tokenInfo.getEmail());
     user.setCompany(company);
     user.setRole(role);

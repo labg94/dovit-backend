@@ -73,6 +73,7 @@ class AuthControllerTest {
             .name("Ramón")
             .lastName("París")
             .password("1234567")
+            .rut("25412683-7")
             .build();
 
     String request = new Gson().toJson(signUpRequest);

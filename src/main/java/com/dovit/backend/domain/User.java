@@ -19,7 +19,10 @@ import java.util.List;
 @Entity
 @Table(
     name = "users",
-    uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
+    uniqueConstraints = {
+      @UniqueConstraint(columnNames = {"email"}),
+      @UniqueConstraint(columnNames = {"rut"})
+    })
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -37,6 +40,8 @@ public class User extends DateAudit {
 
   @NotBlank private String password;
 
+  @NotBlank private String rut;
+
   @ManyToOne private Role role;
 
   @ManyToOne
@@ -47,15 +52,4 @@ public class User extends DateAudit {
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   private List<Audit> auditList;
-
-  public User(
-      @NotBlank String name,
-      @NotBlank String lastName,
-      @NotBlank @Email String email,
-      boolean active) {
-    this.name = name;
-    this.lastName = lastName;
-    this.email = email;
-    this.active = active;
-  }
 }
