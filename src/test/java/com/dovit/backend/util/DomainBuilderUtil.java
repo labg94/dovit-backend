@@ -17,10 +17,10 @@ public class DomainBuilderUtil {
   public static Level level = Level.builder().levelId(1L).description("Senior").build();
 
   public static DevOpsCategory devOpsCategoryPlanning =
-      DevOpsCategory.builder().id(1L).description("Planning").build();
+      DevOpsCategory.builder().id(1L).description("Planning").active(true).build();
 
   public static DevOpsCategory devOpsCategoryCICD =
-      DevOpsCategory.builder().id(3L).description("CI/CD").build();
+      DevOpsCategory.builder().id(3L).description("CI/CD").active(true).build();
 
   public static DevOpsSubcategory issue_tracking =
       DevOpsSubcategory.builder()

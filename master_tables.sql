@@ -15,12 +15,12 @@ INSERT INTO public.license_type(id, description) VALUES(1, 'Open Source');
 INSERT INTO public.license_type(id, description) VALUES(2, 'Premium');
 INSERT INTO public.license_type(id, description) VALUES(3, 'Self-hosted');
 
-INSERT INTO public.devops_categories (id, description) VALUES (1, 'Planificación');
-INSERT INTO public.devops_categories (id, description) VALUES (2, 'Build');
-INSERT INTO public.devops_categories (id, description) VALUES (3, 'Testing');
-INSERT INTO public.devops_categories (id, description) VALUES (4, 'CI/CD');
-INSERT INTO public.devops_categories (id, description) VALUES (5, 'Configuración');
-INSERT INTO public.devops_categories (id, description) VALUES (6, 'Monitoreo');
+INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (1, 'Planificación', NOW(), NOW());
+INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (2, 'Build', NOW(), NOW());
+INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (3, 'Testing', NOW(), NOW());
+INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (4, 'CI/CD', NOW(), NOW());
+INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (5, 'Configuración', NOW(), NOW());
+INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (6, 'Monitoreo', NOW(), NOW());
 
 INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (1, 'Tablero Kanban', 1);
 INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (2, 'Issue Tracking', 1);

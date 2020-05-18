@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -132,6 +133,17 @@ public class ApiExceptionHandler {
     ErrorResponse errorResponse =
         new ErrorResponse(new Date(), HttpStatus.BAD_REQUEST.value(), errorsMessages);
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+  }
+
+  @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+  @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+  public ResponseEntity<?> handleMethodNotAllowed(HttpRequestMethodNotSupportedException e) {
+    List<String> errorsMessages =
+        Collections.singletonList(e.getMethod() + " method not allowed for this endpoint");
+
+    ErrorResponse errorResponse =
+        new ErrorResponse(new Date(), HttpStatus.METHOD_NOT_ALLOWED.value(), errorsMessages);
+    return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
   }
 
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

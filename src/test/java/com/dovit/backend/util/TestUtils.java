@@ -97,6 +97,24 @@ public class TestUtils {
     }
   }
 
+  public static void testPatchRequest(MockMvc mockMvc, String endpoint, Object requestObject) {
+    String request = gson.toJson(requestObject);
+    MvcResult mvcResult;
+    try {
+      mvcResult =
+          mockMvc
+              .perform(
+                  MockMvcRequestBuilders.patch("http://localhost:8080/api" + endpoint)
+                      .contentType(MediaType.APPLICATION_JSON)
+                      .content(request))
+              .andExpect(status().is2xxSuccessful())
+              .andReturn();
+      assertNotNull(mvcResult.getResponse().getContentAsString());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public static void testDeleteRequest(MockMvc mockMvc, String endpoint) {
     MvcResult mvcResult;
     try {
