@@ -29,23 +29,23 @@ public class DevOpsCategoryController {
 
   private final DevOpsCategoryService devOpsCategoryService;
 
-  @GetMapping("/devOpsCategories/actives")
+  @GetMapping("/categories/actives")
   public ResponseEntity<?> findAllActives() {
     return ResponseEntity.ok(devOpsCategoryService.findAllActives());
   }
 
-  @GetMapping("/devOpsCategories")
+  @GetMapping("/categories")
   public ResponseEntity<?> findAll() {
     return ResponseEntity.ok(devOpsCategoryService.findAll());
   }
 
-  @GetMapping("/devOpsCategory/{id}")
+  @GetMapping("/category/{id}")
   public ResponseEntity<?> findById(@PathVariable Long id) {
     CategoryResponse devOpsCategory = devOpsCategoryService.findById(id);
     return ResponseEntity.ok(devOpsCategory);
   }
 
-  @PostMapping("/devOpsCategory")
+  @PostMapping("/category")
   public ResponseEntity<?> save(@RequestBody @Valid CategoryRequest devOpsCategoryRequest) {
     DevOpsCategory devOpsCategory = devOpsCategoryService.save(devOpsCategoryRequest);
     log.info("DevOps Category with id {} created", devOpsCategory.getId());
@@ -60,7 +60,7 @@ public class DevOpsCategoryController {
         .body(new ApiResponse(true, "DevOps Category created successfully"));
   }
 
-  @PutMapping("/devOpsCategory")
+  @PutMapping("/category")
   public ResponseEntity<?> update(@RequestBody @Valid CategoryRequest devOpsCategoryRequest) {
     DevOpsCategory devOpsCategory = devOpsCategoryService.update(devOpsCategoryRequest);
     log.info("DevOps Category with id {} updated", devOpsCategory.getId());
@@ -75,7 +75,7 @@ public class DevOpsCategoryController {
         .body(new ApiResponse(true, "DevOps Category created successfully"));
   }
 
-  @PatchMapping("/devOpsCategory/{id}")
+  @PatchMapping("/category/{id}")
   public ResponseEntity<?> toggleActive(@PathVariable Long id) {
     devOpsCategoryService.toggleActive(id);
     log.info("DevOps Category with id {} logic toggled", id);

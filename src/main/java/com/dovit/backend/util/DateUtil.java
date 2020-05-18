@@ -14,10 +14,16 @@ public class DateUtil {
   private static final DateTimeFormatter OUTPUT_DATETIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME;
 
   public static String formatDateToString(LocalDate localDate) {
-    return localDate.format(OUTPUT_DATE_FORMAT);
+    if (localDate != null) {
+      return localDate.format(OUTPUT_DATE_FORMAT);
+    }
+    return null;
   }
 
   public static String formatDateToString(LocalDateTime localDate) {
-    return localDate.format(OUTPUT_DATETIME_FORMAT);
+    if (localDate != null) {
+      return localDate.format(OUTPUT_DATETIME_FORMAT);
+    }
+    return null;
   }
 }

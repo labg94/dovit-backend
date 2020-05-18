@@ -40,38 +40,38 @@ class DevOpsCategoryControllerTest {
   @Test
   void findAllActives() {
     when(devOpsCategoryService.findAllActives()).thenReturn(new ArrayList<>());
-    TestUtils.testGetRequest(mockMvc, "/devOpsCategories/actives");
+    TestUtils.testGetRequest(mockMvc, "/categories/actives");
   }
 
   @Test
   void findAll() {
     when(devOpsCategoryService.findAll()).thenReturn(new ArrayList<>());
-    TestUtils.testGetRequest(mockMvc, "/devOpsCategories");
+    TestUtils.testGetRequest(mockMvc, "/categories");
   }
 
   @Test
   void findById() {
     when(devOpsCategoryService.findById(anyLong())).thenReturn(new CategoryResponse());
-    TestUtils.testGetRequest(mockMvc, "/devOpsCategory/1");
+    TestUtils.testGetRequest(mockMvc, "/category/1");
   }
 
   @Test
   void save() {
     when(devOpsCategoryService.save(any(CategoryRequest.class))).thenReturn(new DevOpsCategory());
     TestUtils.testPostRequest(
-        mockMvc, "/devOpsCategory", CategoryRequest.builder().description("description").build());
+        mockMvc, "/category", CategoryRequest.builder().description("description").build());
   }
 
   @Test
   void update() {
     when(devOpsCategoryService.update(any(CategoryRequest.class))).thenReturn(new DevOpsCategory());
     TestUtils.testPutRequest(
-        mockMvc, "/devOpsCategory", CategoryRequest.builder().description("description").build());
+        mockMvc, "/category", CategoryRequest.builder().description("description").build());
   }
 
   @Test
   void toggleActive() {
     doNothing().when(devOpsCategoryService).toggleActive(anyLong());
-    TestUtils.testPatchRequest(mockMvc, "/devOpsCategory/1", null);
+    TestUtils.testPatchRequest(mockMvc, "/category/1", null);
   }
 }

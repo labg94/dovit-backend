@@ -15,25 +15,25 @@ INSERT INTO public.license_type(id, description) VALUES(1, 'Open Source');
 INSERT INTO public.license_type(id, description) VALUES(2, 'Premium');
 INSERT INTO public.license_type(id, description) VALUES(3, 'Self-hosted');
 
-INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (1, 'Planificación', NOW(), NOW());
+INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (1, 'Planning', NOW(), NOW());
 INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (2, 'Build', NOW(), NOW());
 INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (3, 'Testing', NOW(), NOW());
 INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (4, 'CI/CD', NOW(), NOW());
-INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (5, 'Configuración', NOW(), NOW());
-INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (6, 'Monitoreo', NOW(), NOW());
+INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (5, 'Configuration', NOW(), NOW());
+INSERT INTO public.devops_categories (id, description, created_at, updated_at) VALUES (6, 'Monitoring', NOW(), NOW());
 
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (1, 'Tablero Kanban', 1);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (2, 'Issue Tracking', 1);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (3, 'Java', 2);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (4, '.NET', 2);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (5, 'Pruebas automatizadas', 3);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (6, 'Pruebas de performance', 3);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (7, 'Repositorios', 4);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (8, 'Integración continua', 4);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (9, 'Despliegue continuo', 4);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (10, 'Servidores', 5);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (11, 'Servidores', 6);
-INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id) VALUES (12, 'Logging', 6);
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (1, 'Kanban Board', 1,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (2, 'Issue Tracking', 1,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (3, 'Java', 2,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (4, '.NET', 2,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (5, 'Automatized test', 3,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (6, 'Performance test', 3,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (7, 'Repositories', 4,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (8, 'Continuous integration', 4,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (9, 'Continuous deployment', 4,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (10, 'Servers', 5,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (11, 'Servers', 6,NOW(), NOW());
+INSERT INTO public.devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at) VALUES (12, 'Logging', 6,NOW(), NOW());
 
 INSERT INTO TOOLS(tool_id, image_url, name) VALUES
 (1,'/plan/azure_devops.png','Azure DevOps'),
@@ -180,7 +180,7 @@ INSERT INTO public.licenses_pricing (license_pricing_id, max_users, min_users, p
 
 INSERT INTO public.level (level_id, description) VALUES (1, 'Senior');
 INSERT INTO public.level (level_id, description) VALUES (2, 'Semi senior');
-INSERT INTO public.level (level_id, description) VALUES (3, 'Júnior');
+INSERT INTO public.level (level_id, description) VALUES (3, 'Junior');
 
 INSERT INTO public.profile (id, description) VALUES (1, 'Backend Developer');
 INSERT INTO public.profile (id, description) VALUES (2, 'Quality Assurance');

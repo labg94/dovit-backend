@@ -1,5 +1,6 @@
 package com.dovit.backend.domain;
 
+import com.dovit.backend.domain.audit.DateAudit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,14 +23,17 @@ import java.util.List;
 @Entity
 @Table(name = "devops_subcategories")
 @Builder
-public class DevOpsSubcategory {
+public class DevOpsSubcategory extends DateAudit {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "devops_subcategory_id")
   private Long id;
 
   @NotEmpty private String description;
+
+  @Column(columnDefinition = "boolean default true")
+  private boolean active;
 
   @ManyToMany(mappedBy = "subcategories")
   List<Tool> tools;
