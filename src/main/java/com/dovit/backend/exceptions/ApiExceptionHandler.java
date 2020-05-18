@@ -4,6 +4,7 @@ import com.dovit.backend.model.responses.ErrorResponse;
 import com.dovit.backend.services.AuditService;
 import com.dovit.backend.util.Constants;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
  */
 @RestControllerAdvice
 @RequiredArgsConstructor
+@Slf4j
 public class ApiExceptionHandler {
 
   private final AuditService auditService;
@@ -128,7 +130,8 @@ public class ApiExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({HttpMessageNotReadableException.class})
   public ResponseEntity<?> handleMessageNotReadable(HttpMessageNotReadableException e) {
-    List<String> errorsMessages = Collections.singletonList("Empty request body");
+    log.error("Request error", e);
+    List<String> errorsMessages = Collections.singletonList("Request error");
 
     ErrorResponse errorResponse =
         new ErrorResponse(new Date(), HttpStatus.BAD_REQUEST.value(), errorsMessages);

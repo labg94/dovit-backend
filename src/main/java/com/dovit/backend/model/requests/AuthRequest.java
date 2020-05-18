@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 /**
@@ -20,7 +21,7 @@ import javax.validation.constraints.NotEmpty;
 public class AuthRequest {
 
   @NotEmpty(message = "Email cannot be empty")
-  //    @Email
+  @Email(message = "Email with wrong format")
   private String email;
 
   @NotEmpty(message = "Password cannot be empty")

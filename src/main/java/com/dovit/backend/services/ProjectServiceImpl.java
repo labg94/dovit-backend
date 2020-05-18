@@ -46,6 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   @Transactional
   public Project saveProject(ProjectRequest request) {
+    request.setId(null);
     Project project = modelMapper.map(request, Project.class);
     //        project.setStart(request.getStart().toInstant());
     project = projectRepository.save(project);

@@ -10,6 +10,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 /**
@@ -41,7 +42,7 @@ public class ProjectController {
   }
 
   @PostMapping("/project")
-  public ResponseEntity<?> createProject(@RequestBody ProjectRequest request) {
+  public ResponseEntity<?> createProject(@RequestBody @Valid ProjectRequest request) {
     Project response = projectService.saveProject(request);
 
     URI location =
