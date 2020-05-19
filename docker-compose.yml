@@ -20,8 +20,6 @@ services:
       - dovit-backend
     networks:
       - frontend
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
 
   # App backend service
   dovit-backend:
@@ -41,8 +39,6 @@ services:
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - backend
       - frontend
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
 
   # Database Service (Mysql)
   db:
