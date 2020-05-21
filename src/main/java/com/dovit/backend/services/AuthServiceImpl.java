@@ -68,15 +68,20 @@ public class AuthServiceImpl implements AuthService {
       String jwt = tokenProvider.generateAuthToken(authentication);
 
       AuthResponse response =
-          new AuthResponse(
-              jwt,
-              userPrincipal.getName(),
-              userPrincipal.getLastName(),
-              authentication.getAuthorities().stream()
-                  .map(Object::toString)
-                  .collect(Collectors.joining(", ")),
-              userPrincipal.getCompanyName(),
-              userPrincipal.getId());
+          AuthResponse.builder()
+              .accessToken(jwt)
+              .tokenType("Bearer")
+              .name(userPrincipal.getName())
+              .lastName(userPrincipal.getLastName())
+              .role(
+                  authentication.getAuthorities().stream()
+                      .map(Object::toString)
+                      .collect(Collectors.joining(", ")))
+              .company(userPrincipal.getCompanyName())
+              .companyId(userPrincipal.getCompanyId())
+              .userId(userPrincipal.getId())
+              .build();
+
       auditService.registerAudit(response, "Login", "OK", userPrincipal.getId());
       return response;
     } else { // If the authentication was made by ldap service
