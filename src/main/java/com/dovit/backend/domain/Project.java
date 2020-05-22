@@ -27,11 +27,14 @@ public class Project {
 
   @NotBlank private String name;
 
-  private LocalDate start;
+  @Column private LocalDate start;
 
-  private String observation;
+  @Column(name = "end_date")
+  private LocalDate endDate;
 
-  private Boolean finished;
+  @Column private String observation;
+
+  @Column private Boolean finished;
 
   @ManyToOne private Company company;
 

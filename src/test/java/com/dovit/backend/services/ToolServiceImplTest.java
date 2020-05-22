@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.dovit.backend.util.DomainBuilderUtil.tool;
+import static com.dovit.backend.util.DomainBuilderUtil.gitlabTool;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -51,7 +51,8 @@ class ToolServiceImplTest {
 
   @Test
   void findAllToolsOfCompany() {
-    when(toolRepository.findAllByCompanyId(anyLong())).thenReturn(Collections.singletonList(tool));
+    when(toolRepository.findAllByCompanyId(anyLong()))
+        .thenReturn(Collections.singletonList(gitlabTool));
 
     List<ToolResponse> responseList = toolService.findAllToolsOfCompany(1L);
     assertNotNull(responseList);
@@ -65,7 +66,7 @@ class ToolServiceImplTest {
 
   @Test
   void findAllTools() {
-    when(toolRepository.findAll()).thenReturn(Collections.singletonList(tool));
+    when(toolRepository.findAll()).thenReturn(Collections.singletonList(gitlabTool));
 
     List<ToolResponse> responseList = toolService.findAllTools();
     assertNotNull(responseList);
@@ -79,7 +80,7 @@ class ToolServiceImplTest {
 
   @Test
   void findById_OK() {
-    when(toolRepository.findById(anyLong())).thenReturn(Optional.of(tool));
+    when(toolRepository.findById(anyLong())).thenReturn(Optional.of(gitlabTool));
     ToolResponse toolResponse = toolService.findById(1L);
     assertNotNull(toolResponse);
     Assert.assertNotNull(toolResponse);

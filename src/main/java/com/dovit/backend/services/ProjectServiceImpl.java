@@ -1,23 +1,21 @@
 package com.dovit.backend.services;
 
-import com.dovit.backend.domain.DevOpsCategory;
-import com.dovit.backend.domain.Member;
-import com.dovit.backend.domain.Project;
-import com.dovit.backend.domain.ProjectMember;
+import com.dovit.backend.domain.*;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
+import com.dovit.backend.model.requests.ProjectMemberRequest;
 import com.dovit.backend.model.requests.ProjectRequest;
-import com.dovit.backend.model.responses.MemberResponse;
+import com.dovit.backend.model.responses.MemberResponseDetail;
 import com.dovit.backend.model.responses.ProjectMemberRecommendation;
 import com.dovit.backend.model.responses.ProjectResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.MemberRepository;
 import com.dovit.backend.repositories.ProjectMemberRepository;
 import com.dovit.backend.repositories.ProjectRepository;
+import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,16 +37,20 @@ public class ProjectServiceImpl implements ProjectService {
   private final MemberRepository memberRepository;
   private final DevOpsCategoryRepository devOpsCategoryRepository;
   private final ModelMapper modelMapper;
-
-  @Value("${api.image.route}")
-  private String BASE_IMAGE_URL;
+  private final ValidatorUtil validatorUtil;
+  private final MemberService memberService;
 
   @Override
   @Transactional
   public Project saveProject(ProjectRequest request) {
+    final List<Long> membersId =
+        request.getMembers().stream()
+            .map(ProjectMemberRequest::getMemberId)
+            .collect(Collectors.toList());
+
+    memberService.areMembersInCompany(membersId, request.getCompanyId());
     request.setId(null);
     Project project = modelMapper.map(request, Project.class);
-    //        project.setStart(request.getStart().toInstant());
     project = projectRepository.save(project);
 
     Long projectId = project.getId();
@@ -97,6 +99,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   @Transactional
   public List<ProjectResponse> findAllByCompanyId(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     List<Project> projects = projectRepository.findAllByCompanyId(companyId);
     return projects.stream()
         .map(p -> modelMapper.map(p, ProjectResponse.class))
@@ -111,6 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
             .findById(projectId)
             .orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
 
+    validatorUtil.canActOnCompany(project.getCompany().getId());
     return modelMapper.map(project, ProjectResponse.class);
   }
 
@@ -119,41 +123,46 @@ public class ProjectServiceImpl implements ProjectService {
   public List<ProjectMemberRecommendation> findMemberRecommendation(Long companyId) {
     List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAll();
     List<Member> members = memberRepository.findAllByCompanyId(companyId);
-    ModelMapper modelMapper = new ModelMapper();
-    List<ProjectMemberRecommendation> recommendations =
-        devOpsCategories.stream()
-            .map(d -> modelMapper.map(d, ProjectMemberRecommendation.class))
-            .collect(Collectors.toList());
-
-    // TODO optimizar este código desde una query en la base de datos!
-    return recommendations.stream()
+    return devOpsCategories.stream()
+        .map(d -> modelMapper.map(d, ProjectMemberRecommendation.class))
         .peek(
-            r -> {
-              List<MemberResponse> membersRecommendation =
+            recommendation -> {
+              List<MemberResponseDetail> membersRecommendation =
                   members.stream()
                       .filter(
-                          m ->
-                              m.getToolProfile().stream()
-                                  .anyMatch(
-                                      toolProfile ->
-                                          toolProfile.getTool().getSubcategories().stream()
-                                              .anyMatch(
-                                                  sub ->
-                                                      sub.getDevOpsCategory()
-                                                          .getId()
-                                                          .equals(r.getDevOpsCategoryId()))))
-                      .map(
-                          m ->
-                              modelMapper.map(
-                                  m,
-                                  MemberResponse
-                                      .class)) // TODO esto no está funcionando bien. Se debe
-                      // revisar el mapper para llenar las tools.
+                          member ->
+                              memberKnowsCategory(recommendation.getDevOpsCategoryId(), member))
+                      .map( // returns members with tools that match with actual category
+                          member ->
+                              member
+                                  .toBuilder()
+                                  .toolProfile(
+                                      findToolsByCategory(
+                                          recommendation.getDevOpsCategoryId(), member))
+                                  .build())
+                      .map(member -> modelMapper.map(member, MemberResponseDetail.class))
+                      .peek(memberResponseDetail -> memberResponseDetail.setProjects(null))
                       .collect(Collectors.toList());
 
-              r.setMembersRecommendation(membersRecommendation);
+              recommendation.setMembersRecommendation(membersRecommendation);
             })
         .sorted(Comparator.comparing(ProjectMemberRecommendation::getDevOpsCategoryId))
         .collect(Collectors.toList());
+  }
+
+  private List<ToolProfile> findToolsByCategory(Long categoryId, Member member) {
+    return member.getToolProfile().stream()
+        .filter(t -> toolInCategory(t, categoryId))
+        .collect(Collectors.toList());
+  }
+
+  private boolean toolInCategory(ToolProfile tool, Long devOpsCategoryId) {
+    return tool.getTool().getSubcategories().stream()
+        .anyMatch(sub -> sub.getDevOpsCategory().getId().equals(devOpsCategoryId));
+  }
+
+  private boolean memberKnowsCategory(Long categoryId, Member member) {
+    return member.getToolProfile().stream()
+        .anyMatch(toolProfile -> toolInCategory(toolProfile, categoryId));
   }
 }

@@ -18,7 +18,7 @@ import java.net.URI;
  * @since 09-12-2019
  */
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+@Secured({"ROLE_ADMIN"})
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RestController
@@ -26,16 +26,19 @@ public class ProjectController {
 
   private final ProjectService projectService;
 
+  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
   @GetMapping("/company/{companyId}/projects")
   public ResponseEntity<?> findAllByCompanyId(@PathVariable Long companyId) {
     return ResponseEntity.ok(projectService.findAllByCompanyId(companyId));
   }
 
+  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
   @GetMapping("/project/{projectId}")
   public ResponseEntity<?> findByProjectId(@PathVariable Long projectId) {
     return ResponseEntity.ok(projectService.findByProjectId(projectId));
   }
 
+  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
   @GetMapping("/company/{companyId}/project/availableMembers")
   public ResponseEntity<?> getMembersRecommendation(@PathVariable Long companyId) {
     return ResponseEntity.ok(projectService.findMemberRecommendation(companyId));
@@ -56,7 +59,7 @@ public class ProjectController {
   }
 
   @PutMapping("/project")
-  public ResponseEntity<?> updateProject(@RequestBody ProjectRequest request) {
+  public ResponseEntity<?> updateProject(@RequestBody @Valid ProjectRequest request) {
     Project response = projectService.updateProject(request);
 
     URI location =

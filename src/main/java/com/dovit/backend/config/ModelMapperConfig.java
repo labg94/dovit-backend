@@ -1,6 +1,8 @@
 package com.dovit.backend.config;
 
 import com.dovit.backend.domain.*;
+import com.dovit.backend.model.requests.ProjectMemberRequest;
+import com.dovit.backend.model.requests.ProjectRequest;
 import com.dovit.backend.model.responses.*;
 import com.dovit.backend.util.DateUtil;
 import com.google.gson.Gson;
@@ -14,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,10 +41,42 @@ public class ModelMapperConfig {
         .setDeepCopyEnabled(false)
         .setSkipNullEnabled(true)
         .setSkipNullEnabled(true);
+
+    // Add response mappers
     modelMapper.addMappings(this.toolResponsePropertyMap(BASE_IMAGE_URL));
     modelMapper.addMappings(this.projectResponsePropertyMap(BASE_IMAGE_URL));
     modelMapper.addMappings(this.auditResponsePropertyMap());
+    modelMapper.addMappings(this.memberResponsePropertyMap(BASE_IMAGE_URL));
+    modelMapper.addMappings(this.projectMemberResumePropertyMap());
+
+    // Add requests mappers
+    modelMapper.addMappings(projectRequestPropertyMap());
+
     return modelMapper;
+  }
+
+  private PropertyMap<ProjectRequest, Project> projectRequestPropertyMap() {
+    Converter<List<ProjectMemberRequest>, List<ProjectMember>> memberConverter =
+        mappingContext ->
+            mappingContext.getSource().stream()
+                .map(
+                    m ->
+                        ProjectMember.builder()
+                            .memberId(m.getMemberId())
+                            .devOpsCategoryId(m.getDevOpsCategoryId())
+                            .build())
+                .collect(Collectors.toList());
+
+    Converter<Long, Company> companyConverter =
+        mappingContext -> Company.builder().id(mappingContext.getSource()).build();
+
+    return new PropertyMap<ProjectRequest, Project>() {
+      @Override
+      protected void configure() {
+        using(memberConverter).map(source.getMembers()).setMembers(Collections.emptyList());
+        using(companyConverter).map(source.getCompanyId()).setCompany(new Company());
+      }
+    };
   }
 
   private PropertyMap<Audit, AuditResponse> auditResponsePropertyMap() {
@@ -69,8 +104,9 @@ public class ModelMapperConfig {
     };
   }
 
-  private PropertyMap<Member, MemberResponse> memberResponsePropertyMap(String BASE_IMAGE_URL) {
-    Converter<List<ToolProfile>, List<ToolProfileResponse>> converter =
+  private PropertyMap<Member, MemberResponseDetail> memberResponsePropertyMap(
+      String BASE_IMAGE_URL) {
+    Converter<List<ToolProfile>, List<ToolProfileResponse>> toolConverter =
         mappingContext ->
             mappingContext.getSource().stream()
                 .map(
@@ -84,10 +120,73 @@ public class ModelMapperConfig {
                             .build())
                 .collect(Collectors.toList());
 
-    return new PropertyMap<Member, MemberResponse>() {
+    Converter<List<ProjectMember>, Long> activeProjectsQtyConverter =
+        mappingContext ->
+            (long)
+                mappingContext.getSource().stream()
+                    .filter(projectMember -> !projectMember.getProject().getFinished())
+                    .count();
+
+    Converter<List<ProjectMember>, String> availableStatusDescriptionConverter =
+        mappingContext -> {
+          final long totalActive =
+              mappingContext.getSource().stream()
+                  .filter(projectMember -> !projectMember.getProject().getFinished())
+                  .count();
+
+          if (totalActive == 0L) {
+            return "Available";
+          } else if (totalActive == 1L) {
+            return "Partially Available";
+          } else {
+            return "Busy";
+          }
+        };
+
+    Converter<List<ProjectMember>, Long> availableStatusIdConverter =
+        mappingContext -> {
+          final long totalActive =
+              mappingContext.getSource().stream()
+                  .filter(projectMember -> !projectMember.getProject().getFinished())
+                  .count();
+
+          if (totalActive == 0L) {
+            return 1L;
+          } else if (totalActive == 1L) {
+            return 2L;
+          } else {
+            return 3L;
+          }
+        };
+
+    Converter<List<ProjectMember>, Long> allProjectsQtyConverter =
+        mappingContext -> (long) mappingContext.getSource().size();
+
+    return new PropertyMap<>() {
       @Override
       protected void configure() {
-        using(converter).map(source.getToolProfile()).setTools(new ArrayList<>());
+        using(toolConverter).map(source.getToolProfile()).setTools(new ArrayList<>());
+        using(allProjectsQtyConverter).map(source.getProjects()).setAllProjectsQty(1L);
+        using(activeProjectsQtyConverter).map(source.getProjects()).setActiveProjectsQty(1L);
+        using(availableStatusDescriptionConverter)
+            .map(source.getProjects())
+            .setAvailableStatusDescription("");
+
+        using(availableStatusIdConverter).map(source.getProjects()).setAvailableStatusId(1L);
+      }
+    };
+  }
+
+  private PropertyMap<ProjectMember, ProjectMemberResume> projectMemberResumePropertyMap() {
+    Converter<ProjectMember, List<String>> categoriesConverter =
+        mappingContext ->
+            Collections.singletonList(
+                mappingContext.getSource().getDevOpsCategories().getDescription());
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        map(source.getProject().getId()).setProjectId(1L);
+        using(categoriesConverter).map(source).setCategoriesParticipation(new ArrayList<>());
       }
     };
   }

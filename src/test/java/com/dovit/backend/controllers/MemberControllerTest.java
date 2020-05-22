@@ -2,7 +2,7 @@ package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.Member;
 import com.dovit.backend.model.requests.MemberRequest;
-import com.dovit.backend.model.responses.MemberResponse;
+import com.dovit.backend.model.responses.MemberResponseDetail;
 import com.dovit.backend.services.MemberServiceImpl;
 import com.dovit.backend.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +43,7 @@ class MemberControllerTest {
 
   @Test
   void findMemberByCompanyIdAndMemberId() {
-    Mockito.when(memberService.findById(anyLong())).thenReturn(new MemberResponse());
+    Mockito.when(memberService.findById(anyLong())).thenReturn(new MemberResponseDetail());
     TestUtils.testGetRequest(mockMvc, "/member/1");
   }
 

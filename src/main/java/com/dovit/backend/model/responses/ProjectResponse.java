@@ -18,6 +18,7 @@ public class ProjectResponse {
   private Long id;
   private String name;
   private String start;
+  private String endDate;
   private String observation;
   private Long companyId;
   private String companyName;

@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProjectMemberRecommendation {
 
-    private Long devOpsCategoryId;
-    private String devOpsCategoryDescription;
-    private List<MemberResponse> membersRecommendation;
+  private Long devOpsCategoryId;
+  private String devOpsCategoryDescription;
+  private List<MemberResponseDetail> membersRecommendation;
 }

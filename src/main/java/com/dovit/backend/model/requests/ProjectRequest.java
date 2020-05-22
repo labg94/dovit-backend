@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -30,11 +31,17 @@ public class ProjectRequest {
   @NotNull(message = "Remember to select a start date")
   private LocalDate start;
 
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+  @Nullable
+  private LocalDate endDate;
+
   private String observation;
 
   @NotNull(message = "Company is a mandatory field")
   private Long companyId;
 
   private Boolean finished;
+
+  @NotNull(message = "Members are mandatory fields")
   private List<ProjectMemberRequest> members;
 }

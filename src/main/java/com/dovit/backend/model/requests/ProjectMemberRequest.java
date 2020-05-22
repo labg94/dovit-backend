@@ -1,8 +1,11 @@
 package com.dovit.backend.model.requests;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Ramón París
@@ -11,8 +14,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ProjectMemberRequest {
 
-    private Long memberId;
-    private Long devOpsCategoryId;
+  @NotNull(message = "Member cannot be null")
+  private Long memberId;
+
+  @NotNull(message = "Category cannot be null")
+  private Long devOpsCategoryId;
 }

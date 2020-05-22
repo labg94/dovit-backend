@@ -1,6 +1,7 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.Project;
+import com.dovit.backend.model.requests.ProjectMemberRequest;
 import com.dovit.backend.model.requests.ProjectRequest;
 import com.dovit.backend.model.responses.ProjectResponse;
 import com.dovit.backend.services.ProjectServiceImpl;
@@ -15,7 +16,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -31,8 +34,18 @@ class ProjectControllerTest {
   @Mock ProjectServiceImpl projectService;
   private MockMvc mockMvc;
 
-  private ProjectRequest request = ProjectRequest.builder().build();
-  private Project project = Project.builder().id(1L).build();
+  private final ProjectRequest request =
+      ProjectRequest.builder()
+          .name("Project")
+          .start(LocalDate.now())
+          .endDate(LocalDate.now())
+          .companyId(1L)
+          .finished(true)
+          .members(
+              Collections.singletonList(
+                  ProjectMemberRequest.builder().memberId(1L).devOpsCategoryId(1L).build()))
+          .build();
+  private final Project project = Project.builder().id(1L).build();
 
   @BeforeEach
   void setUp() {
