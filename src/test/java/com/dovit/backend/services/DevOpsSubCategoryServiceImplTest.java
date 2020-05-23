@@ -43,20 +43,29 @@ class DevOpsSubCategoryServiceImplTest {
   }
 
   @Test
-  void findAllActives() {
+  void findAllActivesByCategory() {
     when(devOpsSubCategoryRepository.findAllByActiveAndDevOpsCategoryIdOrderById(
             anyBoolean(), anyLong()))
         .thenReturn(List.of(repositories));
-    List<SubCategoryResponse> responses = devOpsSubCategoryService.findAllActives(1L);
+    List<SubCategoryResponse> responses = devOpsSubCategoryService.findAllActivesByCategoryId(1L);
     assertNotNull(responses);
     responses.forEach(Assert::assertNotNull);
   }
 
   @Test
-  void findAll() {
+  void findAllByCategory() {
     when(devOpsSubCategoryRepository.findAllByDevOpsCategoryIdOrderById(anyLong()))
         .thenReturn(List.of(repositories));
-    List<SubCategoryResponse> responses = devOpsSubCategoryService.findAll(1L);
+    List<SubCategoryResponse> responses = devOpsSubCategoryService.findAllByCategoryId(1L);
+    assertNotNull(responses);
+    responses.forEach(Assert::assertNotNull);
+  }
+
+  @Test
+  void findAllActives() {
+    when(devOpsSubCategoryRepository.findAllByActive(anyBoolean()))
+        .thenReturn(List.of(repositories));
+    List<SubCategoryResponse> responses = devOpsSubCategoryService.findAllActives();
     assertNotNull(responses);
     responses.forEach(Assert::assertNotNull);
   }

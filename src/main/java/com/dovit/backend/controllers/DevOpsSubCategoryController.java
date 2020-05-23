@@ -29,13 +29,18 @@ public class DevOpsSubCategoryController {
   private final DevOpsSubCategoryService devOpsSubCategoryService;
 
   @GetMapping("/category/{categoryId}/subcategories/actives")
-  public ResponseEntity<?> findAllActives(@PathVariable Long categoryId) {
-    return ResponseEntity.ok(devOpsSubCategoryService.findAllActives(categoryId));
+  public ResponseEntity<?> findAllActivesByCategory(@PathVariable Long categoryId) {
+    return ResponseEntity.ok(devOpsSubCategoryService.findAllActivesByCategoryId(categoryId));
   }
 
   @GetMapping("/category/{categoryId}/subcategories")
-  public ResponseEntity<?> findAll(@PathVariable Long categoryId) {
-    return ResponseEntity.ok(devOpsSubCategoryService.findAll(categoryId));
+  public ResponseEntity<?> findAllByCategory(@PathVariable Long categoryId) {
+    return ResponseEntity.ok(devOpsSubCategoryService.findAllByCategoryId(categoryId));
+  }
+
+  @GetMapping("/subcategories/actives")
+  public ResponseEntity<?> findAllActives() {
+    return ResponseEntity.ok(devOpsSubCategoryService.findAllActives());
   }
 
   @GetMapping("/subcategory/{id}")

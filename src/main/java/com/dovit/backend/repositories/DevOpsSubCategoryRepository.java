@@ -15,4 +15,6 @@ public interface DevOpsSubCategoryRepository extends JpaRepository<DevOpsSubcate
       boolean active, Long categoryId);
 
   List<DevOpsSubcategory> findAllByDevOpsCategoryIdOrderById(Long categoryId);
+
+  List<DevOpsSubcategory> findAllByActive(boolean b);
 }

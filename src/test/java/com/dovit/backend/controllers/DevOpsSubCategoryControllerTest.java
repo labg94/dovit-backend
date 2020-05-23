@@ -38,15 +38,21 @@ class DevOpsSubCategoryControllerTest {
   }
 
   @Test
-  void findAllActives() {
-    when(subCategoryService.findAllActives(anyLong())).thenReturn(new ArrayList<>());
+  void findAllActivesByCategory() {
+    when(subCategoryService.findAllActivesByCategoryId(anyLong())).thenReturn(new ArrayList<>());
     TestUtils.testGetRequest(mockMvc, "/category/1/subcategories/actives");
   }
 
   @Test
-  void findAll() {
-    when(subCategoryService.findAll(anyLong())).thenReturn(new ArrayList<>());
+  void findAllByCategory() {
+    when(subCategoryService.findAllByCategoryId(anyLong())).thenReturn(new ArrayList<>());
     TestUtils.testGetRequest(mockMvc, "/category/1/subcategories");
+  }
+
+  @Test
+  void findAllActives() {
+    when(subCategoryService.findAllByCategoryId(anyLong())).thenReturn(new ArrayList<>());
+    TestUtils.testGetRequest(mockMvc, "/subcategories/actives");
   }
 
   @Test

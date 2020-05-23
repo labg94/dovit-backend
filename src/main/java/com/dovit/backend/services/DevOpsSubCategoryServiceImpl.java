@@ -26,7 +26,7 @@ public class DevOpsSubCategoryServiceImpl implements DevOpsSubCategoryService {
   private final ModelMapper modelMapper;
 
   @Override
-  public List<SubCategoryResponse> findAllActives(Long categoryId) {
+  public List<SubCategoryResponse> findAllActivesByCategoryId(Long categoryId) {
     List<DevOpsSubcategory> devOpsSubcategories =
         devOpsSubcategoryRepository.findAllByActiveAndDevOpsCategoryIdOrderById(true, categoryId);
     return devOpsSubcategories.stream()
@@ -67,11 +67,19 @@ public class DevOpsSubCategoryServiceImpl implements DevOpsSubCategoryService {
   }
 
   @Override
-  public List<SubCategoryResponse> findAll(Long categoryId) {
+  public List<SubCategoryResponse> findAllByCategoryId(Long categoryId) {
     List<DevOpsSubcategory> devOpsSubcategories =
         devOpsSubcategoryRepository.findAllByDevOpsCategoryIdOrderById(categoryId);
     return devOpsSubcategories.stream()
         .map(c -> modelMapper.map(c, SubCategoryResponse.class))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<SubCategoryResponse> findAllActives() {
+    List<DevOpsSubcategory> subcategories = devOpsSubcategoryRepository.findAllByActive(true);
+    return subcategories.stream()
+        .map(sub -> modelMapper.map(sub, SubCategoryResponse.class))
         .collect(Collectors.toList());
   }
 

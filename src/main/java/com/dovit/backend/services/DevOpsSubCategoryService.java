@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface DevOpsSubCategoryService {
 
-  List<SubCategoryResponse> findAllActives(Long categoryId);
+  List<SubCategoryResponse> findAllActivesByCategoryId(Long categoryId);
 
   SubCategoryResponse findById(Long id);
 
@@ -22,5 +22,7 @@ public interface DevOpsSubCategoryService {
 
   void toggleActive(Long id);
 
-  List<SubCategoryResponse> findAll(Long categoryId);
+  List<SubCategoryResponse> findAllByCategoryId(Long categoryId);
+
+  List<SubCategoryResponse> findAllActives();
 }
