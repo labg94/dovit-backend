@@ -1,8 +1,10 @@
 package com.dovit.backend.config;
 
 import com.dovit.backend.domain.*;
+import com.dovit.backend.model.requests.LicenseRequest;
 import com.dovit.backend.model.requests.ProjectMemberRequest;
 import com.dovit.backend.model.requests.ProjectRequest;
+import com.dovit.backend.model.requests.ToolRequest;
 import com.dovit.backend.model.responses.*;
 import com.dovit.backend.util.DateUtil;
 import com.google.gson.Gson;
@@ -36,11 +38,7 @@ public class ModelMapperConfig {
   @Bean
   public ModelMapper modelMapper() {
     ModelMapper modelMapper = new ModelMapper();
-    modelMapper
-        .getConfiguration()
-        .setDeepCopyEnabled(false)
-        .setSkipNullEnabled(true)
-        .setSkipNullEnabled(true);
+    modelMapper.getConfiguration().setDeepCopyEnabled(false).setSkipNullEnabled(true);
 
     // Add response mappers
     modelMapper.addMappings(this.toolResponsePropertyMap(BASE_IMAGE_URL));
@@ -51,6 +49,8 @@ public class ModelMapperConfig {
 
     // Add requests mappers
     modelMapper.addMappings(projectRequestPropertyMap());
+    modelMapper.addMappings(licensePropertyMap());
+    modelMapper.addMappings(toolPropertyMap());
 
     return modelMapper;
   }
@@ -75,6 +75,53 @@ public class ModelMapperConfig {
       protected void configure() {
         using(memberConverter).map(source.getMembers()).setMembers(Collections.emptyList());
         using(companyConverter).map(source.getCompanyId()).setCompany(new Company());
+      }
+    };
+  }
+
+  private PropertyMap<ToolRequest, Tool> toolPropertyMap() {
+    Converter<List<Long>, List<DevOpsSubcategory>> converter =
+        mappingContext ->
+            mappingContext.getSource().stream()
+                .map(id -> DevOpsSubcategory.builder().id(id).build())
+                .collect(Collectors.toList());
+
+    Converter<String, String> imageUrlConverter =
+        mappingContext -> "/" + mappingContext.getSource().toLowerCase();
+
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        using(converter).map(source.getSubcategoryIds()).setSubcategories(new ArrayList<>());
+        map("").setCreatedAt(LocalDateTime.now());
+        map("").setUpdatedAt(LocalDateTime.now());
+        using(imageUrlConverter).map(source.getName()).setImageUrl("");
+        map("").setToolProfile(new ArrayList<>());
+      }
+    };
+  }
+
+  private PropertyMap<LicenseRequest, License> licensePropertyMap() {
+    Converter<Long, LicensePayCycle> payCycleConverter =
+        mappingContext -> LicensePayCycle.builder().id(mappingContext.getSource()).build();
+
+    Converter<Long, LicenseType> licenseTypeConverter =
+        mappingContext -> LicenseType.builder().id(mappingContext.getSource()).build();
+
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        using(payCycleConverter)
+            .map(source.getLicensePayCycleId())
+            .setPayCycle(new LicensePayCycle());
+
+        map("").setCreatedAt(null);
+        map("").setUpdatedAt(null);
+        map("").setCompanyLicenses(new ArrayList<>());
+        map(source).setTool(new Tool());
+        using(licenseTypeConverter)
+            .map(source.getLicenseTypeId())
+            .setLicenseType(new LicenseType());
       }
     };
   }

@@ -1,5 +1,7 @@
 package com.dovit.backend.services;
 
+import com.dovit.backend.domain.Tool;
+import com.dovit.backend.model.requests.ToolRequest;
 import com.dovit.backend.model.responses.ToolResponse;
 
 import java.util.List;
@@ -15,4 +17,6 @@ public interface ToolService {
   List<ToolResponse> findAllTools();
 
   ToolResponse findById(Long toolId);
+
+  Tool save(ToolRequest request);
 }

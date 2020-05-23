@@ -1,10 +1,17 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.domain.Tool;
+import com.dovit.backend.model.requests.ToolRequest;
+import com.dovit.backend.model.responses.ApiResponse;
 import com.dovit.backend.services.ToolService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.validation.Valid;
+import java.net.URI;
 
 /**
  * Controller to show the TOOLS in different ways
@@ -34,5 +41,19 @@ public class ToolController {
   @GetMapping("/tool/{toolId}")
   public ResponseEntity<?> findById(@PathVariable Long toolId) {
     return ResponseEntity.ok(toolService.findById(toolId));
+  }
+
+  @PostMapping("/tool")
+  public ResponseEntity<?> save(@RequestBody @Valid ToolRequest request) {
+    Tool response = toolService.save(request);
+
+    URI location =
+        ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(response.getId())
+            .toUri();
+
+    return ResponseEntity.created(location)
+        .body(new ApiResponse(true, "Tool created successfully"));
   }
 }

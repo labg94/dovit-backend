@@ -74,7 +74,7 @@ public class DomainBuilderUtil {
           .id(1L)
           .name("Basic plan")
           .observation("Observation")
-          .payCycle("Monthly")
+          //          .payCycle("Monthly")
           .licenseType(licenseType)
           .tool(gitlabTool)
           .build();

@@ -1,15 +1,18 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.config.ModelMapperConfig;
+import com.dovit.backend.domain.License;
+import com.dovit.backend.domain.LicensePricing;
+import com.dovit.backend.domain.Tool;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
+import com.dovit.backend.model.requests.LicensePricingRequest;
+import com.dovit.backend.model.requests.LicenseRequest;
+import com.dovit.backend.model.requests.ToolRequest;
 import com.dovit.backend.model.responses.ToolResponse;
 import com.dovit.backend.repositories.ToolRepository;
 import com.dovit.backend.util.ValidatorUtil;
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,10 +23,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static com.dovit.backend.util.DomainBuilderUtil.gitlabTool;
+import static com.dovit.backend.util.RequestBuilderUtil.getToolRequest;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -92,5 +99,59 @@ class ToolServiceImplTest {
   void findById_EXCEPTION() {
     when(toolRepository.findById(anyLong())).thenReturn(Optional.empty());
     assertThrows(ResourceNotFoundException.class, () -> toolService.findById(1L));
+  }
+
+  @Test
+  @Tag("SkipAfter")
+  void save() {
+    when(toolRepository.save(any(Tool.class))).thenAnswer(i -> i.getArgument(0));
+    ToolRequest toolRequest = getToolRequest();
+    Tool tool = toolService.save(toolRequest);
+    checkToolRequestMapping(toolRequest, tool);
+  }
+
+  private void checkToolRequestMapping(ToolRequest toolRequest, Tool tool) {
+    assertNotNull(tool);
+    assertEquals(tool.getName(), toolRequest.getName());
+    assertEquals(tool.getDescription(), toolRequest.getDescription());
+
+    assertEquals(toolRequest.getSubcategoryIds().size(), tool.getSubcategories().size());
+    IntStream.range(0, tool.getSubcategories().size())
+        .forEach(
+            i ->
+                assertEquals(
+                    tool.getSubcategories().get(i).getId(),
+                    toolRequest.getSubcategoryIds().get(i)));
+
+    assertEquals(toolRequest.getLicenses().size(), tool.getLicenses().size());
+    IntStream.range(0, tool.getLicenses().size())
+        .forEach(
+            i -> {
+              final LicenseRequest licenseRequest = toolRequest.getLicenses().get(i);
+              final License license = tool.getLicenses().get(i);
+
+              assertEquals(license.getName(), licenseRequest.getLicenseName());
+              assertEquals(license.getObservation(), licenseRequest.getLicenseObservation());
+              assertEquals(license.getLicenseType().getId(), licenseRequest.getLicenseTypeId());
+              assertEquals(license.getPayCycle().getId(), licenseRequest.getLicensePayCycleId());
+              assertEquals(license.getTool(), tool);
+
+              assertEquals(
+                  license.getLicensePrices().size(), licenseRequest.getLicensePrices().size());
+              IntStream.range(0, license.getLicensePrices().size())
+                  .forEach(
+                      j -> {
+                        final LicensePricing licensePricing = license.getLicensePrices().get(j);
+                        final LicensePricingRequest licensePricingRequest =
+                            licenseRequest.getLicensePrices().get(j);
+
+                        assertEquals(
+                            licensePricing.getMaxUsers(), licensePricingRequest.getMaxUsers());
+                        assertEquals(
+                            licensePricing.getMinUsers(), licensePricingRequest.getMinUsers());
+                        assertEquals(licensePricing.getPrice(), licensePricingRequest.getPrice());
+                        assertEquals(licensePricing.getLicense(), license);
+                      });
+            });
   }
 }

@@ -1,5 +1,6 @@
 package com.dovit.backend.domain;
 
+import com.dovit.backend.domain.audit.DateAudit;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,14 +20,17 @@ import java.util.List;
 @Table(name = "tools")
 @Builder
 @ToString
-public class Tool {
+public class Tool extends DateAudit {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tool_sequence")
+  @SequenceGenerator(initialValue = 100, name = "tool_sequence")
   @Column(name = "tool_id")
   private Long id;
 
   @NotEmpty private String name;
+
+  private String description;
 
   private String imageUrl;
 
