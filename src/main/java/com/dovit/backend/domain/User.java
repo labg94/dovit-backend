@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -48,8 +49,12 @@ public class User extends DateAudit {
   @JoinColumn(name = "company_id")
   private Company company;
 
+  @Column(columnDefinition = "boolean default true")
   private boolean active;
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   private List<Audit> auditList;
+
+  @OneToMany(mappedBy = "suggestedBy")
+  private Collection<SuggestionMailbox> suggestionMailbox;
 }

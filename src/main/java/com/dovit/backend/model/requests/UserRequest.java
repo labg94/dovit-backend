@@ -36,7 +36,7 @@ public class UserRequest {
   @Email(message = "Email does not have a valid format")
   private String email;
 
-  @NotBlank
+  @NotBlank(message = "Rut is a mandatory field")
   @Pattern(
       message = "RUT's format is wrong. Please write it without dots (.) and with dashes (-)",
       regexp = "^[0-9]+[-|‐][0-9kK]$")

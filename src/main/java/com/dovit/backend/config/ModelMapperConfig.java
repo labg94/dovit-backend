@@ -48,6 +48,7 @@ public class ModelMapperConfig {
     modelMapper.addMappings(this.projectMemberResumePropertyMap());
     modelMapper.addMappings(this.licenseLicenseResponsePropertyMap());
     modelMapper.addMappings(this.pricingResponsePropertyMap());
+    modelMapper.addMappings(this.suggestionResponsePropertyMap());
 
     // Add requests mappers
     modelMapper.addMappings(projectRequestPropertyMap());
@@ -55,6 +56,21 @@ public class ModelMapperConfig {
     modelMapper.addMappings(toolPropertyMap());
 
     return modelMapper;
+  }
+
+  private PropertyMap<SuggestionMailbox, SuggestionResponse> suggestionResponsePropertyMap() {
+    Converter<SuggestionMailbox, String> converterFullName =
+        mappingContext -> {
+          User user = mappingContext.getSource().getSuggestedBy();
+          return String.format("%s %s", user.getName(), user.getLastName());
+        };
+
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        using(converterFullName).map(source).setSuggestedByFullName("");
+      }
+    };
   }
 
   private PropertyMap<ProjectRequest, Project> projectRequestPropertyMap() {
