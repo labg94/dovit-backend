@@ -48,10 +48,7 @@ public class ToolServiceImpl implements ToolService {
   @Override
   @Transactional
   public ToolResponse findById(Long toolId) {
-    Tool t =
-        toolRepository
-            .findById(toolId)
-            .orElseThrow(() -> new ResourceNotFoundException("id", "Tool", toolId));
+    Tool t = findToolById(toolId);
 
     return modelMapper.map(t, ToolResponse.class);
   }
@@ -70,6 +67,7 @@ public class ToolServiceImpl implements ToolService {
             });
 
     final Tool tool = modelMapper.map(request, Tool.class);
+    tool.setActive(true);
     tool.getLicenses()
         .forEach(
             license -> {
@@ -79,5 +77,29 @@ public class ToolServiceImpl implements ToolService {
                   .forEach(licensePricing -> licensePricing.setLicense(license));
             });
     return toolRepository.save(tool);
+  }
+
+  @Override
+  @Transactional
+  public Tool update(ToolRequest request) {
+    Tool tool = findToolById(request.getId());
+
+    // Should not update licenses
+    request.setLicenses(null);
+    modelMapper.map(request, tool);
+    return toolRepository.save(tool);
+  }
+
+  @Override
+  public void toggleActive(Long toolId) {
+    Tool tool = findToolById(toolId);
+    tool.setActive(!tool.isActive());
+    toolRepository.save(tool);
+  }
+
+  private Tool findToolById(Long toolId) {
+    return toolRepository
+        .findById(toolId)
+        .orElseThrow(() -> new ResourceNotFoundException("Tool", "id", toolId));
   }
 }

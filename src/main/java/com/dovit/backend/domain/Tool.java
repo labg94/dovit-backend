@@ -34,10 +34,13 @@ public class Tool extends DateAudit {
 
   private String imageUrl;
 
+  @Column(columnDefinition = "boolean default true")
+  private boolean active;
+
   @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<License> licenses;
 
-  @ManyToMany
+  @ManyToMany(cascade = CascadeType.REFRESH)
   @JoinTable(
       name = "tool_subcategory",
       joinColumns = @JoinColumn(name = "tool_id"),

@@ -56,4 +56,23 @@ public class ToolController {
     return ResponseEntity.created(location)
         .body(new ApiResponse(true, "Tool created successfully"));
   }
+
+  @PutMapping("/tool")
+  public ResponseEntity<?> update(@RequestBody @Valid ToolRequest request) {
+    Tool response = toolService.update(request);
+
+    URI location =
+        ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(response.getId())
+            .toUri();
+
+    return ResponseEntity.created(location).body(new ApiResponse(true, "Tool update successfully"));
+  }
+
+  @PatchMapping("/tool/{id}")
+  public ResponseEntity<?> toggleActive(@PathVariable Long id) {
+    toolService.toggleActive(id);
+    return ResponseEntity.ok(new ApiResponse(true, "Tool toggled"));
+  }
 }

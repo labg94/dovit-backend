@@ -19,4 +19,8 @@ public interface ToolService {
   ToolResponse findById(Long toolId);
 
   Tool save(ToolRequest request);
+
+  Tool update(ToolRequest request);
+
+  void toggleActive(Long toolId);
 }

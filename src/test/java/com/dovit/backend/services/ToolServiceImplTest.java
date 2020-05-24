@@ -11,6 +11,7 @@ import com.dovit.backend.model.requests.ToolRequest;
 import com.dovit.backend.model.responses.ToolResponse;
 import com.dovit.backend.repositories.ToolRepository;
 import com.dovit.backend.util.ValidatorUtil;
+import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -108,6 +109,36 @@ class ToolServiceImplTest {
     ToolRequest toolRequest = getToolRequest();
     Tool tool = toolService.save(toolRequest);
     checkToolRequestMapping(toolRequest, tool);
+  }
+
+  @Test
+  @Tag("SkipAfter")
+  void update() {
+    when(toolRepository.save(any(Tool.class))).thenAnswer(i -> i.getArgument(0));
+    Gson gson = new Gson();
+    Tool cloneTool = gson.fromJson(gson.toJson(gitlabTool), Tool.class);
+    when(toolRepository.findById(anyLong())).thenReturn(Optional.of(cloneTool));
+    ToolRequest toolRequest = getToolRequest();
+    Tool tool = toolService.update(toolRequest);
+    assertNotNull(tool);
+    assertNotNull(tool);
+    assertEquals(tool.getName(), toolRequest.getName());
+    assertEquals(tool.getDescription(), toolRequest.getDescription());
+    assertEquals(toolRequest.getSubcategoryIds().size(), tool.getSubcategories().size());
+    IntStream.range(0, tool.getSubcategories().size())
+        .forEach(
+            i ->
+                assertEquals(
+                    tool.getSubcategories().get(i).getId(),
+                    toolRequest.getSubcategoryIds().get(i)));
+  }
+
+  @Test
+  @Tag("SkipAfter")
+  void toggleActive() {
+    when(toolRepository.save(any(Tool.class))).thenAnswer(i -> i.getArgument(0));
+    when(toolRepository.findById(anyLong())).thenReturn(Optional.of(gitlabTool));
+    toolService.toggleActive(1L);
   }
 
   private void checkToolRequestMapping(ToolRequest toolRequest, Tool tool) {

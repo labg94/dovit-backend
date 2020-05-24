@@ -93,10 +93,11 @@ public class ModelMapperConfig {
       @Override
       protected void configure() {
         using(converter).map(source.getSubcategoryIds()).setSubcategories(new ArrayList<>());
-        map("").setCreatedAt(LocalDateTime.now());
-        map("").setUpdatedAt(LocalDateTime.now());
         using(imageUrlConverter).map(source.getName()).setImageUrl("");
-        map("").setToolProfile(new ArrayList<>());
+        skip(destination.getCreatedAt());
+        skip(destination.getUpdatedAt());
+        skip(destination.getToolProfile());
+        skip(destination.isActive());
       }
     };
   }
@@ -115,10 +116,10 @@ public class ModelMapperConfig {
             .map(source.getLicensePayCycleId())
             .setPayCycle(new LicensePayCycle());
 
-        map("").setCreatedAt(null);
-        map("").setUpdatedAt(null);
-        map("").setCompanyLicenses(new ArrayList<>());
-        map(source).setTool(new Tool());
+        skip(destination.getCreatedAt());
+        skip(destination.getUpdatedAt());
+        skip(destination.getCompanyLicenses());
+        skip(destination.getTool());
         using(licenseTypeConverter)
             .map(source.getLicenseTypeId())
             .setLicenseType(new LicenseType());

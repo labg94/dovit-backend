@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 
 /**
  * @author Ramón París
@@ -60,5 +61,18 @@ class ToolControllerTest {
     Mockito.when(toolService.save(any(ToolRequest.class))).thenReturn(new Tool());
     ToolRequest request = RequestBuilderUtil.getToolRequest();
     TestUtils.testPostRequest(mockMvc, "/tool", request);
+  }
+
+  @Test
+  void update() {
+    Mockito.when(toolService.update(any(ToolRequest.class))).thenReturn(new Tool());
+    ToolRequest request = RequestBuilderUtil.getToolRequest();
+    TestUtils.testPutRequest(mockMvc, "/tool", request);
+  }
+
+  @Test
+  void toggleActive() {
+    doNothing().when(toolService).toggleActive(anyLong());
+    TestUtils.testPatchRequest(mockMvc, "/tool/1", null);
   }
 }
