@@ -70,7 +70,7 @@ public class ToolController {
     return ResponseEntity.created(location).body(new ApiResponse(true, "Tool update successfully"));
   }
 
-  @PatchMapping("/tool/{id}")
+  @PatchMapping("/tool/{id}/active")
   public ResponseEntity<?> toggleActive(@PathVariable Long id) {
     toolService.toggleActive(id);
     return ResponseEntity.ok(new ApiResponse(true, "Tool toggled"));

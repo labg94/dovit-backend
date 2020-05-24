@@ -6,6 +6,7 @@ import com.dovit.backend.model.requests.LicenseRequest;
 import com.dovit.backend.model.responses.LicenseResponse;
 import com.dovit.backend.repositories.LicenseRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LicenseServiceImpl implements LicenseService {
 
   private final LicenseRepository licenseRepository;
@@ -46,7 +48,7 @@ public class LicenseServiceImpl implements LicenseService {
   @Override
   @Transactional
   public License update(LicenseRequest licenseRequest) {
-    License license = findLicenseById(licenseRequest);
+    License license = findLicenseById(licenseRequest.getLicenseId());
     licenseRequest.setToolId(null);
     licenseRequest.setLicensePrices(null);
     modelMapper.map(licenseRequest, license);
@@ -57,10 +59,21 @@ public class LicenseServiceImpl implements LicenseService {
     return licenseRepository.save(license);
   }
 
-  private License findLicenseById(LicenseRequest licenseRequest) {
+  @Override
+  public void toggleActive(Long id) {
+    License license = this.findLicenseById(id);
+    license.setActive(!license.isActive());
+    licenseRepository.save(license);
+    log.info(
+        "License with id {} toggled active from {} to {}",
+        id,
+        !license.isActive(),
+        license.isActive());
+  }
+
+  private License findLicenseById(Long id) {
     return licenseRepository
-        .findById(licenseRequest.getLicenseId())
-        .orElseThrow(
-            () -> new ResourceNotFoundException("License", "id", licenseRequest.getLicenseId()));
+        .findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("License", "id", id));
   }
 }

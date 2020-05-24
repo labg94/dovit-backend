@@ -60,4 +60,10 @@ public class LicenseController {
     return ResponseEntity.created(location)
         .body(new ApiResponse(true, "License updated successfully"));
   }
+
+  @PatchMapping("/license/{id}/active")
+  public ResponseEntity<?> toggleActive(@PathVariable Long id) {
+    licenseService.toggleActive(id);
+    return ResponseEntity.ok(new ApiResponse(true, "License toggled"));
+  }
 }

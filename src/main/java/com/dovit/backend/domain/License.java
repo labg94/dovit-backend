@@ -37,6 +37,9 @@ public class License extends DateAudit {
 
   private String observation;
 
+  @Column(columnDefinition = "boolean default true")
+  private boolean active;
+
   @ManyToOne
   @JoinColumn(nullable = false)
   private LicenseType licenseType;

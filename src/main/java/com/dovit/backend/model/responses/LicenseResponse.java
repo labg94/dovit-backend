@@ -18,6 +18,7 @@ public class LicenseResponse {
   private Long licenseId;
   private String licenseName;
   private String licensePayCycleDescription;
+  private boolean active;
   private Long licensePayCycleId;
   private String licenseObservation;
   private String licenseTypeId;

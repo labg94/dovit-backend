@@ -17,4 +17,6 @@ public interface LicenseService {
   License save(LicenseRequest licenseRequest);
 
   License update(LicenseRequest licenseRequest);
+
+  void toggleActive(Long id);
 }

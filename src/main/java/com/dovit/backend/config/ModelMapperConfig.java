@@ -142,6 +142,7 @@ public class ModelMapperConfig {
         using(licenseIdConverter).map(source).setId(1L);
         //        map(source.getLicenseId()).setId(1L);
 
+        skip(destination.isActive());
         skip(destination.getCreatedAt());
         skip(destination.getUpdatedAt());
         skip(destination.getCompanyLicenses());
