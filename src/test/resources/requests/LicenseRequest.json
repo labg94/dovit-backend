@@ -1,0 +1,16 @@
+{
+  "licenseId": 0,
+  "toolId": 1104,
+  "licenseName": "Testtt",
+  "licensePayCycleId": 4,
+  "licenseObservation": "Open source framework",
+  "licenseTypeId": 1,
+  "licensePrices": [
+    {
+      "id": 0,
+      "minUsers": 0,
+      "maxUsers": -1,
+      "price": 0
+    }
+  ]
+}

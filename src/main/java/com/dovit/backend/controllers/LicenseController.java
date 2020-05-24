@@ -1,10 +1,17 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.domain.License;
+import com.dovit.backend.model.requests.LicenseRequest;
+import com.dovit.backend.model.responses.ApiResponse;
 import com.dovit.backend.services.LicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.validation.Valid;
+import java.net.URI;
 
 /**
  * Controller to show the general licenses of the tools. NOT ASSOCIATED WITH A COMPANY.
@@ -24,5 +31,33 @@ public class LicenseController {
   @GetMapping("/tool/{toolId}/licenses")
   public ResponseEntity<?> findAllLicensesOfTool(@PathVariable Long toolId) {
     return ResponseEntity.ok(licenseService.findAllByToolId(toolId));
+  }
+
+  @PostMapping("/license")
+  public ResponseEntity<?> save(@RequestBody @Valid LicenseRequest licenseRequest) {
+    License response = licenseService.save(licenseRequest);
+
+    URI location =
+        ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(response.getId())
+            .toUri();
+
+    return ResponseEntity.created(location)
+        .body(new ApiResponse(true, "License created successfully"));
+  }
+
+  @PutMapping("/license")
+  public ResponseEntity<?> update(@RequestBody @Valid LicenseRequest licenseRequest) {
+    License response = licenseService.update(licenseRequest);
+
+    URI location =
+        ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(response.getId())
+            .toUri();
+
+    return ResponseEntity.created(location)
+        .body(new ApiResponse(true, "License updated successfully"));
   }
 }

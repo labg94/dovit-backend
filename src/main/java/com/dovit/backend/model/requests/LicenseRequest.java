@@ -3,9 +3,11 @@ package com.dovit.backend.model.requests;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -18,11 +20,12 @@ import java.util.List;
 public class LicenseRequest {
 
   private Long licenseId;
+  private Long toolId;
 
   @NotEmpty(message = "License name is a mandatory field")
   private String licenseName;
 
-  @NotEmpty(message = "License pay cycle is a mandatory field")
+  @NotNull(message = "License pay cycle is a mandatory field")
   private Long licensePayCycleId;
 
   private String licenseObservation;
@@ -30,6 +33,7 @@ public class LicenseRequest {
   @NotNull(message = "License type is a mandatory field")
   private Long licenseTypeId;
 
-  @NotNull(message = "Prices are a mandatory fields")
+  @Nullable
+  @Size(min = 1, message = "Prices cannot be empty")
   private List<LicensePricingRequest> licensePrices;
 }

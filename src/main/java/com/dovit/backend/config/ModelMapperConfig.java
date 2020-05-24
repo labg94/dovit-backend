@@ -46,6 +46,8 @@ public class ModelMapperConfig {
     modelMapper.addMappings(this.auditResponsePropertyMap());
     modelMapper.addMappings(this.memberResponsePropertyMap(BASE_IMAGE_URL));
     modelMapper.addMappings(this.projectMemberResumePropertyMap());
+    modelMapper.addMappings(this.licenseLicenseResponsePropertyMap());
+    modelMapper.addMappings(this.pricingResponsePropertyMap());
 
     // Add requests mappers
     modelMapper.addMappings(projectRequestPropertyMap());
@@ -75,6 +77,24 @@ public class ModelMapperConfig {
       protected void configure() {
         using(memberConverter).map(source.getMembers()).setMembers(Collections.emptyList());
         using(companyConverter).map(source.getCompanyId()).setCompany(new Company());
+      }
+    };
+  }
+
+  private PropertyMap<License, LicenseResponse> licenseLicenseResponsePropertyMap() {
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        map(source.getId()).setLicenseId(1L);
+      }
+    };
+  }
+
+  private PropertyMap<LicensePricing, LicensePricingResponse> pricingResponsePropertyMap() {
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        map(source.getId()).setLicensePricingId(1L);
       }
     };
   }
@@ -109,6 +129,9 @@ public class ModelMapperConfig {
     Converter<Long, LicenseType> licenseTypeConverter =
         mappingContext -> LicenseType.builder().id(mappingContext.getSource()).build();
 
+    Converter<LicenseRequest, Long> licenseIdConverter =
+        mappingContext -> mappingContext.getSource().getLicenseId();
+
     return new PropertyMap<>() {
       @Override
       protected void configure() {
@@ -116,10 +139,14 @@ public class ModelMapperConfig {
             .map(source.getLicensePayCycleId())
             .setPayCycle(new LicensePayCycle());
 
+        using(licenseIdConverter).map(source).setId(1L);
+        //        map(source.getLicenseId()).setId(1L);
+
         skip(destination.getCreatedAt());
         skip(destination.getUpdatedAt());
         skip(destination.getCompanyLicenses());
         skip(destination.getTool());
+        map(source.getToolId()).getTool().setId(1L);
         using(licenseTypeConverter)
             .map(source.getLicenseTypeId())
             .setLicenseType(new LicenseType());

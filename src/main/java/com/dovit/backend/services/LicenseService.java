@@ -1,5 +1,7 @@
 package com.dovit.backend.services;
 
+import com.dovit.backend.domain.License;
+import com.dovit.backend.model.requests.LicenseRequest;
 import com.dovit.backend.model.responses.LicenseResponse;
 
 import java.util.List;
@@ -11,4 +13,8 @@ import java.util.List;
 public interface LicenseService {
 
   List<LicenseResponse> findAllByToolId(Long toolId);
+
+  License save(LicenseRequest licenseRequest);
+
+  License update(LicenseRequest licenseRequest);
 }

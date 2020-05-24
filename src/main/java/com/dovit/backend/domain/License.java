@@ -48,6 +48,6 @@ public class License extends DateAudit {
   @JoinColumn(name = "tool_id", nullable = false)
   private Tool tool;
 
-  @OneToMany(mappedBy = "license", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "license", cascade = CascadeType.REFRESH)
   private List<LicensePricing> licensePrices;
 }

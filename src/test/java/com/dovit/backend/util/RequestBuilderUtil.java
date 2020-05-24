@@ -2,6 +2,7 @@ package com.dovit.backend.util;
 
 import com.dovit.backend.model.requests.CompanyLicenseRequest;
 import com.dovit.backend.model.requests.CompanyRequest;
+import com.dovit.backend.model.requests.LicenseRequest;
 import com.dovit.backend.model.requests.ToolRequest;
 import com.google.gson.Gson;
 
@@ -46,14 +47,7 @@ public class RequestBuilderUtil<T> {
     return gson.fromJson(getJson("ToolRequest"), ToolRequest.class);
   }
 
-  public T findRequest(String requestName, Class<T> requestClass) {
-    Path filePath = Paths.get("src", "test", "resources", "requests", requestName + ".json");
-    try {
-      return new Gson().fromJson(Files.readString(filePath), requestClass);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    return null;
+  public static LicenseRequest getLicenseRequest() {
+    return gson.fromJson(getJson("LicenseRequest"), LicenseRequest.class);
   }
 }
