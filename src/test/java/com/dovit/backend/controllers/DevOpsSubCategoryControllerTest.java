@@ -57,7 +57,7 @@ class DevOpsSubCategoryControllerTest {
 
   @Test
   void findById() {
-    when(subCategoryService.findById(anyLong())).thenReturn(new SubCategoryResponse());
+    when(subCategoryService.findResponseById(anyLong())).thenReturn(new SubCategoryResponse());
     TestUtils.testGetRequest(mockMvc, "/subcategory/1");
   }
 

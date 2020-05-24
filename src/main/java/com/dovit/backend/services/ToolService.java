@@ -23,4 +23,10 @@ public interface ToolService {
   Tool update(ToolRequest request);
 
   void toggleActive(Long toolId);
+
+  List<ToolResponse> findAllActiveTools();
+
+  List<ToolResponse> findAllActiveBySubcategory(Long subcategoryId);
+
+  List<ToolResponse> findAllBySubcategory(Long subcategoryId);
 }

@@ -1,5 +1,6 @@
 package com.dovit.backend.repositories;
 
+import com.dovit.backend.domain.DevOpsSubcategory;
 import com.dovit.backend.domain.Tool;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,10 @@ public interface ToolRepository extends JpaRepository<Tool, Long> {
           + "WHERE c.id=:companyId "
           + "ORDER BY t ")
   List<Tool> findAllByCompanyId(Long companyId);
+
+  List<Tool> findAllByActive(boolean b);
+
+  List<Tool> findAllByActiveAndSubcategoriesContains(boolean active, DevOpsSubcategory subcategory);
+
+  List<Tool> findAllBySubcategoriesContains(DevOpsSubcategory subcategory);
 }

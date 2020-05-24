@@ -35,8 +35,8 @@ public class DevOpsSubCategoryServiceImpl implements DevOpsSubCategoryService {
   }
 
   @Override
-  public SubCategoryResponse findById(Long id) {
-    DevOpsSubcategory devOpsSubcategory = findDomainById(id);
+  public SubCategoryResponse findResponseById(Long id) {
+    DevOpsSubcategory devOpsSubcategory = findById(id);
     return modelMapper.map(devOpsSubcategory, SubCategoryResponse.class);
   }
 
@@ -52,7 +52,7 @@ public class DevOpsSubCategoryServiceImpl implements DevOpsSubCategoryService {
   @Override
   @Transactional
   public DevOpsSubcategory update(SubCategoryRequest request) {
-    DevOpsSubcategory devOpsSubcategory = this.findDomainById(request.getId());
+    DevOpsSubcategory devOpsSubcategory = this.findById(request.getId());
     devOpsSubcategory.setDescription(request.getDescription());
     devOpsSubcategory.setDevOpsCategory(
         DevOpsCategory.builder().id(request.getDevOpsCategoryId()).build());
@@ -61,7 +61,7 @@ public class DevOpsSubCategoryServiceImpl implements DevOpsSubCategoryService {
 
   @Override
   public void toggleActive(Long id) {
-    DevOpsSubcategory devOpsSubcategory = this.findDomainById(id);
+    DevOpsSubcategory devOpsSubcategory = this.findById(id);
     devOpsSubcategory.setActive(!devOpsSubcategory.isActive());
     devOpsSubcategoryRepository.save(devOpsSubcategory);
   }
@@ -83,7 +83,8 @@ public class DevOpsSubCategoryServiceImpl implements DevOpsSubCategoryService {
         .collect(Collectors.toList());
   }
 
-  private DevOpsSubcategory findDomainById(Long id) {
+  @Override
+  public DevOpsSubcategory findById(Long id) {
     return devOpsSubcategoryRepository
         .findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("DevOps subcategory", "id", id));

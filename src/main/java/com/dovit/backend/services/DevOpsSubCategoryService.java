@@ -14,7 +14,7 @@ public interface DevOpsSubCategoryService {
 
   List<SubCategoryResponse> findAllActivesByCategoryId(Long categoryId);
 
-  SubCategoryResponse findById(Long id);
+  SubCategoryResponse findResponseById(Long id);
 
   DevOpsSubcategory save(SubCategoryRequest devOpsCategoryRequest);
 
@@ -25,4 +25,6 @@ public interface DevOpsSubCategoryService {
   List<SubCategoryResponse> findAllByCategoryId(Long categoryId);
 
   List<SubCategoryResponse> findAllActives();
+
+  DevOpsSubcategory findById(Long id);
 }

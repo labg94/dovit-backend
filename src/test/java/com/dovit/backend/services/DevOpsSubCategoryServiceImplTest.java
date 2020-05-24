@@ -73,7 +73,7 @@ class DevOpsSubCategoryServiceImplTest {
   @Test
   void findById() {
     when(devOpsSubCategoryRepository.findById(anyLong())).thenReturn(Optional.of(repositories));
-    SubCategoryResponse response = devOpsSubCategoryService.findById(1L);
+    SubCategoryResponse response = devOpsSubCategoryService.findResponseById(1L);
     assertNotNull(response);
   }
 

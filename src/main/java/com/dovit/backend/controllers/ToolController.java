@@ -33,6 +33,21 @@ public class ToolController {
     return ResponseEntity.ok(toolService.findAllTools());
   }
 
+  @GetMapping("/tools/active")
+  public ResponseEntity<?> findAllActives() {
+    return ResponseEntity.ok(toolService.findAllActiveTools());
+  }
+
+  @GetMapping("/subcategory/{subcategoryId}/tools/active")
+  public ResponseEntity<?> findAllActivesBySubcategoryId(@PathVariable Long subcategoryId) {
+    return ResponseEntity.ok(toolService.findAllActiveBySubcategory(subcategoryId));
+  }
+
+  @GetMapping("/subcategory/{subcategoryId}/tools")
+  public ResponseEntity<?> findAllBySubcategoryId(@PathVariable Long subcategoryId) {
+    return ResponseEntity.ok(toolService.findAllBySubcategory(subcategoryId));
+  }
+
   @GetMapping("/company/{companyId}/tools")
   public ResponseEntity<?> findAllToolsByCompany(@PathVariable Long companyId) {
     return ResponseEntity.ok(toolService.findAllToolsOfCompany(companyId));

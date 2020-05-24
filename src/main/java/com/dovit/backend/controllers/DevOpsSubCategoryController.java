@@ -45,7 +45,7 @@ public class DevOpsSubCategoryController {
 
   @GetMapping("/subcategory/{id}")
   public ResponseEntity<?> findById(@PathVariable Long id) {
-    return ResponseEntity.ok(devOpsSubCategoryService.findById(id));
+    return ResponseEntity.ok(devOpsSubCategoryService.findResponseById(id));
   }
 
   @PostMapping("/subcategory")

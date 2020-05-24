@@ -1,5 +1,6 @@
 package com.dovit.backend.services;
 
+import com.dovit.backend.domain.DevOpsSubcategory;
 import com.dovit.backend.domain.Tool;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.requests.ToolRequest;
@@ -25,6 +26,7 @@ public class ToolServiceImpl implements ToolService {
   private final ToolRepository toolRepository;
   private final ValidatorUtil validatorUtil;
   private final ModelMapper modelMapper;
+  private final DevOpsSubCategoryService subCategoryService;
 
   @Override
   @Transactional
@@ -95,6 +97,35 @@ public class ToolServiceImpl implements ToolService {
     Tool tool = findToolById(toolId);
     tool.setActive(!tool.isActive());
     toolRepository.save(tool);
+  }
+
+  @Override
+  @Transactional
+  public List<ToolResponse> findAllActiveTools() {
+    List<Tool> tools = toolRepository.findAllByActive(true);
+    return tools.stream()
+        .map(tool -> modelMapper.map(tool, ToolResponse.class))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  @Transactional
+  public List<ToolResponse> findAllActiveBySubcategory(Long subcategoryId) {
+    DevOpsSubcategory subcategory = subCategoryService.findById(subcategoryId);
+    List<Tool> tools = toolRepository.findAllByActiveAndSubcategoriesContains(true, subcategory);
+    return tools.stream()
+        .map(tool -> modelMapper.map(tool, ToolResponse.class))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  @Transactional
+  public List<ToolResponse> findAllBySubcategory(Long subcategoryId) {
+    DevOpsSubcategory subcategory = subCategoryService.findById(subcategoryId);
+    List<Tool> tools = toolRepository.findAllBySubcategoriesContains(subcategory);
+    return tools.stream()
+        .map(tool -> modelMapper.map(tool, ToolResponse.class))
+        .collect(Collectors.toList());
   }
 
   private Tool findToolById(Long toolId) {
