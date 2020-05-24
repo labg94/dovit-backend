@@ -73,6 +73,6 @@ class ToolControllerTest {
   @Test
   void toggleActive() {
     doNothing().when(toolService).toggleActive(anyLong());
-    TestUtils.testPatchRequest(mockMvc, "/tool/1", null);
+    TestUtils.testPatchRequest(mockMvc, "/tool/1/active", null);
   }
 }

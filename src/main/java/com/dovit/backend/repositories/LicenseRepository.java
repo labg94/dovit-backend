@@ -12,4 +12,6 @@ import java.util.List;
 public interface LicenseRepository extends JpaRepository<License, Long> {
 
   List<License> findAllByToolId(Long toolId);
+
+  List<License> findAllByToolIdAndActive(Long toolId, boolean active);
 }

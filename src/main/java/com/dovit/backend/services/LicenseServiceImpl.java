@@ -71,6 +71,15 @@ public class LicenseServiceImpl implements LicenseService {
         license.isActive());
   }
 
+  @Override
+  @Transactional
+  public List<LicenseResponse> findAllActivesByToolId(Long toolId) {
+    List<License> licenses = licenseRepository.findAllByToolIdAndActive(toolId, true);
+    return licenses.stream()
+        .map(l -> modelMapper.map(l, LicenseResponse.class))
+        .collect(Collectors.toList());
+  }
+
   private License findLicenseById(Long id) {
     return licenseRepository
         .findById(id)

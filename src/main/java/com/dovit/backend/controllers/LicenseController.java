@@ -33,6 +33,11 @@ public class LicenseController {
     return ResponseEntity.ok(licenseService.findAllByToolId(toolId));
   }
 
+  @GetMapping("/tool/{toolId}/licenses/active")
+  public ResponseEntity<?> findAllActiveLicensesOfTool(@PathVariable Long toolId) {
+    return ResponseEntity.ok(licenseService.findAllActivesByToolId(toolId));
+  }
+
   @PostMapping("/license")
   public ResponseEntity<?> save(@RequestBody @Valid LicenseRequest licenseRequest) {
     License response = licenseService.save(licenseRequest);

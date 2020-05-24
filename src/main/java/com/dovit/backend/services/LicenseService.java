@@ -19,4 +19,6 @@ public interface LicenseService {
   License update(LicenseRequest licenseRequest);
 
   void toggleActive(Long id);
+
+  List<LicenseResponse> findAllActivesByToolId(Long toolId);
 }
