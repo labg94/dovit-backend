@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,10 +28,11 @@ import java.util.stream.Collectors;
 public class AuditServiceImpl implements AuditService {
 
   private final AuditRepository auditRepository;
-  private final Gson gson = new Gson();
+  private final Gson gson;
   private final ModelMapper modelMapper;
 
   @Override
+  @Transactional
   public void registerAudit(Object data, String message, String status, Long userId) {
     new Thread(
             () -> {
