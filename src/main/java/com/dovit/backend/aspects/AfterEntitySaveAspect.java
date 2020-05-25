@@ -12,6 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Ramón París
  * @since 24-05-20
@@ -31,9 +34,10 @@ public class AfterEntitySaveAspect {
         (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Object argument = joinPoint.getArgs()[0];
     String entityName = argument.getClass().getSimpleName();
+    Map<String, Object> persistedEntity = this.createMap(joinPoint);
     String auditMessage = String.format("Save or update over %s entity", entityName);
     log.info(auditMessage + " by userId: " + loggedUser.getId());
-    auditService.registerAudit(argument, auditMessage, "OK", loggedUser.getId());
+    auditService.registerAudit(persistedEntity, auditMessage, "OK", loggedUser.getId());
   }
 
   @AfterThrowing(value = "execution(* com.dovit.backend.repositories.*Repository.save*(..))")
@@ -42,8 +46,17 @@ public class AfterEntitySaveAspect {
         (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Object argument = joinPoint.getArgs()[0];
     String entityName = argument.getClass().getSimpleName();
+    Map<String, Object> persistedEntity = this.createMap(joinPoint);
     String auditMessage = String.format("Error Save or update over %s entity", entityName);
     log.error(auditMessage + " by userId: " + loggedUser.getId());
-    auditService.registerAudit(argument, auditMessage, "ERROR", loggedUser.getId());
+    auditService.registerAudit(persistedEntity, auditMessage, "ERROR", loggedUser.getId());
+  }
+
+  private Map<String, Object> createMap(JoinPoint joinPoint) {
+    Object argument = joinPoint.getArgs()[0];
+    String entityName = argument.getClass().getSimpleName();
+    Map<String, Object> map = new HashMap<>();
+    map.put(entityName.toLowerCase(), argument);
+    return map;
   }
 }
