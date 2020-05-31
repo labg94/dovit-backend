@@ -41,6 +41,7 @@ public class ApiExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(BadRequestException.class)
   public ResponseEntity<?> handleBadRequest(BadRequestException e) {
+    log.error(e.getMessage());
     List<String> errorsMessages = new ArrayList<>();
     errorsMessages.add(e.getMessage());
     ErrorResponse errorResponse =

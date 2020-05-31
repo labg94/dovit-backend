@@ -26,4 +26,13 @@ public class DateUtil {
     }
     return null;
   }
+
+  public static boolean isBetween(LocalDate date, LocalDate from, LocalDate to) {
+    if (date != null) {
+      return date.compareTo(from) >= 0 && to == null
+          || (date.compareTo(from) >= 0 && date.compareTo(to) <= 0);
+    }
+
+    return false;
+  }
 }

@@ -52,7 +52,8 @@ class CompanyLicenseServiceImplTest {
 
   @Test
   void findAllByCompanyIdAndToolId() {
-    when(companyLicenseRepository.findAllByCompanyIdAndLicenseToolId(anyLong(), anyLong()))
+    when(companyLicenseRepository.findAllByCompanyIdAndLicenseToolIdOrderByStartDateDesc(
+            anyLong(), anyLong()))
         .thenReturn(Collections.singletonList(companyLicense));
 
     List<CompanyLicensesResponse> responseList =
