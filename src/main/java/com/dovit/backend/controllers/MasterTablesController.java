@@ -28,12 +28,12 @@ public class MasterTablesController {
   private final LicenseTypeService licenseTypeService;
   private final ProjectTypeService projectTypeService;
 
-  @GetMapping("/licensePayCycles")
+  @GetMapping("/license/payCycles")
   public ResponseEntity<?> findAllPayCycles() {
     return ResponseEntity.ok(licensePayCycleService.findAll());
   }
 
-  @GetMapping("/licenseTypes")
+  @GetMapping("/license/types")
   public ResponseEntity<?> findAllTypes() {
     return ResponseEntity.ok(licenseTypeService.findAll());
   }
