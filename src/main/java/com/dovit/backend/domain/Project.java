@@ -1,9 +1,7 @@
 package com.dovit.backend.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.dovit.backend.domain.audit.DateAudit;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,12 +12,13 @@ import java.util.List;
  * @author Ramón París
  * @since 09-12-2019
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Project {
+public class Project extends DateAudit {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,4 +42,7 @@ public class Project {
 
   @ManyToMany(mappedBy = "project")
   private List<ProjectType> projectTypes;
+
+  @OneToMany(mappedBy = "project")
+  private List<Pipeline> pipelines;
 }

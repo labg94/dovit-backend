@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -49,4 +50,15 @@ public class Tool extends DateAudit {
 
   @OneToMany(mappedBy = "tool")
   private List<ToolProfile> toolProfile;
+
+  @ManyToMany(mappedBy = "tools")
+  private Collection<Pipeline> pipelines;
+
+  public Collection<Pipeline> getPipelines() {
+    return pipelines;
+  }
+
+  public void setPipelines(Collection<Pipeline> pipelines) {
+    this.pipelines = pipelines;
+  }
 }
