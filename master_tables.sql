@@ -32,6 +32,12 @@ VALUES (1, 'Unique'),
        (3, 'Annually'),
        (4, 'Relative');
 
+INSERT INTO project_type (id, description, observation, created_at, updated_at)
+VALUES (1, 'Web', 'A web project should have at least one frontend and one backend', now(), now()),
+       (2, 'Microservices', 'A microservice project does not consider a frontend app', now(), now()),
+       (3, 'Mobile', 'A mobile project consider at least one backend and a mobile app', now(), now()),
+       (4, 'Desktop', 'A desktop project consider at least one desktop app and a backend', now(), now());
+
 INSERT INTO license_type(id, description)
 VALUES (1, 'Open Source');
 INSERT INTO license_type(id, description)

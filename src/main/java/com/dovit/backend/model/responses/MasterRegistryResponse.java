@@ -15,4 +15,5 @@ public class MasterRegistryResponse {
 
   private Long id;
   private String description;
+  private String observation;
 }

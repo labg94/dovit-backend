@@ -40,4 +40,7 @@ public class Project {
 
   @OneToMany(mappedBy = "project")
   private List<ProjectMember> members;
+
+  @ManyToMany(mappedBy = "project")
+  private List<ProjectType> projectTypes;
 }
