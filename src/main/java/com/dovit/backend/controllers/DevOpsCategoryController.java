@@ -57,7 +57,12 @@ public class DevOpsCategoryController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "DevOps Category created successfully"));
+        .body(
+            ApiResponse.builder()
+                .id(devOpsCategory.getId())
+                .message("DevOps category created successfull")
+                .success(true)
+                .build());
   }
 
   @PutMapping("/category")
@@ -72,7 +77,12 @@ public class DevOpsCategoryController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "DevOps Category created successfully"));
+        .body(
+            ApiResponse.builder()
+                .id(devOpsCategory.getId())
+                .message("DevOps category updated successfull")
+                .success(true)
+                .build());
   }
 
   @PatchMapping("/category/{id}")

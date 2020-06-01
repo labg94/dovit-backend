@@ -60,7 +60,12 @@ public class DevOpsSubCategoryController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "DevOps subcategory created successfully"));
+        .body(
+            ApiResponse.builder()
+                .id(devOpsCategory.getId())
+                .message("DevOps subcategory created successfull")
+                .success(true)
+                .build());
   }
 
   @PutMapping("/subcategory")
@@ -75,7 +80,12 @@ public class DevOpsSubCategoryController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "DevOps subcategory created successfully"));
+        .body(
+            ApiResponse.builder()
+                .id(devOpsCategory.getId())
+                .message("DevOps subcategory updated successfull")
+                .success(true)
+                .build());
   }
 
   @PatchMapping("/subcategory/{id}")
