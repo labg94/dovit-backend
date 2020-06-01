@@ -30,4 +30,11 @@ public class ProjectType extends DateAudit {
       joinColumns = @JoinColumn(name = "project_type_id"),
       inverseJoinColumns = @JoinColumn(name = "project_id"))
   private List<Project> project;
+
+  @ManyToMany
+  @JoinTable(
+      name = "tool_project_type",
+      joinColumns = @JoinColumn(name = "project_type_id"),
+      inverseJoinColumns = @JoinColumn(name = "tool_id"))
+  private List<Tool> tools;
 }

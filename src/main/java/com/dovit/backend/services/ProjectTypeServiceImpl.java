@@ -1,6 +1,8 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.ProjectType;
+import com.dovit.backend.exceptions.ResourceNotFoundException;
+import com.dovit.backend.model.requests.ProjectTypeRequest;
 import com.dovit.backend.model.responses.MasterRegistryResponse;
 import com.dovit.backend.repositories.ProjectTypeRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +29,23 @@ public class ProjectTypeServiceImpl implements ProjectTypeService {
     return projectTypes.stream()
         .map(projectType -> modelMapper.map(projectType, MasterRegistryResponse.class))
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public ProjectType save(ProjectTypeRequest request) {
+    request.setId(null);
+    ProjectType projectType = modelMapper.map(request, ProjectType.class);
+    return projectTypeRepository.save(projectType);
+  }
+
+  @Override
+  public ProjectType update(ProjectTypeRequest request) {
+    ProjectType projectType =
+        projectTypeRepository
+            .findById(request.getId())
+            .orElseThrow(() -> new ResourceNotFoundException("ProjectType", "id", request.getId()));
+
+    modelMapper.map(request, projectType);
+    return projectTypeRepository.save(projectType);
   }
 }

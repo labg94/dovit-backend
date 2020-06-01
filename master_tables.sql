@@ -21,6 +21,11 @@ VALUES (1, 'ROLE_ADMIN');
 INSERT INTO roles (id, name)
 VALUES (2, 'ROLE_CLIENT');
 
+insert into users (id, created_at, updated_at, active, email, last_name, name, password, company_id, role_id, rut)
+values (0, '2020-05-24 19:27:21.000000', '2020-05-24 19:27:24.000000', 'true', 'system@system.com', 'ADMINS', 'ADMINS',
+        'admins', null, 1, 0);
+
+
 INSERT INTO member_available_status(id, description)
 values (1, 'Available'),
        (2, 'Partially available'),
@@ -36,7 +41,8 @@ INSERT INTO project_type (id, description, observation, created_at, updated_at)
 VALUES (1, 'Web', 'A web project should have at least one frontend and one backend', now(), now()),
        (2, 'Microservices', 'A microservice project does not consider a frontend app', now(), now()),
        (3, 'Mobile', 'A mobile project consider at least one backend and a mobile app', now(), now()),
-       (4, 'Desktop', 'A desktop project consider at least one desktop app and a backend', now(), now());
+       (4, 'Desktop', 'A desktop project consider at least one desktop app and a backend', now(), now()),
+       (5, 'Scrum methodology', 'Scrum methodology', now(), now());
 
 INSERT INTO license_type(id, description)
 VALUES (1, 'Open Source');

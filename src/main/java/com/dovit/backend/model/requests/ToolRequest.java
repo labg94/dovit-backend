@@ -33,4 +33,7 @@ public class ToolRequest {
   private List<Long> subcategoryIds;
 
   private List<LicenseRequest> licenses;
+
+  @NotNull(message = "Project Type is a mandatory field")
+  private List<Long> projectTypeIds;
 }

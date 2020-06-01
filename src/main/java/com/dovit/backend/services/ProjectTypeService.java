@@ -1,5 +1,7 @@
 package com.dovit.backend.services;
 
+import com.dovit.backend.domain.ProjectType;
+import com.dovit.backend.model.requests.ProjectTypeRequest;
 import com.dovit.backend.model.responses.MasterRegistryResponse;
 
 import java.util.List;
@@ -11,4 +13,8 @@ import java.util.List;
 public interface ProjectTypeService {
 
   List<MasterRegistryResponse> findAll();
+
+  ProjectType save(ProjectTypeRequest request);
+
+  ProjectType update(ProjectTypeRequest request);
 }

@@ -37,9 +37,4 @@ public class MasterTablesController {
   public ResponseEntity<?> findAllTypes() {
     return ResponseEntity.ok(licenseTypeService.findAll());
   }
-
-  @GetMapping("/project/types")
-  public ResponseEntity<?> findAllProjectTypes() {
-    return ResponseEntity.ok(projectTypeService.findAll());
-  }
 }
