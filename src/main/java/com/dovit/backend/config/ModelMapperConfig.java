@@ -125,11 +125,20 @@ public class ModelMapperConfig {
     Converter<String, String> imageUrlConverter =
         mappingContext -> "/" + mappingContext.getSource().toLowerCase();
 
+    Converter<List<Long>, List<ProjectType>> projectTypeConverter =
+        mappingContext ->
+            mappingContext.getSource().stream()
+                .map(id -> ProjectType.builder().id(id).build())
+                .collect(Collectors.toList());
+
     return new PropertyMap<>() {
       @Override
       protected void configure() {
         using(converter).map(source.getSubcategoryIds()).setSubcategories(new ArrayList<>());
         using(imageUrlConverter).map(source.getName()).setImageUrl("");
+        using(projectTypeConverter)
+            .map(source.getProjectTypeIds())
+            .setProjectTypes(new ArrayList<>());
         skip(destination.getCreatedAt());
         skip(destination.getUpdatedAt());
         skip(destination.getToolProfile());

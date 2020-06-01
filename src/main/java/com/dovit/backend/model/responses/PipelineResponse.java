@@ -9,19 +9,16 @@ import java.util.List;
 
 /**
  * @author Ramón París
- * @since 14-10-2019
+ * @since 31-05-20
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ToolResponse {
+public class PipelineResponse {
 
-  private Long toolId;
-  private String toolName;
-  private String imageUrl;
-  private String description;
-  private boolean active;
-  private List<String> tags;
-  private List<ProjectTypeResponse> projectTypes;
+  private Long id;
+  private boolean recommended;
+  private Double cost;
+  private List<PipelineToolResponse> pipelineTools;
 }

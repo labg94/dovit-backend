@@ -13,6 +13,7 @@ import java.util.List;
  * @author Ramón París
  * @since 29-09-2019
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,6 +54,10 @@ public class Tool extends DateAudit {
   @ManyToMany(mappedBy = "tools")
   private List<Pipeline> pipelines;
 
-  @ManyToMany(mappedBy = "tools")
+  @ManyToMany(cascade = CascadeType.REFRESH)
+  @JoinTable(
+      name = "tool_project_type",
+      joinColumns = @JoinColumn(name = "tool_id"),
+      inverseJoinColumns = @JoinColumn(name = "project_type_id"))
   private List<ProjectType> projectTypes;
 }

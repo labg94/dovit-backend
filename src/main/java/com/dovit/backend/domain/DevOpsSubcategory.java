@@ -26,7 +26,8 @@ import java.util.List;
 public class DevOpsSubcategory extends DateAudit {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subcategory_sequence")
+  @SequenceGenerator(initialValue = 100, name = "subcategory_sequence")
   @Column(name = "devops_subcategory_id")
   private Long id;
 

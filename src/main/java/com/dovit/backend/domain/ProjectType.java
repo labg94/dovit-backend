@@ -3,7 +3,11 @@ package com.dovit.backend.domain;
 import com.dovit.backend.domain.audit.DateAudit;
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -20,21 +24,13 @@ public class ProjectType extends DateAudit {
 
   @Id @GeneratedValue private Long id;
 
-  private String description;
+  @NotNull private String description;
 
   private String observation;
 
-  @ManyToMany
-  @JoinTable(
-      name = "project_project_types",
-      joinColumns = @JoinColumn(name = "project_type_id"),
-      inverseJoinColumns = @JoinColumn(name = "project_id"))
+  @ManyToMany(mappedBy = "projectTypes")
   private List<Project> project;
 
-  @ManyToMany
-  @JoinTable(
-      name = "tool_project_type",
-      joinColumns = @JoinColumn(name = "project_type_id"),
-      inverseJoinColumns = @JoinColumn(name = "tool_id"))
+  @ManyToMany(mappedBy = "projectTypes")
   private List<Tool> tools;
 }

@@ -40,7 +40,11 @@ public class Project extends DateAudit {
   @OneToMany(mappedBy = "project")
   private List<ProjectMember> members;
 
-  @ManyToMany(mappedBy = "project")
+  @ManyToMany
+  @JoinTable(
+      name = "project_project_types",
+      joinColumns = @JoinColumn(name = "project_id"),
+      inverseJoinColumns = @JoinColumn(name = "project_type_id"))
   private List<ProjectType> projectTypes;
 
   @OneToMany(mappedBy = "project")

@@ -69,7 +69,12 @@ public class ToolController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "Tool created successfully"));
+        .body(
+            ApiResponse.builder()
+                .success(true)
+                .message("Tool created successfully")
+                .id(response.getId())
+                .build());
   }
 
   @PutMapping("/tool")
@@ -82,7 +87,13 @@ public class ToolController {
             .buildAndExpand(response.getId())
             .toUri();
 
-    return ResponseEntity.created(location).body(new ApiResponse(true, "Tool update successfully"));
+    return ResponseEntity.created(location)
+        .body(
+            ApiResponse.builder()
+                .success(true)
+                .message("Tool updated successfully")
+                .id(response.getId())
+                .build());
   }
 
   @PatchMapping("/tool/{id}/active")
