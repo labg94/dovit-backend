@@ -14,12 +14,12 @@ import java.util.List;
 public interface ToolRepository extends JpaRepository<Tool, Long> {
 
   @Query(
-      "SELECT DISTINCT t FROM Tool t "
-          + "JOIN t.licenses l "
-          + "JOIN l.companyLicenses cl "
-          + "JOIN cl.company c "
-          + "WHERE c.id=:companyId "
-          + "ORDER BY t ")
+      "SELECT DISTINCT tool FROM Tool tool "
+          + "JOIN License license on license.tool = tool "
+          + "JOIN CompanyLicense companyLicense on companyLicense.license = license "
+          + "JOIN Company company on companyLicense.company = company "
+          + "WHERE company.id=:companyId "
+          + "ORDER BY tool.id ")
   List<Tool> findAllByCompanyId(Long companyId);
 
   List<Tool> findAllByActive(boolean b);

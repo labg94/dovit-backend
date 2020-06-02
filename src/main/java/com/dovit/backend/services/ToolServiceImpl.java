@@ -74,6 +74,7 @@ public class ToolServiceImpl implements ToolService {
         .forEach(
             license -> {
               license.setTool(tool);
+              license.setActive(true);
               license
                   .getLicensePrices()
                   .forEach(licensePricing -> licensePricing.setLicense(license));
