@@ -1,6 +1,6 @@
 package com.dovit.backend.services;
 
-import com.dovit.backend.model.responses.MasterRegistryResponse;
+import com.dovit.backend.payloads.responses.MasterRegistryResponse;
 import com.dovit.backend.repositories.LicenseTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

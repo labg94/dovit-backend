@@ -1,7 +1,7 @@
 package com.dovit.backend.services;
 
-import com.dovit.backend.model.requests.PipelineRecommendationRequest;
-import com.dovit.backend.model.responses.PipelineResponse;
+import com.dovit.backend.payloads.requests.PipelineRecommendationRequest;
+import com.dovit.backend.payloads.responses.PipelineResponse;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface PipelineService {
 
-  List<PipelineResponse> generatePipelineRecommendation(PipelineRecommendationRequest request);
+  PipelineResponse generatePipelineRecommendation(PipelineRecommendationRequest request);
 
   List<PipelineResponse> findAllByProjectId(Long projectId);
 }

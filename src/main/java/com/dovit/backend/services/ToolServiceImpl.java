@@ -3,8 +3,11 @@ package com.dovit.backend.services;
 import com.dovit.backend.domain.DevOpsSubcategory;
 import com.dovit.backend.domain.Tool;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
-import com.dovit.backend.model.requests.ToolRequest;
-import com.dovit.backend.model.responses.ToolResponse;
+import com.dovit.backend.model.RecommendationPointsDTO;
+import com.dovit.backend.model.ToolRecommendationDTO;
+import com.dovit.backend.payloads.requests.ProjectMemberRequest;
+import com.dovit.backend.payloads.requests.ToolRequest;
+import com.dovit.backend.payloads.responses.ToolResponse;
 import com.dovit.backend.repositories.ToolRepository;
 import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,6 +132,38 @@ public class ToolServiceImpl implements ToolService {
     return tools.stream()
         .map(tool -> modelMapper.map(tool, ToolResponse.class))
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ToolRecommendationDTO> findRecommendationByMembers(
+      Long categoryId, Long companyId, List<ProjectMemberRequest> projectMembers) {
+    return Arrays.asList(
+        ToolRecommendationDTO.builder()
+            .toolId(1L)
+            .toolName("Jira")
+            .toolDescription("Jira")
+            .points(
+                Collections.singletonList(
+                    RecommendationPointsDTO.builder().category("License").points(5).build()))
+            .build(),
+        ToolRecommendationDTO.builder().build());
+  }
+
+  @Override
+  public List<ToolRecommendationDTO> findRecommendationByLicense(Long categoryId, Long companyId) {
+    return null;
+  }
+
+  @Override
+  public List<ToolRecommendationDTO> findRecommendationByProjectType(
+      Long categoryId, Long companyId, List<Long> projectTypeIds) {
+    return null;
+  }
+
+  @Override
+  public List<ToolRecommendationDTO> findRecommendationByProjectHistory(
+      Long categoryId, Long companyId) {
+    return null;
   }
 
   private Tool findToolById(Long toolId) {

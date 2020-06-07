@@ -1,7 +1,7 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.Company;
-import com.dovit.backend.model.requests.CompanyRequest;
+import com.dovit.backend.payloads.requests.CompanyRequest;
 import com.dovit.backend.services.CompanyServiceImpl;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;

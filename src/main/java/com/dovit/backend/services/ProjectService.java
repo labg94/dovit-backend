@@ -1,9 +1,9 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Project;
-import com.dovit.backend.model.requests.ProjectRequest;
-import com.dovit.backend.model.responses.ProjectMemberRecommendation;
-import com.dovit.backend.model.responses.ProjectResponse;
+import com.dovit.backend.payloads.requests.ProjectRequest;
+import com.dovit.backend.payloads.responses.ProjectMemberRecommendation;
+import com.dovit.backend.payloads.responses.ProjectResponse;
 
 import java.util.List;
 

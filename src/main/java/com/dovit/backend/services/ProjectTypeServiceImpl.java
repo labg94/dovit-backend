@@ -2,8 +2,8 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.domain.ProjectType;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
-import com.dovit.backend.model.requests.ProjectTypeRequest;
-import com.dovit.backend.model.responses.MasterRegistryResponse;
+import com.dovit.backend.payloads.requests.ProjectTypeRequest;
+import com.dovit.backend.payloads.responses.MasterRegistryResponse;
 import com.dovit.backend.repositories.ProjectTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

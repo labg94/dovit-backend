@@ -1,7 +1,7 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.config.ModelMapperConfig;
-import com.dovit.backend.model.responses.LevelResponse;
+import com.dovit.backend.payloads.responses.LevelResponse;
 import com.dovit.backend.repositories.LevelRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;

@@ -1,8 +1,8 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.Member;
-import com.dovit.backend.model.requests.MemberRequest;
-import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.payloads.requests.MemberRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

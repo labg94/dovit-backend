@@ -1,8 +1,8 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.Tool;
-import com.dovit.backend.model.requests.ToolRequest;
-import com.dovit.backend.model.responses.ToolResponse;
+import com.dovit.backend.payloads.requests.ToolRequest;
+import com.dovit.backend.payloads.responses.ToolResponse;
 import com.dovit.backend.services.ToolServiceImpl;
 import com.dovit.backend.util.RequestBuilderUtil;
 import com.dovit.backend.util.TestUtils;

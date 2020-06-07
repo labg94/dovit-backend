@@ -1,8 +1,8 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.SuggestionMailbox;
-import com.dovit.backend.model.requests.SuggestionRequest;
-import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.payloads.requests.SuggestionRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.SuggestionMailboxService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package com.dovit.backend.services;
 
-import com.dovit.backend.model.responses.AuditResponse;
-import com.dovit.backend.model.responses.PagedResponse;
+import com.dovit.backend.payloads.responses.AuditResponse;
+import com.dovit.backend.payloads.responses.PagedResponse;
 
 import java.time.LocalDateTime;
 

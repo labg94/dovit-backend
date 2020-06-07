@@ -2,8 +2,8 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.config.ModelMapperConfig;
 import com.dovit.backend.domain.DevOpsCategory;
-import com.dovit.backend.model.requests.CategoryRequest;
-import com.dovit.backend.model.responses.CategoryResponse;
+import com.dovit.backend.payloads.requests.CategoryRequest;
+import com.dovit.backend.payloads.responses.CategoryResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;

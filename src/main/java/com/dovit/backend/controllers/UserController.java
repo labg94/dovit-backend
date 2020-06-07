@@ -1,11 +1,11 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.User;
-import com.dovit.backend.model.requests.RegisterTokenRequest;
-import com.dovit.backend.model.requests.UserRequest;
-import com.dovit.backend.model.responses.ApiResponse;
-import com.dovit.backend.model.responses.PagedResponse;
-import com.dovit.backend.model.responses.UserResponse;
+import com.dovit.backend.payloads.requests.RegisterTokenRequest;
+import com.dovit.backend.payloads.requests.UserRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
+import com.dovit.backend.payloads.responses.PagedResponse;
+import com.dovit.backend.payloads.responses.UserResponse;
 import com.dovit.backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.net.URI;
 
 /**

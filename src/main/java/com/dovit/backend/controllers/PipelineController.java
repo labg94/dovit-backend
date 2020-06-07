@@ -1,6 +1,6 @@
 package com.dovit.backend.controllers;
 
-import com.dovit.backend.model.requests.PipelineRecommendationRequest;
+import com.dovit.backend.payloads.requests.PipelineRecommendationRequest;
 import com.dovit.backend.services.PipelineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

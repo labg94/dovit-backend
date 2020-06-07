@@ -1,8 +1,8 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.Tool;
-import com.dovit.backend.model.requests.ToolRequest;
-import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.payloads.requests.ToolRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.ToolService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

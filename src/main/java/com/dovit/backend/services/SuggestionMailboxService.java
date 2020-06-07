@@ -1,8 +1,8 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.SuggestionMailbox;
-import com.dovit.backend.model.requests.SuggestionRequest;
-import com.dovit.backend.model.responses.SuggestionResponse;
+import com.dovit.backend.payloads.requests.SuggestionRequest;
+import com.dovit.backend.payloads.responses.SuggestionResponse;
 
 import java.util.List;
 

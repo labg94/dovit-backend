@@ -2,11 +2,11 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.domain.*;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
-import com.dovit.backend.model.requests.ProjectMemberRequest;
-import com.dovit.backend.model.requests.ProjectRequest;
-import com.dovit.backend.model.responses.MemberResponseDetail;
-import com.dovit.backend.model.responses.ProjectMemberRecommendation;
-import com.dovit.backend.model.responses.ProjectResponse;
+import com.dovit.backend.payloads.requests.ProjectMemberRequest;
+import com.dovit.backend.payloads.requests.ProjectRequest;
+import com.dovit.backend.payloads.responses.MemberResponseDetail;
+import com.dovit.backend.payloads.responses.ProjectMemberRecommendation;
+import com.dovit.backend.payloads.responses.ProjectResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.MemberRepository;
 import com.dovit.backend.repositories.ProjectMemberRepository;

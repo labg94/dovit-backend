@@ -1,9 +1,9 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.Project;
-import com.dovit.backend.model.requests.ProjectMemberRequest;
-import com.dovit.backend.model.requests.ProjectRequest;
-import com.dovit.backend.model.responses.ProjectResponse;
+import com.dovit.backend.payloads.requests.ProjectMemberRequest;
+import com.dovit.backend.payloads.requests.ProjectRequest;
+import com.dovit.backend.payloads.responses.ProjectResponse;
 import com.dovit.backend.services.ProjectServiceImpl;
 import com.dovit.backend.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,6 @@
 package com.dovit.backend.services;
 
-import com.dovit.backend.model.responses.MasterRegistryResponse;
+import com.dovit.backend.payloads.responses.MasterRegistryResponse;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.dovit.backend.repositories;
 
-import com.dovit.backend.model.responses.MemberResponseResume;
+import com.dovit.backend.payloads.responses.MemberResponseResume;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

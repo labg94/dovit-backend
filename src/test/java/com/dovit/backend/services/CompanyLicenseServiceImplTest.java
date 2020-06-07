@@ -3,7 +3,7 @@ package com.dovit.backend.services;
 import com.dovit.backend.config.ModelMapperConfig;
 import com.dovit.backend.domain.CompanyLicense;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
-import com.dovit.backend.model.responses.CompanyLicensesResponse;
+import com.dovit.backend.payloads.responses.CompanyLicensesResponse;
 import com.dovit.backend.repositories.CompanyLicenseRepository;
 import com.dovit.backend.util.ValidatorUtil;
 import org.junit.Assert;

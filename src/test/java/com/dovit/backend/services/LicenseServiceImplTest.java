@@ -2,8 +2,8 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.config.ModelMapperConfig;
 import com.dovit.backend.domain.License;
-import com.dovit.backend.model.requests.LicenseRequest;
-import com.dovit.backend.model.responses.LicenseResponse;
+import com.dovit.backend.payloads.requests.LicenseRequest;
+import com.dovit.backend.payloads.responses.LicenseResponse;
 import com.dovit.backend.repositories.LicenseRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;

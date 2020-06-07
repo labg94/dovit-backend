@@ -1,6 +1,6 @@
 package com.dovit.backend.exceptions;
 
-import com.dovit.backend.model.responses.ErrorResponse;
+import com.dovit.backend.payloads.responses.ErrorResponse;
 import com.dovit.backend.services.AuditService;
 import com.dovit.backend.util.Constants;
 import lombok.RequiredArgsConstructor;

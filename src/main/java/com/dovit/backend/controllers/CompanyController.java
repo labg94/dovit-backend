@@ -1,8 +1,8 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.Company;
-import com.dovit.backend.model.requests.CompanyRequest;
-import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.payloads.requests.CompanyRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

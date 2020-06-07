@@ -2,8 +2,8 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.domain.DevOpsCategory;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
-import com.dovit.backend.model.requests.CategoryRequest;
-import com.dovit.backend.model.responses.CategoryResponse;
+import com.dovit.backend.payloads.requests.CategoryRequest;
+import com.dovit.backend.payloads.responses.CategoryResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

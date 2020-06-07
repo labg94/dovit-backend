@@ -1,6 +1,6 @@
 package com.dovit.backend.exceptions;
 
-import com.dovit.backend.model.requests.AuthRequest;
+import com.dovit.backend.payloads.requests.AuthRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

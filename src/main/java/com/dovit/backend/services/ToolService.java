@@ -1,8 +1,10 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Tool;
-import com.dovit.backend.model.requests.ToolRequest;
-import com.dovit.backend.model.responses.ToolResponse;
+import com.dovit.backend.model.ToolRecommendationDTO;
+import com.dovit.backend.payloads.requests.ProjectMemberRequest;
+import com.dovit.backend.payloads.requests.ToolRequest;
+import com.dovit.backend.payloads.responses.ToolResponse;
 
 import java.util.List;
 
@@ -29,4 +31,14 @@ public interface ToolService {
   List<ToolResponse> findAllActiveBySubcategory(Long subcategoryId);
 
   List<ToolResponse> findAllBySubcategory(Long subcategoryId);
+
+  List<ToolRecommendationDTO> findRecommendationByMembers(
+      Long categoryId, Long companyId, List<ProjectMemberRequest> projectMembers);
+
+  List<ToolRecommendationDTO> findRecommendationByLicense(Long categoryId, Long companyId);
+
+  List<ToolRecommendationDTO> findRecommendationByProjectType(
+      Long categoryId, Long companyId, List<Long> projectTypeIds);
+
+  List<ToolRecommendationDTO> findRecommendationByProjectHistory(Long categoryId, Long companyId);
 }

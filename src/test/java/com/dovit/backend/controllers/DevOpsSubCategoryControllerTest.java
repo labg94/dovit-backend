@@ -1,8 +1,8 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.DevOpsSubcategory;
-import com.dovit.backend.model.requests.SubCategoryRequest;
-import com.dovit.backend.model.responses.SubCategoryResponse;
+import com.dovit.backend.payloads.requests.SubCategoryRequest;
+import com.dovit.backend.payloads.responses.SubCategoryResponse;
 import com.dovit.backend.services.DevOpsSubCategoryServiceImpl;
 import com.dovit.backend.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

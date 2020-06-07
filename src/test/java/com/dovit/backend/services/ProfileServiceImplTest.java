@@ -1,7 +1,7 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.config.ModelMapperConfig;
-import com.dovit.backend.model.responses.ProfileResponse;
+import com.dovit.backend.payloads.responses.ProfileResponse;
 import com.dovit.backend.repositories.ProfileRepository;
 import com.dovit.backend.util.DomainBuilderUtil;
 import org.junit.Assert;

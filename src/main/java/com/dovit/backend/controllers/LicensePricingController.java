@@ -1,8 +1,8 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.LicensePricing;
-import com.dovit.backend.model.requests.LicensePricingRequest;
-import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.payloads.requests.LicensePricingRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.LicensePricingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

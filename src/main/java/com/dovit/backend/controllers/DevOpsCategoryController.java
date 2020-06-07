@@ -1,9 +1,9 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.DevOpsCategory;
-import com.dovit.backend.model.requests.CategoryRequest;
-import com.dovit.backend.model.responses.ApiResponse;
-import com.dovit.backend.model.responses.CategoryResponse;
+import com.dovit.backend.payloads.requests.CategoryRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
+import com.dovit.backend.payloads.responses.CategoryResponse;
 import com.dovit.backend.services.DevOpsCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

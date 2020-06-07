@@ -1,8 +1,8 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Audit;
-import com.dovit.backend.model.responses.AuditResponse;
-import com.dovit.backend.model.responses.PagedResponse;
+import com.dovit.backend.payloads.responses.AuditResponse;
+import com.dovit.backend.payloads.responses.PagedResponse;
 import com.dovit.backend.repositories.AuditRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;

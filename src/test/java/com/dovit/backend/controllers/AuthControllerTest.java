@@ -1,10 +1,10 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.User;
-import com.dovit.backend.model.requests.AuthRequest;
-import com.dovit.backend.model.requests.RegisterTokenRequest;
-import com.dovit.backend.model.requests.SignUpRequest;
-import com.dovit.backend.model.responses.AuthResponse;
+import com.dovit.backend.payloads.requests.AuthRequest;
+import com.dovit.backend.payloads.requests.RegisterTokenRequest;
+import com.dovit.backend.payloads.requests.SignUpRequest;
+import com.dovit.backend.payloads.responses.AuthResponse;
 import com.dovit.backend.services.AuthServiceImpl;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;

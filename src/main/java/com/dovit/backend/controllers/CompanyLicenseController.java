@@ -1,8 +1,8 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.CompanyLicense;
-import com.dovit.backend.model.requests.CompanyLicenseRequest;
-import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.payloads.requests.CompanyLicenseRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.CompanyLicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

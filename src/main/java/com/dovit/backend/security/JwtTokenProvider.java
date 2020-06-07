@@ -1,7 +1,7 @@
 package com.dovit.backend.security;
 
 import com.dovit.backend.exceptions.BadRequestException;
-import com.dovit.backend.model.requests.RegisterTokenRequest;
+import com.dovit.backend.payloads.requests.RegisterTokenRequest;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

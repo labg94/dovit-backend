@@ -1,8 +1,8 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.LicensePricing;
-import com.dovit.backend.model.requests.LicensePricingRequest;
-import com.dovit.backend.model.responses.LicensePricingResponse;
+import com.dovit.backend.payloads.requests.LicensePricingRequest;
+import com.dovit.backend.payloads.responses.LicensePricingResponse;
 
 /**
  * @author Ramón París

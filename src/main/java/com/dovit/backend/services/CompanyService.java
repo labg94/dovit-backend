@@ -1,8 +1,8 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Company;
-import com.dovit.backend.model.requests.CompanyRequest;
-import com.dovit.backend.model.responses.CompanyResponse;
+import com.dovit.backend.payloads.requests.CompanyRequest;
+import com.dovit.backend.payloads.responses.CompanyResponse;
 
 import java.util.List;
 

@@ -2,9 +2,9 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Member;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
-import com.dovit.backend.model.requests.MemberRequest;
-import com.dovit.backend.model.responses.MemberResponseDetail;
-import com.dovit.backend.model.responses.MemberResponseResume;
+import com.dovit.backend.payloads.requests.MemberRequest;
+import com.dovit.backend.payloads.responses.MemberResponseDetail;
+import com.dovit.backend.payloads.responses.MemberResponseResume;
 
 import java.util.List;
 

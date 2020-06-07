@@ -1,10 +1,10 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.User;
-import com.dovit.backend.model.requests.RegisterTokenRequest;
-import com.dovit.backend.model.requests.UserRequest;
-import com.dovit.backend.model.responses.PagedResponse;
-import com.dovit.backend.model.responses.UserResponse;
+import com.dovit.backend.payloads.requests.RegisterTokenRequest;
+import com.dovit.backend.payloads.requests.UserRequest;
+import com.dovit.backend.payloads.responses.PagedResponse;
+import com.dovit.backend.payloads.responses.UserResponse;
 
 /**
  * @author Ramón París

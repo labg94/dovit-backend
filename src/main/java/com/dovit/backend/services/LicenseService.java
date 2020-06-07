@@ -1,8 +1,8 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.License;
-import com.dovit.backend.model.requests.LicenseRequest;
-import com.dovit.backend.model.responses.LicenseResponse;
+import com.dovit.backend.payloads.requests.LicenseRequest;
+import com.dovit.backend.payloads.responses.LicenseResponse;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.License;
-import com.dovit.backend.model.requests.LicenseRequest;
+import com.dovit.backend.payloads.requests.LicenseRequest;
 import com.dovit.backend.services.LicenseServiceImpl;
 import com.dovit.backend.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

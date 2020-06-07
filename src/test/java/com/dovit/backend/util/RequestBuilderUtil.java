@@ -1,9 +1,6 @@
 package com.dovit.backend.util;
 
-import com.dovit.backend.model.requests.CompanyLicenseRequest;
-import com.dovit.backend.model.requests.CompanyRequest;
-import com.dovit.backend.model.requests.LicenseRequest;
-import com.dovit.backend.model.requests.ToolRequest;
+import com.dovit.backend.payloads.requests.*;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -26,6 +23,8 @@ public class RequestBuilderUtil<T> {
           .startDate(LocalDate.now())
           .expirationDate(LocalDate.now())
           .build();
+
+  public static ProjectMemberRequest memberRequest = ProjectMemberRequest.builder().build();
 
   private static final Gson gson = new Gson();
 

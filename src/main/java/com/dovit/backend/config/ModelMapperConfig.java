@@ -1,11 +1,11 @@
 package com.dovit.backend.config;
 
 import com.dovit.backend.domain.*;
-import com.dovit.backend.model.requests.LicenseRequest;
-import com.dovit.backend.model.requests.ProjectMemberRequest;
-import com.dovit.backend.model.requests.ProjectRequest;
-import com.dovit.backend.model.requests.ToolRequest;
-import com.dovit.backend.model.responses.*;
+import com.dovit.backend.payloads.requests.LicenseRequest;
+import com.dovit.backend.payloads.requests.ProjectMemberRequest;
+import com.dovit.backend.payloads.requests.ProjectRequest;
+import com.dovit.backend.payloads.requests.ToolRequest;
+import com.dovit.backend.payloads.responses.*;
 import com.dovit.backend.util.DateUtil;
 import com.google.gson.Gson;
 import org.modelmapper.Converter;
