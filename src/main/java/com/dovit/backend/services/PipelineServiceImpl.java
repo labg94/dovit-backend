@@ -1,8 +1,6 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.DevOpsCategory;
-import com.dovit.backend.domain.DevOpsSubcategory;
-import com.dovit.backend.domain.Tool;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.RecommendationPointsDTO;
 import com.dovit.backend.model.ToolRecommendationDTO;
@@ -72,69 +70,42 @@ public class PipelineServiceImpl implements PipelineService {
                           .flatMap(Collection::stream)
                           .collect(Collectors.groupingBy(ToolRecommendationDTO::getToolId));
 
-                  if (!groupedTools.isEmpty()) {
-                    // Work on recommendations grouped by tool. This is to join the points of each
-                    // set
-                    final List<ToolRecommendationDTO> recommendations =
-                        groupedTools.values().stream()
-                            .map(
-                                toolRecommendationDTOS -> {
-                                  // Take the current tool
-                                  ToolRecommendationDTO currentTool =
-                                      toolRecommendationDTOS.stream()
-                                          .findFirst()
-                                          .orElseThrow(
-                                              () -> new ResourceNotFoundException("", "", ""));
+                  // Work on recommendations grouped by tool. This is to join the points of each set
+                  final List<ToolRecommendationDTO> recommendations =
+                      groupedTools.values().stream()
+                          .map(
+                              toolRecommendationDTOS -> {
+                                // Take the current tool
+                                ToolRecommendationDTO currentTool =
+                                    toolRecommendationDTOS.stream()
+                                        .findFirst()
+                                        .orElseThrow(
+                                            () -> new ResourceNotFoundException("", "", ""));
 
-                                  // Join all the points gave in each set
-                                  final List<RecommendationPointsDTO> points =
-                                      toolRecommendationDTOS.stream()
-                                          .map(ToolRecommendationDTO::getPoints)
-                                          .flatMap(Collection::stream)
-                                          .collect(Collectors.toList());
+                                // Join all the points gave in each set
+                                final List<RecommendationPointsDTO> points =
+                                    toolRecommendationDTOS.stream()
+                                        .map(ToolRecommendationDTO::getPoints)
+                                        .flatMap(Collection::stream)
+                                        .collect(Collectors.toList());
 
-                                  // build the tool recommendation with correct points
-                                  return currentTool
-                                      .toBuilder()
-                                      .points(points)
-                                      .totalPoints(
-                                          points.stream()
-                                              .map(RecommendationPointsDTO::getPoints)
-                                              .reduce(0, Integer::sum))
-                                      .build();
-                                })
-                            .collect(Collectors.toList());
+                                // build the tool recommendation with correct points
+                                return currentTool
+                                    .toBuilder()
+                                    .points(points)
+                                    .totalPoints(
+                                        points.stream()
+                                            .map(RecommendationPointsDTO::getPoints)
+                                            .reduce(0, Integer::sum))
+                                    .build();
+                              })
+                          .collect(Collectors.toList());
 
-                    return CategoryRecommendationResponse.builder()
-                        .categoryId(category.getId())
-                        .categoryDescription(category.getDescription())
-                        .allTools(recommendations)
-                        .build();
-                  } else {
-                    List<Tool> allTools =
-                        category.getSubcategories().stream()
-                            .map(DevOpsSubcategory::getTools)
-                            .flatMap(Collection::stream)
-                            .distinct()
-                            .collect(Collectors.toList());
-
-                    final List<ToolRecommendationDTO> recommendations =
-                        allTools.stream()
-                            .map(
-                                tool ->
-                                    modelMapper
-                                        .map(tool, ToolRecommendationDTO.class)
-                                        .toBuilder()
-                                        .points(Collections.emptyList())
-                                        .build())
-                            .collect(Collectors.toList());
-
-                    return CategoryRecommendationResponse.builder()
-                        .categoryId(category.getId())
-                        .categoryDescription(category.getDescription())
-                        .allTools(recommendations)
-                        .build();
-                  }
+                  return CategoryRecommendationResponse.builder()
+                      .categoryId(category.getId())
+                      .categoryDescription(category.getDescription())
+                      .allTools(recommendations)
+                      .build();
                 })
             .collect(Collectors.toList());
 
