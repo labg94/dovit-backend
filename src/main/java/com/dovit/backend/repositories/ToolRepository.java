@@ -47,19 +47,6 @@ public interface ToolRepository extends JpaRepository<Tool, Long> {
   List<Tool> findRecommendationByCompanyLicense(Long companyId, Long categoryId, LocalDate now);
 
   @Query(
-      "SELECT DISTINCT tool "
-          + "from Tool tool "
-          + "   join tool.projectTypes projectType "
-          + "   join tool.subcategories subcategory "
-          + "   join subcategory.devOpsCategory category "
-          + "where tool.active = true "
-          + "   and category.id = :categoryId "
-          + "   and category.active = true "
-          + "   and subcategory.active = true "
-          + "   and projectType.id in :projectTypeIds ")
-  List<Tool> findRecommendationByProjectType(Long categoryId, List<Long> projectTypeIds);
-
-  @Query(
       "select distinct tool "
           + "from Project project "
           + "   join project.pipelines pipeline "

@@ -3,6 +3,7 @@ package com.dovit.backend.services;
 import com.dovit.backend.domain.DevOpsSubcategory;
 import com.dovit.backend.domain.Tool;
 import com.dovit.backend.domain.ToolProfile;
+import com.dovit.backend.domain.ToolProjectType;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.RecommendationPointsDTO;
 import com.dovit.backend.model.ToolRecommendationDTO;
@@ -11,6 +12,7 @@ import com.dovit.backend.payloads.requests.ToolRequest;
 import com.dovit.backend.payloads.responses.ToolResponse;
 import com.dovit.backend.repositories.CustomRepository;
 import com.dovit.backend.repositories.ToolProfileRepository;
+import com.dovit.backend.repositories.ToolProjectTypeRepository;
 import com.dovit.backend.repositories.ToolRepository;
 import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class ToolServiceImpl implements ToolService {
   private final DevOpsSubCategoryService subCategoryService;
   private final CustomRepository customRepository;
   private final ToolProfileRepository toolProfileRepository;
+  private final ToolProjectTypeRepository toolProjectTypeRepository;
 
   @Override
   @Transactional
@@ -210,20 +213,34 @@ public class ToolServiceImpl implements ToolService {
   @Transactional
   public List<ToolRecommendationDTO> findRecommendationByProjectType(
       Long categoryId, List<Long> projectTypeIds) {
-    List<Tool> tools = toolRepository.findRecommendationByProjectType(categoryId, projectTypeIds);
+    List<ToolProjectType> toolProjectTypes =
+        toolProjectTypeRepository.findRecommendationByProjectType(categoryId, projectTypeIds);
 
-    return createToolRecommendation(tools)
+    return toolProjectTypes.stream()
+        .collect(Collectors.groupingBy(ToolProjectType::getTool))
+        .entrySet()
+        .stream()
         .map(
-            recommendation ->
-                recommendation
-                    .toBuilder()
-                    .points(
-                        Collections.singletonList(
-                            RecommendationPointsDTO.builder()
-                                .category(TOOL_POINTS_PROJECT_TYPE_TXT)
-                                .points(TOOL_POINTS_PROJECT_TYPE)
-                                .build()))
-                    .build())
+            entry -> {
+              Tool tool = entry.getKey();
+              List<RecommendationPointsDTO> points =
+                  entry.getValue().stream()
+                      .map(
+                          toolProjectType ->
+                              RecommendationPointsDTO.builder()
+                                  .points(TOOL_POINTS_PROJECT_TYPE)
+                                  .category(
+                                      String.format(
+                                          TOOL_POINTS_PROJECT_TYPE_TXT,
+                                          toolProjectType.getProjectType().getDescription()))
+                                  .build())
+                      .collect(Collectors.toList());
+              return modelMapper
+                  .map(tool, ToolRecommendationDTO.class)
+                  .toBuilder()
+                  .points(points)
+                  .build();
+            })
         .collect(Collectors.toList());
   }
 
@@ -240,11 +257,8 @@ public class ToolServiceImpl implements ToolService {
                     .points(
                         Collections.singletonList(
                             RecommendationPointsDTO.builder()
-                                .category(
-                                    String.format(
-                                        TOOL_POINTS_EXISTS_TXT,
-                                        recommendation.getToolDescription()))
-                                .points(TOOL_POINTS_EXISTS)
+                                .category(TOOL_POINTS_HISTORY_TXT)
+                                .points(TOOL_POINTS_HISTORY)
                                 .build()))
                     .build())
         .collect(Collectors.toList());

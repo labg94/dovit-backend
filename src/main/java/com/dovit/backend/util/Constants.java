@@ -20,8 +20,8 @@ public class Constants {
   public static final String TOOL_POINTS_LICENSE_TXT = "Company has an active license";
   public static final int TOOL_POINTS_LICENSE = 5;
 
-  public static final String TOOL_POINTS_PROJECT_TYPE_TXT = "Project type matches";
-  public static final int TOOL_POINTS_PROJECT_TYPE = 4;
+  public static final String TOOL_POINTS_PROJECT_TYPE_TXT = "Project type '%s' matches";
+  public static final int TOOL_POINTS_PROJECT_TYPE = 2;
 
   public static final String TOOL_POINTS_MEMBER_SENIOR_TXT = "Senior member knows it";
   public static final int TOOL_POINTS_MEMBER_SENIOR = 3;
