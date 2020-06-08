@@ -29,10 +29,6 @@ public class Pipeline extends DateAudit {
 
   @ManyToOne private Project project;
 
-  @ManyToMany
-  @JoinTable(
-      name = "pipeline_tool",
-      joinColumns = @JoinColumn(name = "pipeline_id"),
-      inverseJoinColumns = @JoinColumn(name = "tool_id"))
-  private List<Tool> tools;
+  @OneToMany(mappedBy = "pipeline")
+  private List<PipelineTool> pipelineTools;
 }

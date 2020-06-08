@@ -51,13 +51,13 @@ public class Tool extends DateAudit {
   @OneToMany(mappedBy = "tool")
   private List<ToolProfile> toolProfile;
 
-  @ManyToMany(mappedBy = "tools")
-  private List<Pipeline> pipelines;
-
   @ManyToMany(cascade = CascadeType.REFRESH)
   @JoinTable(
       name = "tool_project_type",
       joinColumns = @JoinColumn(name = "tool_id"),
       inverseJoinColumns = @JoinColumn(name = "project_type_id"))
   private List<ProjectType> projectTypes;
+
+  @OneToMany(mappedBy = "tool")
+  private List<PipelineTool> pipelineTools;
 }

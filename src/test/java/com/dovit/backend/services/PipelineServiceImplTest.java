@@ -45,7 +45,7 @@ class PipelineServiceImplTest {
                 gitlab.toBuilder().points(Collections.singletonList(licensePoints)).build()));
 
     // project type mock
-    when(toolService.findRecommendationByProjectType(anyLong(), anyLong(), anyList()))
+    when(toolService.findRecommendationByProjectType(anyLong(), anyList()))
         .thenReturn( // PLANNING
             Arrays.asList(
                 gitlab.toBuilder().points(Collections.singletonList(projectTypePoints)).build(),
@@ -64,7 +64,7 @@ class PipelineServiceImplTest {
                 jira.toBuilder().points(Collections.singletonList(projectTypePoints)).build()));
 
     // member mock
-    when(toolService.findRecommendationByMembers(anyLong(), anyLong(), anyList()))
+    when(toolService.findRecommendationByMembers(anyLong(), anyList()))
         .thenReturn( // PLANNING
             Arrays.asList(
                 gitlab.toBuilder().points(Collections.singletonList(memberPoints)).build(),

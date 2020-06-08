@@ -18,5 +18,5 @@ import java.util.List;
 public class PipelineRequest {
 
   private Long pipelineId;
-  private List<Long> toolIds;
+  private List<PipelineToolRequest> tools;
 }

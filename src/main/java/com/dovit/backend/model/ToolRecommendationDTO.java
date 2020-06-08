@@ -20,8 +20,8 @@ public class ToolRecommendationDTO {
   private Long toolId;
   private String toolName;
   private String toolDescription;
+  private String toolImageUrl;
   private List<RecommendationPointsDTO> points;
   private int totalPoints;
-  private double totalPrice;
-  private int usersQty;
+  private double pricePerUser;
 }

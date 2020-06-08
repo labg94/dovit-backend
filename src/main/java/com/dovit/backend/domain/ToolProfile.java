@@ -1,5 +1,6 @@
 package com.dovit.backend.domain;
 
+import com.dovit.backend.domain.keys.ToolProfileId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

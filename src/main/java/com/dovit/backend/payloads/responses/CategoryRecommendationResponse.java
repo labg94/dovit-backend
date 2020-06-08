@@ -17,14 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class PipelineToolResponse {
+public class CategoryRecommendationResponse {
 
   private Long categoryId;
   private String categoryDescription;
   private ToolRecommendationDTO recommendedTool;
   private List<ToolRecommendationDTO> otherTools;
-
   @JsonIgnore private List<ToolRecommendationDTO> allTools;
-
-  private List<MemberResponseDetail> members;
+  private int usersQty;
 }

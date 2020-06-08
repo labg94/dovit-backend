@@ -350,12 +350,12 @@ INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, l
 VALUES (1, 5, 1, 0, 1);
 
 
-INSERT INTO level (level_id, description)
-VALUES (1, 'Senior');
-INSERT INTO level (level_id, description)
-VALUES (2, 'Semi senior');
-INSERT INTO level (level_id, description)
-VALUES (3, 'Junior');
+INSERT INTO level (level_id, description, points)
+VALUES (1, 'Senior', '3');
+INSERT INTO level (level_id, description, points)
+VALUES (2, 'Semi senior', '2');
+INSERT INTO level (level_id, description, points)
+VALUES (3, 'Junior', '1');
 
 INSERT INTO profile (id, description)
 VALUES (1, 'Backend Developer');

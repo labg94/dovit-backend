@@ -20,5 +20,5 @@ public class PipelineResponse {
   private Long id;
   private boolean recommended;
   private Double cost;
-  private List<PipelineToolResponse> pipelineTools;
+  private List<CategoryRecommendationResponse> pipelineTools;
 }

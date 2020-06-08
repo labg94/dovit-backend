@@ -33,12 +33,12 @@ public interface ToolService {
   List<ToolResponse> findAllBySubcategory(Long subcategoryId);
 
   List<ToolRecommendationDTO> findRecommendationByMembers(
-      Long categoryId, Long companyId, List<ProjectMemberRequest> projectMembers);
+      Long categoryId, List<ProjectMemberRequest> projectMembers);
 
-  List<ToolRecommendationDTO> findRecommendationByLicense(Long categoryId, Long companyId);
+  List<ToolRecommendationDTO> findRecommendationByLicense(Long companyId, Long categoryId);
 
   List<ToolRecommendationDTO> findRecommendationByProjectType(
-      Long categoryId, Long companyId, List<Long> projectTypeIds);
+      Long categoryId, List<Long> projectTypeIds);
 
   List<ToolRecommendationDTO> findRecommendationByProjectHistory(Long categoryId, Long companyId);
 }

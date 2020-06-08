@@ -1,4 +1,4 @@
-package com.dovit.backend.domain;
+package com.dovit.backend.domain.keys;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ProjectMemberId implements Serializable {
 
-    private Long memberId;
-    private Long devOpsCategoryId;
-    private Long projectId;
+  private Long memberId;
+  private Long devOpsCategoryId;
+  private Long projectId;
 }

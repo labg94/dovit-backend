@@ -1,22 +1,22 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.DevOpsCategory;
+import com.dovit.backend.domain.DevOpsSubcategory;
+import com.dovit.backend.domain.Tool;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.RecommendationPointsDTO;
 import com.dovit.backend.model.ToolRecommendationDTO;
 import com.dovit.backend.payloads.requests.PipelineRecommendationRequest;
+import com.dovit.backend.payloads.responses.CategoryRecommendationResponse;
 import com.dovit.backend.payloads.responses.PipelineResponse;
-import com.dovit.backend.payloads.responses.PipelineToolResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.PipelineRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,6 +34,7 @@ public class PipelineServiceImpl implements PipelineService {
   private final PipelineRepository pipelineRepository;
   private final DevOpsCategoryRepository devOpsCategoryRepository;
   private final ToolService toolService;
+  private final ModelMapper modelMapper;
 
   @Override
   @Transactional
@@ -41,21 +42,21 @@ public class PipelineServiceImpl implements PipelineService {
 
     final List<DevOpsCategory> categories = devOpsCategoryRepository.findAllByActiveOrderById(true);
 
-    final List<PipelineToolResponse> categoriesRecommendation =
+    final List<CategoryRecommendationResponse> categoriesRecommendation =
         categories.stream()
             .map(
                 category -> {
                   List<ToolRecommendationDTO> toolsFromLicenses =
                       toolService.findRecommendationByLicense(
-                          category.getId(), request.getCompanyId());
+                          request.getCompanyId(), category.getId());
 
                   List<ToolRecommendationDTO> toolsFromMembers =
                       toolService.findRecommendationByMembers(
-                          category.getId(), request.getCompanyId(), request.getProjectMembers());
+                          category.getId(), request.getProjectMembers());
 
                   List<ToolRecommendationDTO> toolsFromProjectType =
                       toolService.findRecommendationByProjectType(
-                          category.getId(), request.getCompanyId(), request.getProjectTypeIds());
+                          category.getId(), request.getProjectTypeIds());
 
                   List<ToolRecommendationDTO> toolsFromHistory =
                       toolService.findRecommendationByProjectHistory(
@@ -71,58 +72,83 @@ public class PipelineServiceImpl implements PipelineService {
                           .flatMap(Collection::stream)
                           .collect(Collectors.groupingBy(ToolRecommendationDTO::getToolId));
 
-                  // Work on recommendations grouped by tool. This is to join the points of each set
-                  final List<ToolRecommendationDTO> recommendations =
-                      groupedTools.values().stream()
-                          .map(
-                              toolRecommendationDTOS -> {
-                                // Take the current tool
-                                ToolRecommendationDTO currentTool =
-                                    toolRecommendationDTOS.stream()
-                                        .findFirst()
-                                        .orElseThrow(
-                                            () -> new ResourceNotFoundException("", "", ""));
+                  if (!groupedTools.isEmpty()) {
+                    // Work on recommendations grouped by tool. This is to join the points of each
+                    // set
+                    final List<ToolRecommendationDTO> recommendations =
+                        groupedTools.values().stream()
+                            .map(
+                                toolRecommendationDTOS -> {
+                                  // Take the current tool
+                                  ToolRecommendationDTO currentTool =
+                                      toolRecommendationDTOS.stream()
+                                          .findFirst()
+                                          .orElseThrow(
+                                              () -> new ResourceNotFoundException("", "", ""));
 
-                                // Join all the points gave in each set
-                                final List<RecommendationPointsDTO> points =
-                                    toolRecommendationDTOS.stream()
-                                        .map(ToolRecommendationDTO::getPoints)
-                                        .flatMap(Collection::stream)
-                                        .collect(Collectors.toList());
+                                  // Join all the points gave in each set
+                                  final List<RecommendationPointsDTO> points =
+                                      toolRecommendationDTOS.stream()
+                                          .map(ToolRecommendationDTO::getPoints)
+                                          .flatMap(Collection::stream)
+                                          .collect(Collectors.toList());
 
-                                // build the tool recommendation with correct points
-                                return currentTool
-                                    .toBuilder()
-                                    .points(points)
-                                    .totalPoints(
-                                        points.stream()
-                                            .map(RecommendationPointsDTO::getPoints)
-                                            .reduce(0, Integer::sum))
-                                    .build();
-                              })
-                          .collect(Collectors.toList());
+                                  // build the tool recommendation with correct points
+                                  return currentTool
+                                      .toBuilder()
+                                      .points(points)
+                                      .totalPoints(
+                                          points.stream()
+                                              .map(RecommendationPointsDTO::getPoints)
+                                              .reduce(0, Integer::sum))
+                                      .build();
+                                })
+                            .collect(Collectors.toList());
 
-                  return PipelineToolResponse.builder()
-                      .categoryId(category.getId())
-                      .categoryDescription(category.getDescription())
-                      .allTools(recommendations)
-                      .build();
+                    return CategoryRecommendationResponse.builder()
+                        .categoryId(category.getId())
+                        .categoryDescription(category.getDescription())
+                        .allTools(recommendations)
+                        .build();
+                  } else {
+                    List<Tool> allTools =
+                        category.getSubcategories().stream()
+                            .map(DevOpsSubcategory::getTools)
+                            .flatMap(Collection::stream)
+                            .distinct()
+                            .collect(Collectors.toList());
+
+                    final List<ToolRecommendationDTO> recommendations =
+                        allTools.stream()
+                            .map(
+                                tool ->
+                                    modelMapper
+                                        .map(tool, ToolRecommendationDTO.class)
+                                        .toBuilder()
+                                        .points(Collections.emptyList())
+                                        .build())
+                            .collect(Collectors.toList());
+
+                    return CategoryRecommendationResponse.builder()
+                        .categoryId(category.getId())
+                        .categoryDescription(category.getDescription())
+                        .allTools(recommendations)
+                        .build();
+                  }
                 })
             .collect(Collectors.toList());
 
     // To know if a tool has been recommended in any other category
     categoriesRecommendation.forEach(
-        categoryRecommendation -> {
+        category -> {
           // Find all other categories
-          List<PipelineToolResponse> othersCats =
+          List<CategoryRecommendationResponse> othersCats =
               categoriesRecommendation.stream()
-                  .filter(
-                      otherCat ->
-                          !otherCat.getCategoryId().equals(categoryRecommendation.getCategoryId()))
+                  .filter(otherCat -> !otherCat.getCategoryId().equals(category.getCategoryId()))
                   .collect(Collectors.toList());
 
           // Evaluates each tool of the currentCategory
-          categoryRecommendation
+          category
               .getAllTools()
               .forEach(
                   currentTool ->
@@ -155,38 +181,43 @@ public class PipelineServiceImpl implements PipelineService {
                               }));
 
           ToolRecommendationDTO recommendedTool =
-              categoryRecommendation.getAllTools().stream()
+              category.getAllTools().stream()
                   .max(Comparator.comparing(ToolRecommendationDTO::getTotalPoints))
                   // TODO acá se debe hacer la lógica de los precios de las licencias y presupuesto
                   // para elegir una en caso de que sea más de una con el mismo puntaje
-                  .orElseThrow();
+                  .orElse(null);
 
-          categoryRecommendation.setRecommendedTool(recommendedTool);
-          categoryRecommendation.setOtherTools(
-              categoryRecommendation.getAllTools().stream()
-                  .filter(r -> !r.getToolId().equals(recommendedTool.getToolId()))
+          category.setRecommendedTool(recommendedTool);
+          category.setOtherTools(
+              category.getAllTools().stream()
+                  .filter(Objects::nonNull)
+                  .filter(
+                      r ->
+                          recommendedTool != null
+                              && !r.getToolId().equals(recommendedTool.getToolId()))
                   .sorted(Comparator.comparing(ToolRecommendationDTO::getTotalPoints).reversed())
                   .collect(Collectors.toList()));
         });
 
     // TODO Integrar exclude tools id para presupuesto
-    final Double totalCost =
-        categoriesRecommendation.stream()
-            .collect(Collectors.groupingBy(c -> c.getRecommendedTool().getToolId()))
-            .values()
-            .stream()
-            .map(
-                values ->
-                    values.stream()
-                        .max(Comparator.comparing(c -> c.getRecommendedTool().getTotalPrice()))
-                        .map(c -> c.getRecommendedTool().getTotalPrice())
-                        .orElse(0.0))
-            .reduce(0.0, Double::sum);
+    //    final Double totalCost =
+    //        categoriesRecommendation.stream()
+    //            .collect(Collectors.groupingBy(c -> c.getRecommendedTool().getToolId()))
+    //            .values()
+    //            .stream()
+    //            .map(
+    //                values ->
+    //                    values.stream()
+    //                        .max(Comparator.comparing(c ->
+    // c.getRecommendedTool().getTotalPrice()))
+    //                        .map(c -> c.getRecommendedTool().getTotalPrice())
+    //                        .orElse(0.0))
+    //            .reduce(0.0, Double::sum);
 
     return PipelineResponse.builder()
         .recommended(true)
         .pipelineTools(categoriesRecommendation)
-        .cost(totalCost)
+        .cost(null)
         .build();
   }
 

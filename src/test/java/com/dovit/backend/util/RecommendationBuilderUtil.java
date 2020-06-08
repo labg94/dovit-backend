@@ -14,8 +14,7 @@ public class RecommendationBuilderUtil {
           .toolId(1L)
           .toolName("Gitlab")
           .toolDescription("Gitlab on premise")
-          .usersQty(4)
-          .totalPrice(500.0)
+          .pricePerUser(500.0)
           .build();
 
   public static final ToolRecommendationDTO azureDevOps =
@@ -23,8 +22,7 @@ public class RecommendationBuilderUtil {
           .toolId(2L)
           .toolName("Azure DevOps")
           .toolDescription("Azure DevOps on premise")
-          .usersQty(3)
-          .totalPrice(20.0)
+          .pricePerUser(20.0)
           .build();
 
   public static final ToolRecommendationDTO jira =
@@ -32,8 +30,7 @@ public class RecommendationBuilderUtil {
           .toolId(3L)
           .toolName("Jira")
           .toolDescription("Jira on premise")
-          .usersQty(3)
-          .totalPrice(20.0)
+          .pricePerUser(20.0)
           .build();
 
   public static final ToolRecommendationDTO jenkins =

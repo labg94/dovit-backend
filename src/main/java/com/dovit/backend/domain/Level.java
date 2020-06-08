@@ -24,6 +24,8 @@ public class Level {
 
   private String description;
 
+  @Column private int points;
+
   @OneToMany(mappedBy = "level")
   private List<ToolProfile> toolProfile;
 }

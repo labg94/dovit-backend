@@ -1,4 +1,4 @@
-package com.dovit.backend.domain;
+package com.dovit.backend.domain.keys;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
