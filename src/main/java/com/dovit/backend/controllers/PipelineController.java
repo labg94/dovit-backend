@@ -26,4 +26,11 @@ public class PipelineController {
       @RequestBody PipelineRecommendationRequest request) {
     return ResponseEntity.ok(pipelineService.generatePipelineRecommendation(request));
   }
+
+  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+  @GetMapping("/project/{projectId}/pipelines")
+  public ResponseEntity<?> findAllByProjectId(@PathVariable Long projectId) {
+    //    return ResponseEntity.ok(pipelineService.generatePipelineRecommendation(request));
+    return null;
+  }
 }

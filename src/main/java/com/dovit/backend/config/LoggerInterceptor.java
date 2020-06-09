@@ -3,7 +3,6 @@ package com.dovit.backend.config;
 import com.dovit.backend.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,23 +16,28 @@ import javax.servlet.http.HttpServletResponse;
 public class LoggerInterceptor extends HandlerInterceptorAdapter {
 
   @Override
-  public void postHandle(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      Object handler,
-      ModelAndView modelAndView)
+  public void afterCompletion(
+      HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
       throws Exception {
-
     if (!request.getServletPath().contains("images")
         && !request.getServletPath().contains("error")) {
-      log.info(
-          "{} Requested {} with {} | Response HttpStatus: {}",
-          this.getRequestUser(),
-          request.getServletPath(),
-          request.getMethod(),
-          response.getStatus());
+      final String message =
+          String.format(
+              "%s requested %s with %s | Response HttpStatus: %s",
+              this.getRequestUser(),
+              request.getServletPath(),
+              request.getMethod(),
+              response.getStatus());
+
+      if (response.getStatus() >= 500) {
+        log.error(message);
+      } else if (response.getStatus() >= 300) {
+        log.warn(message);
+      } else {
+        log.info(message);
+      }
     }
-    super.postHandle(request, response, handler, modelAndView);
+    super.afterCompletion(request, response, handler, ex);
   }
 
   private String getRequestUser() {

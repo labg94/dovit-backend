@@ -49,6 +49,7 @@ public class ModelMapperConfig {
     modelMapper.addMappings(this.licenseLicenseResponsePropertyMap());
     modelMapper.addMappings(this.pricingResponsePropertyMap());
     modelMapper.addMappings(this.suggestionResponsePropertyMap());
+    modelMapper.addMappings(this.mapProjectTypeResponse());
 
     // Add requests mappers
     modelMapper.addMappings(projectRequestPropertyMap());
@@ -391,6 +392,15 @@ public class ModelMapperConfig {
       protected void configure() {
         using(converterTags).map(source.getSubcategories()).setTags(new ArrayList<>());
         using(convertImgUrl).map(source.getImageUrl()).setImageUrl(BASE_IMAGE_URL);
+      }
+    };
+  }
+
+  private PropertyMap<ToolProjectType, ProjectTypeResponse> mapProjectTypeResponse() {
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        map(source.getProjectType().getId()).setProjectTypeId(1L);
       }
     };
   }

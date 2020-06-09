@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Ramón París
@@ -26,4 +27,8 @@ public interface ToolProjectTypeRepository extends JpaRepository<ToolProjectType
           + "   and toolProjectType.projectTypeId in :projectTypeIds "
           + "   and category.id = :categoryId ")
   List<ToolProjectType> findRecommendationByProjectType(Long categoryId, List<Long> projectTypeIds);
+
+  List<ToolProjectType> findAllByToolId(Long toolId);
+
+  Optional<ToolProjectType> findAllByToolIdAndProjectTypeId(Long toolId, Long projectTypeId);
 }
