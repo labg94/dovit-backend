@@ -2,10 +2,7 @@ package com.dovit.backend.domain;
 
 import com.dovit.backend.domain.audit.DateAudit;
 import com.dovit.backend.domain.keys.ToolProjectTypeId;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -20,6 +17,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tool_project_type")
 @IdClass(ToolProjectTypeId.class)
+@Builder
 public class ToolProjectType extends DateAudit {
 
   @Id
@@ -31,12 +29,12 @@ public class ToolProjectType extends DateAudit {
   private Long toolId;
 
   @ManyToOne
-  @JoinColumn(name = "project_type_id", referencedColumnName = "id")
+  @JoinColumn(name = "project_type_id")
   @MapsId("projectTypeId")
   private ProjectType projectType;
 
   @ManyToOne
-  @JoinColumn(name = "tool_id", referencedColumnName = "tool_id")
+  @JoinColumn(name = "tool_id")
   @MapsId("toolId")
   private Tool tool;
 }

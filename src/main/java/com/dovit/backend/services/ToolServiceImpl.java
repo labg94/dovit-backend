@@ -10,7 +10,6 @@ import com.dovit.backend.model.ToolRecommendationDTO;
 import com.dovit.backend.payloads.requests.ProjectMemberRequest;
 import com.dovit.backend.payloads.requests.ToolRequest;
 import com.dovit.backend.payloads.responses.ToolResponse;
-import com.dovit.backend.repositories.CustomRepository;
 import com.dovit.backend.repositories.ToolProfileRepository;
 import com.dovit.backend.repositories.ToolProjectTypeRepository;
 import com.dovit.backend.repositories.ToolRepository;
@@ -41,7 +40,6 @@ public class ToolServiceImpl implements ToolService {
   private final ValidatorUtil validatorUtil;
   private final ModelMapper modelMapper;
   private final DevOpsSubCategoryService subCategoryService;
-  private final CustomRepository customRepository;
   private final ToolProfileRepository toolProfileRepository;
   private final ToolProjectTypeRepository toolProjectTypeRepository;
 
@@ -96,7 +94,19 @@ public class ToolServiceImpl implements ToolService {
                   .getLicensePrices()
                   .forEach(licensePricing -> licensePricing.setLicense(license));
             });
-    return toolRepository.save(tool);
+    Tool response = toolRepository.save(tool);
+
+    List<ToolProjectType> toolProjectTypes =
+        request.getProjectTypeIds().stream()
+            .map(
+                projectTypeId ->
+                    ToolProjectType.builder()
+                        .projectTypeId(projectTypeId)
+                        .toolId(response.getId())
+                        .build())
+            .collect(Collectors.toList());
+    toolProjectTypeRepository.saveAll(toolProjectTypes);
+    return response;
   }
 
   @Override
