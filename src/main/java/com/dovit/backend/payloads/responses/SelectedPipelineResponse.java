@@ -9,16 +9,15 @@ import java.util.List;
 
 /**
  * @author Ramón París
- * @since 31-05-20
+ * @since 14-06-20
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PipelineResponse {
+public class SelectedPipelineResponse {
 
-  private Long id;
-  private boolean recommended;
+  private Long pipelineId;
   private Double cost;
-  private List<CategoryRecommendationResponse> pipelineTools;
+  private List<PipelineToolResponse> tools;
 }

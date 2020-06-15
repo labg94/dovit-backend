@@ -2,10 +2,10 @@ package com.dovit.backend.domain;
 
 import com.dovit.backend.domain.audit.DateAudit;
 import com.dovit.backend.domain.keys.PipelineToolId;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
@@ -19,7 +19,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "pipeline_tool")
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @IdClass(PipelineToolId.class)
+@Builder
 public class PipelineTool extends DateAudit {
 
   @Id
@@ -48,4 +50,8 @@ public class PipelineTool extends DateAudit {
   @JoinColumn(name = "category_id", referencedColumnName = "id")
   @MapsId("categoryId")
   private DevOpsCategory category;
+
+  @Type(type = "jsonb")
+  @Column(columnDefinition = "jsonb")
+  private Object log;
 }

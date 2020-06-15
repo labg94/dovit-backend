@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -44,4 +45,12 @@ public class ProjectRequest {
 
   @NotNull(message = "Members are mandatory fields")
   private List<ProjectMemberRequest> members;
+
+  private Double budget;
+
+  @NotNull(message = "Project type is a mandatory field")
+  @Size(min = 1, message = "Project type is a mandatory field")
+  private List<Long> projectTypeIds;
+
+  private List<PipelineToolRequest> selectedTools;
 }

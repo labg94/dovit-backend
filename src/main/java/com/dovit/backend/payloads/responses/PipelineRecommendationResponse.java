@@ -5,19 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author Ramón París
- * @since 09-12-2019
+ * @since 31-05-20
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ProjectMemberResponse {
+public class PipelineRecommendationResponse {
 
-  private Long memberId;
-  private String memberName;
-  private String memberLastName;
-  private Long categoryId;
-  private String categoryDescription;
+  private Long id;
+  private Double cost;
+  private List<CategoryRecommendationResponse> pipelineTools;
 }

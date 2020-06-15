@@ -47,6 +47,6 @@ public class Project extends DateAudit {
       inverseJoinColumns = @JoinColumn(name = "project_type_id"))
   private List<ProjectType> projectTypes;
 
-  @OneToMany(mappedBy = "project")
+  @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
   private List<Pipeline> pipelines;
 }

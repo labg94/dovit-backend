@@ -42,7 +42,7 @@ public class ModelMapperConfig {
 
     // Add response mappers
     modelMapper.addMappings(this.toolResponsePropertyMap(BASE_IMAGE_URL));
-    modelMapper.addMappings(this.projectResponsePropertyMap(BASE_IMAGE_URL));
+    modelMapper.addMappings(this.projectResponsePropertyMap());
     modelMapper.addMappings(this.auditResponsePropertyMap());
     modelMapper.addMappings(this.memberResponsePropertyMap(BASE_IMAGE_URL));
     modelMapper.addMappings(this.projectMemberResumePropertyMap());
@@ -50,6 +50,9 @@ public class ModelMapperConfig {
     modelMapper.addMappings(this.pricingResponsePropertyMap());
     modelMapper.addMappings(this.suggestionResponsePropertyMap());
     modelMapper.addMappings(this.mapProjectTypeResponse());
+    modelMapper.addMappings(this.projectMemberResponsePropertyMap());
+    modelMapper.addMappings(this.pipelineToolResponsePropertyMap(BASE_IMAGE_URL));
+    modelMapper.addMappings(this.categoryRecommendationResponsePropertyMap());
 
     // Add requests mappers
     modelMapper.addMappings(projectRequestPropertyMap());
@@ -86,6 +89,12 @@ public class ModelMapperConfig {
                             .build())
                 .collect(Collectors.toList());
 
+    Converter<List<Long>, List<ProjectType>> projectTypeConverter =
+        mappingContext ->
+            mappingContext.getSource().stream()
+                .map(id -> ProjectType.builder().id(id).build())
+                .collect(Collectors.toList());
+
     Converter<Long, Company> companyConverter =
         mappingContext -> Company.builder().id(mappingContext.getSource()).build();
 
@@ -94,6 +103,9 @@ public class ModelMapperConfig {
       protected void configure() {
         using(memberConverter).map(source.getMembers()).setMembers(Collections.emptyList());
         using(companyConverter).map(source.getCompanyId()).setCompany(new Company());
+        using(projectTypeConverter)
+            .map(source.getProjectTypeIds())
+            .setProjectTypes(Collections.emptyList());
       }
     };
   }
@@ -297,63 +309,60 @@ public class ModelMapperConfig {
   }
 
   /** Property map used in ProjectMember - ProjectMemberResponse mapping */
-  private PropertyMap<Project, ProjectResponse> projectResponsePropertyMap(String BASE_IMAGE_URL) {
-    Converter<List<ProjectMember>, List<ProjectMemberResponse>> memberConverter =
-        mappingContext ->
-            mappingContext.getSource().stream()
-                .collect(Collectors.groupingBy(ProjectMember::getMember))
-                .entrySet()
-                .stream()
-                .map(
-                    entrySet -> {
-                      Member member = entrySet.getKey();
-                      List<ProjectMember> memberValues = entrySet.getValue();
-                      return ProjectMemberResponse.builder()
-                          .memberId(member.getId())
-                          .memberName(member.getName())
-                          .memberLastName(member.getLastName())
-                          .participation(
-                              memberValues.stream()
-                                  .map(
-                                      memberValue ->
-                                          MemberParticipationResponse.builder()
-                                              .devopsCategoryName(
-                                                  memberValue
-                                                      .getDevOpsCategories()
-                                                      .getDescription())
-                                              .tools(
-                                                  member.getToolProfile().stream()
-                                                      .filter(
-                                                          toolProfile ->
-                                                              toolProfile.getTool()
-                                                                  .getSubcategories().stream()
-                                                                  .collect(
-                                                                      Collectors.groupingBy(
-                                                                          sub ->
-                                                                              sub.getDevOpsCategory()
-                                                                                  .getId()))
-                                                                  .containsKey(
-                                                                      memberValue
-                                                                          .getDevOpsCategoryId()))
-                                                      .map(
-                                                          tool ->
-                                                              this.createToolProfile(
-                                                                  tool, BASE_IMAGE_URL))
-                                                      .collect(Collectors.toList()))
-                                              .build())
-                                  .collect(Collectors.toList()))
-                          .build();
-                    })
-                .collect(Collectors.toList());
-
+  private PropertyMap<Project, ProjectResponse> projectResponsePropertyMap() {
     Converter<LocalDate, String> dateConverter =
         mappingContext -> DateUtil.formatDateToString(mappingContext.getSource());
 
     return new PropertyMap<>() {
       @Override
       protected void configure() {
-        using(memberConverter).map(source.getMembers()).setMembers(new ArrayList<>());
         using(dateConverter).map(source.getStart()).setStart("");
+        using(dateConverter).map(source.getEndDate()).setEndDate("");
+      }
+    };
+  }
+
+  private PropertyMap<ProjectMember, ProjectMemberResponse> projectMemberResponsePropertyMap() {
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        map(source.getMemberId()).setMemberId(1L);
+        map(source.getDevOpsCategoryId()).setCategoryId(1L);
+        map(source.getDevOpsCategories().getDescription()).setCategoryDescription("");
+      }
+    };
+  }
+
+  private PropertyMap<PipelineTool, PipelineToolResponse> pipelineToolResponsePropertyMap(
+      String BASE_IMAGE_URL) {
+
+    Converter<String, String> convertImgUrl =
+        mappingContext -> BASE_IMAGE_URL + mappingContext.getSource();
+
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        map(source.getCategoryId()).setCategoryId(1L);
+        map(source.getToolId()).setToolId(1L);
+        using(convertImgUrl).map(source.getTool().getImageUrl()).setToolImageUrl(BASE_IMAGE_URL);
+      }
+    };
+  }
+
+  private PropertyMap<Pipeline, PipelineRecommendationResponse>
+      categoryRecommendationResponsePropertyMap() {
+    return new PropertyMap<>() {
+      final Gson gson = new Gson();
+      final Converter<List<PipelineTool>, List<CategoryRecommendationResponse>> converter =
+          mappingContext ->
+              mappingContext.getSource().stream()
+                  .map(pipelineTool -> gson.toJson(pipelineTool.getLog()))
+                  .map(json -> gson.fromJson(json, CategoryRecommendationResponse.class))
+                  .collect(Collectors.toList());
+
+      @Override
+      protected void configure() {
+        using(converter).map(source.getPipelineTools()).setPipelineTools(Collections.emptyList());
       }
     };
   }

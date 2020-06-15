@@ -1,7 +1,7 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.payloads.requests.PipelineRecommendationRequest;
-import com.dovit.backend.payloads.responses.PipelineResponse;
+import com.dovit.backend.payloads.responses.PipelineRecommendationResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.util.RequestBuilderUtil;
 import org.junit.jupiter.api.Test;
@@ -91,7 +91,7 @@ class PipelineServiceImplTest {
             .projectMembers(Collections.singletonList(RequestBuilderUtil.memberRequest))
             .build();
 
-    final PipelineResponse pipelineResponse =
+    final PipelineRecommendationResponse pipelineRecommendationResponse =
         pipelineService.generatePipelineRecommendation(request);
     System.out.println("asds");
   }

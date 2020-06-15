@@ -6,6 +6,7 @@ import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.payloads.requests.ProjectMemberRequest;
 import com.dovit.backend.payloads.requests.ProjectRequest;
 import com.dovit.backend.payloads.responses.ProjectResponse;
+import com.dovit.backend.payloads.responses.ProjectResumeResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.MemberRepository;
 import com.dovit.backend.repositories.ProjectMemberRepository;
@@ -90,7 +91,7 @@ class ProjectServiceImplTest {
   void testFindAllByCompanyId() {
     when(projectRepository.findAllByCompanyId(anyLong())).thenReturn(List.of(project));
     when(validatorUtil.canActOnCompany(anyLong())).thenReturn(true);
-    List<ProjectResponse> responses = projectService.findAllByCompanyId(1L);
+    List<ProjectResumeResponse> responses = projectService.findAllByCompanyId(1L);
     assertNotNull(responses);
     responses.forEach(r -> assertNotNull(responses));
   }

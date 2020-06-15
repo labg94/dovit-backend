@@ -1,12 +1,18 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.DevOpsCategory;
+import com.dovit.backend.domain.Pipeline;
+import com.dovit.backend.domain.PipelineTool;
+import com.dovit.backend.domain.Project;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.RecommendationPointsDTO;
 import com.dovit.backend.model.ToolRecommendationDTO;
 import com.dovit.backend.payloads.requests.PipelineRecommendationRequest;
+import com.dovit.backend.payloads.requests.PipelineToolRequest;
+import com.dovit.backend.payloads.requests.ProjectRequest;
 import com.dovit.backend.payloads.responses.CategoryRecommendationResponse;
-import com.dovit.backend.payloads.responses.PipelineResponse;
+import com.dovit.backend.payloads.responses.PipelineRecommendationResponse;
+import com.dovit.backend.payloads.responses.ProjectPipelineResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.PipelineRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +42,8 @@ public class PipelineServiceImpl implements PipelineService {
 
   @Override
   @Transactional
-  public PipelineResponse generatePipelineRecommendation(PipelineRecommendationRequest request) {
+  public PipelineRecommendationResponse generatePipelineRecommendation(
+      PipelineRecommendationRequest request) {
 
     final List<DevOpsCategory> categories = devOpsCategoryRepository.findAllByActiveOrderById(true);
 
@@ -185,15 +192,65 @@ public class PipelineServiceImpl implements PipelineService {
     //                        .orElse(0.0))
     //            .reduce(0.0, Double::sum);
 
-    return PipelineResponse.builder()
-        .recommended(true)
+    return PipelineRecommendationResponse.builder()
         .pipelineTools(categoriesRecommendation)
         .cost(null)
         .build();
   }
 
   @Override
-  public List<PipelineResponse> findAllByProjectId(Long projectId) {
+  public Pipeline createSelectedPipeline(Project project, List<PipelineToolRequest> selectedTools) {
+    final List<PipelineTool> pipelineTools =
+        selectedTools.stream()
+            .map(
+                tool ->
+                    PipelineTool.builder()
+                        .toolId(tool.getToolId())
+                        .categoryId(tool.getCategoryId())
+                        .build())
+            .collect(Collectors.toList());
+
+    return Pipeline.builder()
+        .recommended(false)
+        .project(project)
+        .pipelineTools(pipelineTools)
+        .cost(null)
+        .build();
+  }
+
+  @Override
+  public Pipeline createRecommendedPipeline(Project project, ProjectRequest request) {
+    final PipelineRecommendationResponse recommendation =
+        this.generatePipelineRecommendation(
+            PipelineRecommendationRequest.builder()
+                .companyId(request.getCompanyId())
+                .budget(request.getBudget())
+                .projectMembers(request.getMembers())
+                .projectTypeIds(request.getProjectTypeIds())
+                .build());
+
+    return Pipeline.builder()
+        .recommended(true)
+        .project(project)
+        .pipelineTools(
+            recommendation.getPipelineTools().stream()
+                .map(
+                    pipelineTool ->
+                        PipelineTool.builder()
+                            .categoryId(pipelineTool.getCategoryId())
+                            .toolId(
+                                pipelineTool.getRecommendedTool() != null
+                                    ? pipelineTool.getRecommendedTool().getToolId()
+                                    : null)
+                            .log(pipelineTool)
+                            .build())
+                .collect(Collectors.toList()))
+        .cost(recommendation.getCost())
+        .build();
+  }
+
+  @Override
+  public ProjectPipelineResponse findAllByProjectId(Long projectId) {
     return null;
   }
 }

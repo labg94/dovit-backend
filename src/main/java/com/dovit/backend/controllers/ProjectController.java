@@ -55,7 +55,12 @@ public class ProjectController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "Project created successfully"));
+        .body(
+            ApiResponse.builder()
+                .success(true)
+                .message("Project created successfully")
+                .id(response.getId())
+                .build());
   }
 
   @PutMapping("/project")

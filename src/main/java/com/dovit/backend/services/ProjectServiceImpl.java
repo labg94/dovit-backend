@@ -1,16 +1,13 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.*;
+import com.dovit.backend.exceptions.BadRequestException;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
+import com.dovit.backend.payloads.requests.PipelineToolRequest;
 import com.dovit.backend.payloads.requests.ProjectMemberRequest;
 import com.dovit.backend.payloads.requests.ProjectRequest;
-import com.dovit.backend.payloads.responses.MemberResponseDetail;
-import com.dovit.backend.payloads.responses.ProjectMemberRecommendation;
-import com.dovit.backend.payloads.responses.ProjectResponse;
-import com.dovit.backend.repositories.DevOpsCategoryRepository;
-import com.dovit.backend.repositories.MemberRepository;
-import com.dovit.backend.repositories.ProjectMemberRepository;
-import com.dovit.backend.repositories.ProjectRepository;
+import com.dovit.backend.payloads.responses.*;
+import com.dovit.backend.repositories.*;
 import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +16,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,10 +37,13 @@ public class ProjectServiceImpl implements ProjectService {
   private final ModelMapper modelMapper;
   private final ValidatorUtil validatorUtil;
   private final MemberService memberService;
+  private final PipelineService pipelineService;
+  private final PipelineToolRepository pipelineToolRepository;
 
   @Override
   @Transactional
   public Project saveProject(ProjectRequest request) {
+    checkAllCategoriesSelected(request.getSelectedTools());
     final List<Long> membersId =
         request.getMembers().stream()
             .map(ProjectMemberRequest::getMemberId)
@@ -50,14 +51,54 @@ public class ProjectServiceImpl implements ProjectService {
 
     memberService.areMembersInCompany(membersId, request.getCompanyId());
     request.setId(null);
+
     Project project = modelMapper.map(request, Project.class);
+    project.setPipelines(
+        Arrays.asList(
+            pipelineService.createSelectedPipeline(project, request.getSelectedTools()),
+            pipelineService.createRecommendedPipeline(project, request)));
+
     project = projectRepository.save(project);
+
+    project
+        .getPipelines()
+        .forEach(
+            pipeline -> {
+              pipeline
+                  .getPipelineTools()
+                  .forEach(pipelineTool -> pipelineTool.setPipelineId(pipeline.getId()));
+              pipelineToolRepository.saveAll(pipeline.getPipelineTools());
+            });
 
     Long projectId = project.getId();
     project.getMembers().forEach(m -> m.setProjectId(projectId));
     projectMemberRepository.saveAll(project.getMembers());
 
     return project;
+  }
+
+  private void checkAllCategoriesSelected(List<PipelineToolRequest> toolsSelected) {
+    List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAllByActiveOrderById(true);
+    List<Long> selectedCategoriesId =
+        toolsSelected.stream().map(PipelineToolRequest::getCategoryId).collect(Collectors.toList());
+    boolean allMatch =
+        devOpsCategories.stream()
+            .allMatch(category -> selectedCategoriesId.contains(category.getId()));
+
+    if (!allMatch) {
+      throw new BadRequestException("You have not selected a tool for all categories");
+    }
+
+    boolean hasSingleTool =
+        toolsSelected.stream()
+            .collect(Collectors.groupingBy(PipelineToolRequest::getCategoryId))
+            .entrySet()
+            .stream()
+            .allMatch(entry -> entry.getValue().size() == 1);
+
+    if (!hasSingleTool) {
+      throw new BadRequestException("A category does not have one tool selected");
+    }
   }
 
   @Override
@@ -98,11 +139,11 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   @Transactional
-  public List<ProjectResponse> findAllByCompanyId(Long companyId) {
+  public List<ProjectResumeResponse> findAllByCompanyId(Long companyId) {
     validatorUtil.canActOnCompany(companyId);
     List<Project> projects = projectRepository.findAllByCompanyId(companyId);
     return projects.stream()
-        .map(p -> modelMapper.map(p, ProjectResponse.class))
+        .map(p -> modelMapper.map(p, ProjectResumeResponse.class))
         .collect(Collectors.toList());
   }
 
@@ -115,7 +156,28 @@ public class ProjectServiceImpl implements ProjectService {
             .orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
 
     validatorUtil.canActOnCompany(project.getCompany().getId());
-    return modelMapper.map(project, ProjectResponse.class);
+
+    final ProjectResponse projectResponse = modelMapper.map(project, ProjectResponse.class);
+
+    // selected pipeline
+    project.getPipelines().stream()
+        .filter(pipeline -> !pipeline.isRecommended())
+        .findFirst()
+        .ifPresent(
+            selectedPipeline ->
+                projectResponse.setSelectedPipeline(
+                    modelMapper.map(selectedPipeline, SelectedPipelineResponse.class)));
+
+    // recommended pipeline
+    project.getPipelines().stream()
+        .filter(Pipeline::isRecommended)
+        .findFirst()
+        .ifPresent(
+            recommendedPipeline ->
+                projectResponse.setRecommendedPipeline(
+                    modelMapper.map(recommendedPipeline, PipelineRecommendationResponse.class)));
+
+    return projectResponse;
   }
 
   @Override

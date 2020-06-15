@@ -24,4 +24,7 @@ public class ProjectResponse {
   private String companyName;
   private Boolean finished;
   private List<ProjectMemberResponse> members;
+  private List<ProjectTypeResponse> projectTypes;
+  private SelectedPipelineResponse selectedPipeline;
+  private PipelineRecommendationResponse recommendedPipeline;
 }
