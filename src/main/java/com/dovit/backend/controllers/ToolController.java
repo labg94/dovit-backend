@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 /**
  * Controller to show the TOOLS in different ways
@@ -36,6 +37,11 @@ public class ToolController {
   @GetMapping("/tools/active")
   public ResponseEntity<?> findAllActives() {
     return ResponseEntity.ok(toolService.findAllActiveTools());
+  }
+
+  @PostMapping("/tools/projectTypes")
+  public ResponseEntity<?> findAllByProjectTypes(@RequestBody List<Long> projectTypes) {
+    return ResponseEntity.ok(toolService.findAllByProjectTypes(projectTypes));
   }
 
   @GetMapping("/subcategory/{subcategoryId}/tools/active")

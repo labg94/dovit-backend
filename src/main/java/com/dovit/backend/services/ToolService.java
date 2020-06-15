@@ -41,4 +41,6 @@ public interface ToolService {
       Long categoryId, List<Long> projectTypeIds);
 
   List<ToolRecommendationDTO> findRecommendationByProjectHistory(Long categoryId, Long companyId);
+
+  List<ToolRecommendationDTO> findAllByProjectTypes(List<Long> projectTypes);
 }

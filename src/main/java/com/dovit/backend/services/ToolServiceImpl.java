@@ -226,6 +226,11 @@ public class ToolServiceImpl implements ToolService {
     List<ToolProjectType> toolProjectTypes =
         toolProjectTypeRepository.findRecommendationByProjectType(categoryId, projectTypeIds);
 
+    return getToolRecommendationDTOS(toolProjectTypes);
+  }
+
+  private List<ToolRecommendationDTO> getToolRecommendationDTOS(
+      List<ToolProjectType> toolProjectTypes) {
     return toolProjectTypes.stream()
         .collect(Collectors.groupingBy(ToolProjectType::getTool))
         .entrySet()
@@ -249,8 +254,13 @@ public class ToolServiceImpl implements ToolService {
                   .map(tool, ToolRecommendationDTO.class)
                   .toBuilder()
                   .points(points)
+                  .totalPoints(
+                      points.stream()
+                          .map(RecommendationPointsDTO::getPoints)
+                          .reduce(0, Integer::sum))
                   .build();
             })
+        .sorted(Comparator.comparing(ToolRecommendationDTO::getTotalPoints).reversed())
         .collect(Collectors.toList());
   }
 
@@ -272,6 +282,15 @@ public class ToolServiceImpl implements ToolService {
                                 .build()))
                     .build())
         .collect(Collectors.toList());
+  }
+
+  @Override
+  @Transactional
+  public List<ToolRecommendationDTO> findAllByProjectTypes(List<Long> projectTypes) {
+    // TODO agrupar por category
+    List<ToolProjectType> toolProjectTypes =
+        toolProjectTypeRepository.findRecommendationByProjectType(projectTypes);
+    return getToolRecommendationDTOS(toolProjectTypes);
   }
 
   private Tool findToolById(Long toolId) {

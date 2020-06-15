@@ -28,6 +28,18 @@ public interface ToolProjectTypeRepository extends JpaRepository<ToolProjectType
           + "   and category.id = :categoryId ")
   List<ToolProjectType> findRecommendationByProjectType(Long categoryId, List<Long> projectTypeIds);
 
+  @Query(
+      "select distinct toolProjectType "
+          + "from ToolProjectType toolProjectType "
+          + "   join toolProjectType.tool tool "
+          + "   join tool.subcategories subcategory "
+          + "   join subcategory.devOpsCategory category "
+          + "where tool.active = true "
+          + "   and category.active = true "
+          + "   and subcategory.active = true "
+          + "   and toolProjectType.projectTypeId in :projectTypeIds ")
+  List<ToolProjectType> findRecommendationByProjectType(List<Long> projectTypeIds);
+
   List<ToolProjectType> findAllByToolId(Long toolId);
 
   Optional<ToolProjectType> findAllByToolIdAndProjectTypeId(Long toolId, Long projectTypeId);
