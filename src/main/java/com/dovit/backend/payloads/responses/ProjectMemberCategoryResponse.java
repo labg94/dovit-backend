@@ -5,18 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author Ramón París
- * @since 15-06-20
+ * @since 09-12-2019
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class ProjectMemberResponse {
+public class ProjectMemberCategoryResponse {
 
-  private Long memberId;
-  private String memberName;
-  private String memberLastName;
-  private String memberProfiles;
+  private Long categoryId;
+  private String categoryDescription;
+  private List<ProjectMemberResponse> members;
 }

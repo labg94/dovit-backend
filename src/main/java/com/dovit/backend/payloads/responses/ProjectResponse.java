@@ -23,7 +23,7 @@ public class ProjectResponse {
   private Long companyId;
   private String companyName;
   private Boolean finished;
-  private List<ProjectMemberResponse> members;
+  private List<ProjectMemberCategoryResponse> categoryMembers;
   private List<ProjectTypeResponse> projectTypes;
   private SelectedPipelineResponse selectedPipeline;
   private PipelineRecommendationResponse recommendedPipeline;

@@ -50,7 +50,6 @@ public class ModelMapperConfig {
     modelMapper.addMappings(this.pricingResponsePropertyMap());
     modelMapper.addMappings(this.suggestionResponsePropertyMap());
     modelMapper.addMappings(this.mapProjectTypeResponse());
-    modelMapper.addMappings(this.projectMemberResponsePropertyMap());
     modelMapper.addMappings(this.pipelineToolResponsePropertyMap(BASE_IMAGE_URL));
     modelMapper.addMappings(this.categoryRecommendationResponsePropertyMap());
 
@@ -313,22 +312,46 @@ public class ModelMapperConfig {
     Converter<LocalDate, String> dateConverter =
         mappingContext -> DateUtil.formatDateToString(mappingContext.getSource());
 
+    Converter<List<ProjectMember>, List<ProjectMemberCategoryResponse>> projectMemberConverter =
+        mappingContext ->
+            mappingContext.getSource().stream()
+                .collect(Collectors.groupingBy(ProjectMember::getDevOpsCategories))
+                .entrySet()
+                .stream()
+                .map(
+                    entry -> {
+                      final DevOpsCategory category = entry.getKey();
+                      final List<ProjectMemberResponse> members =
+                          entry.getValue().stream()
+                              .map(
+                                  projectMember ->
+                                      ProjectMemberResponse.builder()
+                                          .memberId(projectMember.getMemberId())
+                                          .memberName(projectMember.getMember().getName())
+                                          .memberLastName(projectMember.getMember().getLastName())
+                                          .memberProfiles(
+                                              projectMember.getMember().getProfiles().stream()
+                                                  .map(Profile::getDescription)
+                                                  .collect(Collectors.joining(", ")))
+                                          .build())
+                              .collect(Collectors.toList());
+
+                      return ProjectMemberCategoryResponse.builder()
+                          .categoryId(category.getId())
+                          .categoryDescription(category.getDescription())
+                          .members(members)
+                          .build();
+                    })
+                .collect(Collectors.toList());
+
     return new PropertyMap<>() {
       @Override
       protected void configure() {
+        using(projectMemberConverter)
+            .map(source.getMembers())
+            .setCategoryMembers(Collections.emptyList());
         using(dateConverter).map(source.getStart()).setStart("");
         using(dateConverter).map(source.getEndDate()).setEndDate("");
-      }
-    };
-  }
-
-  private PropertyMap<ProjectMember, ProjectMemberResponse> projectMemberResponsePropertyMap() {
-    return new PropertyMap<>() {
-      @Override
-      protected void configure() {
-        map(source.getMemberId()).setMemberId(1L);
-        map(source.getDevOpsCategoryId()).setCategoryId(1L);
-        map(source.getDevOpsCategories().getDescription()).setCategoryDescription("");
       }
     };
   }
