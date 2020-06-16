@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table
+@Table(name = "suggestion_mailbox")
 @Builder
 public class SuggestionMailbox extends DateAudit {
 
@@ -28,11 +28,15 @@ public class SuggestionMailbox extends DateAudit {
 
   @NotEmpty private String tool;
 
-  @NotEmpty private String category;
+  @ManyToOne
+  @JoinColumn(name = "category_id")
+  private DevOpsCategory category;
 
-  @NotEmpty private String subcategory;
+  @ManyToOne
+  @JoinColumn(name = "subcategory_id")
+  private DevOpsSubcategory subcategory;
 
-  @Size(min = 1, max = 280, message = "Message not in range 1 to 280 characters")
+  @Size(min = 1, max = 1000, message = "Message not in range 1 to 1000 characters")
   private String message;
 
   @Column(columnDefinition = "boolean default false")

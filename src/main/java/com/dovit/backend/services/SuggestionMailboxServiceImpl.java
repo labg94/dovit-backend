@@ -67,7 +67,7 @@ public class SuggestionMailboxServiceImpl implements SuggestionMailboxService {
     }
     SuggestionMailbox persistedSuggestion = suggestionMailboxRepository.save(suggestionMailbox);
 
-    String emailBody = generateEmailBody(request, userLogged);
+    String emailBody = generateEmailBody(persistedSuggestion, userLogged);
     log.info(emailBody);
     Arrays.asList(MANAGER_EMAILS)
         .forEach(
@@ -83,7 +83,8 @@ public class SuggestionMailboxServiceImpl implements SuggestionMailboxService {
     suggestionMailboxRepository.save(suggestionMailbox);
   }
 
-  private String generateEmailBody(SuggestionRequest request, UserPrincipal userPrincipal) {
+  private String generateEmailBody(
+      SuggestionMailbox persistedSuggestion, UserPrincipal userPrincipal) {
     // language=TXT
     String messageHtml =
         "Hello, admin!\n"
@@ -105,10 +106,14 @@ public class SuggestionMailboxServiceImpl implements SuggestionMailboxService {
         messageHtml,
         userPrincipal.getName() + " " + userPrincipal.getLastName(),
         userPrincipal.getCompanyName(),
-        request.getTool(),
-        request.getCategory(),
-        request.getSubcategory(),
-        request.getMessage(),
+        persistedSuggestion.getTool(),
+        persistedSuggestion.getCategory() != null
+            ? persistedSuggestion.getCategory().getDescription()
+            : "Other",
+        persistedSuggestion.getSubcategory() != null
+            ? persistedSuggestion.getSubcategory().getDescription()
+            : "Other",
+        persistedSuggestion.getMessage(),
         userPrincipal.getEmail());
   }
 }

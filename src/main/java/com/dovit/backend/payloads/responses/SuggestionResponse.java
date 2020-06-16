@@ -15,8 +15,10 @@ public class SuggestionResponse {
 
   private Long id;
   private String tool;
-  private String category;
-  private String subcategory;
+  private String categoryDescription;
+  private Long categoryId;
+  private String subCategoryDescription;
+  private Long subCategoryId;
   private String message;
   private String createdAt;
   private String updatedAt;

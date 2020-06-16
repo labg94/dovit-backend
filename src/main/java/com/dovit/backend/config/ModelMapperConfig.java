@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,13 +66,23 @@ public class ModelMapperConfig {
     Converter<SuggestionMailbox, String> converterFullName =
         mappingContext -> {
           User user = mappingContext.getSource().getSuggestedBy();
-          return String.format("%s %s", user.getName(), user.getLastName());
+          if (user != null) return String.format("%s %s", user.getName(), user.getLastName());
+          else return "Some admin";
         };
+
+    Converter<String, String> otherOptionConverter =
+        mappingContext -> Optional.ofNullable(mappingContext.getSource()).orElse("Other");
 
     return new PropertyMap<>() {
       @Override
       protected void configure() {
         using(converterFullName).map(source).setSuggestedByFullName("");
+        using(otherOptionConverter)
+            .map(source.getCategory().getDescription())
+            .setCategoryDescription("");
+        using(otherOptionConverter)
+            .map(source.getSubcategory().getDescription())
+            .setSubCategoryDescription("");
       }
     };
   }

@@ -42,4 +42,7 @@ public class DevOpsSubcategory extends DateAudit {
   @ManyToOne
   @JoinColumn(nullable = false, name = "devops_category_id")
   private DevOpsCategory devOpsCategory;
+
+  @OneToMany(mappedBy = "subcategory")
+  private List<SuggestionMailbox> suggestions;
 }

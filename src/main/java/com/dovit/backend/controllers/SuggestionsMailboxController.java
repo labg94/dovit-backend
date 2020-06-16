@@ -48,7 +48,12 @@ public class SuggestionsMailboxController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "Suggestion created successfully"));
+        .body(
+            ApiResponse.builder()
+                .success(true)
+                .message("Suggestion created successfully")
+                .id(response.getId())
+                .build());
   }
 
   @PatchMapping("/suggestion/{id}/viewed")
