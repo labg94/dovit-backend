@@ -9,6 +9,8 @@ import com.dovit.backend.model.RecommendationPointsDTO;
 import com.dovit.backend.model.ToolRecommendationDTO;
 import com.dovit.backend.payloads.requests.ProjectMemberRequest;
 import com.dovit.backend.payloads.requests.ToolRequest;
+import com.dovit.backend.payloads.responses.CategoryResponse;
+import com.dovit.backend.payloads.responses.CategoryToolResponse;
 import com.dovit.backend.payloads.responses.ToolResponse;
 import com.dovit.backend.repositories.ToolProfileRepository;
 import com.dovit.backend.repositories.ToolProjectTypeRepository;
@@ -42,6 +44,7 @@ public class ToolServiceImpl implements ToolService {
   private final DevOpsSubCategoryService subCategoryService;
   private final ToolProfileRepository toolProfileRepository;
   private final ToolProjectTypeRepository toolProjectTypeRepository;
+  private final DevOpsCategoryService categoryService;
 
   @Override
   @Transactional
@@ -286,11 +289,20 @@ public class ToolServiceImpl implements ToolService {
 
   @Override
   @Transactional
-  public List<ToolRecommendationDTO> findAllByProjectTypes(List<Long> projectTypes) {
-    // TODO agrupar por category
-    List<ToolProjectType> toolProjectTypes =
-        toolProjectTypeRepository.findRecommendationByProjectType(projectTypes);
-    return getToolRecommendationDTOS(toolProjectTypes);
+  public List<CategoryToolResponse> findAllByProjectTypes(List<Long> projectTypes) {
+    final List<CategoryResponse> categories = categoryService.findAllActives();
+    return categories.stream()
+        .map(category -> modelMapper.map(category, CategoryToolResponse.class))
+        .peek(
+            category -> {
+              final List<ToolProjectType> toolProjects =
+                  toolProjectTypeRepository.findRecommendationByProjectType(
+                      category.getCategoryId(), projectTypes);
+
+              category.setTools(getToolRecommendationDTOS(toolProjects));
+            })
+        .sorted(Comparator.comparing(CategoryToolResponse::getCategoryId))
+        .collect(Collectors.toList());
   }
 
   private Tool findToolById(Long toolId) {
