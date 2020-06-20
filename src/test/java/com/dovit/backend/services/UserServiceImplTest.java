@@ -113,7 +113,7 @@ class UserServiceImplTest {
     Mockito.when(userRepository.existsByEmail(anyString())).thenReturn(false);
     Mockito.when(jwtTokenProvider.generateRegisterToken(any(RegisterTokenRequest.class)))
         .thenReturn("token");
-    Mockito.doNothing().when(emailService).sendSimpleMessage(anyString(), anyString(), anyString());
+    Mockito.doNothing().when(emailService).sendRegistration(anyString(), anyString());
     String response = userService.createUserToken(registerTokenRequest);
     assertNotNull(response);
     assertEquals(response, "token");

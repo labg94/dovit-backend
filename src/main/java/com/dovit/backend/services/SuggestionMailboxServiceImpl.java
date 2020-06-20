@@ -3,6 +3,7 @@ package com.dovit.backend.services;
 import com.dovit.backend.domain.SuggestionMailbox;
 import com.dovit.backend.domain.User;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
+import com.dovit.backend.model.SuggestionEmailDTO;
 import com.dovit.backend.payloads.requests.SuggestionRequest;
 import com.dovit.backend.payloads.responses.SuggestionResponse;
 import com.dovit.backend.repositories.SuggestionMailboxRepository;
@@ -67,11 +68,10 @@ public class SuggestionMailboxServiceImpl implements SuggestionMailboxService {
     }
     SuggestionMailbox persistedSuggestion = suggestionMailboxRepository.save(suggestionMailbox);
 
-    String emailBody = generateEmailBody(persistedSuggestion, userLogged);
-    log.info(emailBody);
+    final SuggestionEmailDTO suggestionEmailDTO =
+        generateEmailBody(persistedSuggestion, userLogged);
     Arrays.asList(MANAGER_EMAILS)
-        .forEach(
-            email -> emailService.sendSimpleMessage(email, "DOVIT - Tool suggestion", emailBody));
+        .forEach(email -> emailService.sendSuggestion(email, suggestionEmailDTO));
     log.info("Message sent to {}", Arrays.toString(MANAGER_EMAILS));
     return persistedSuggestion;
   }
@@ -83,37 +83,23 @@ public class SuggestionMailboxServiceImpl implements SuggestionMailboxService {
     suggestionMailboxRepository.save(suggestionMailbox);
   }
 
-  private String generateEmailBody(
+  private SuggestionEmailDTO generateEmailBody(
       SuggestionMailbox persistedSuggestion, UserPrincipal userPrincipal) {
-    // language=TXT
-    String messageHtml =
-        "Hello, admin!\n"
-            + "    "
-            + "%s from company \"%s\" thinks that we should add the following tool:\n"
-            + "\n"
-            + "        "
-            + "Tool: %s\n"
-            + "        "
-            + "Category: %s\n"
-            + "        "
-            + "Subcategory: %s\n"
-            + "        "
-            + "Observation: %s\n"
-            + "\n"
-            + "You can contact it writing to this email: %s\n";
 
-    return String.format(
-        messageHtml,
-        userPrincipal.getName() + " " + userPrincipal.getLastName(),
-        userPrincipal.getCompanyName(),
-        persistedSuggestion.getTool(),
-        persistedSuggestion.getCategory() != null
-            ? persistedSuggestion.getCategory().getDescription()
-            : "Other",
-        persistedSuggestion.getSubcategory() != null
-            ? persistedSuggestion.getSubcategory().getDescription()
-            : "Other",
-        persistedSuggestion.getMessage(),
-        userPrincipal.getEmail());
+    return SuggestionEmailDTO.builder()
+        .issuerName(userPrincipal.getName() + " " + userPrincipal.getLastName())
+        .companyName(userPrincipal.getCompanyName())
+        .toolName(persistedSuggestion.getTool())
+        .category(
+            persistedSuggestion.getCategory() != null
+                ? persistedSuggestion.getCategory().getDescription()
+                : "Other")
+        .subCategory(
+            persistedSuggestion.getSubcategory() != null
+                ? persistedSuggestion.getSubcategory().getDescription()
+                : "Other")
+        .message(persistedSuggestion.getMessage())
+        .issuerEmail(userPrincipal.getEmail())
+        .build();
   }
 }

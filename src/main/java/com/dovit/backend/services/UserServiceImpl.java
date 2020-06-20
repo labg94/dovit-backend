@@ -114,13 +114,8 @@ public class UserServiceImpl implements UserService {
     }
 
     String token = tokenProvider.generateRegisterToken(registerTokenRequest);
-    emailService.sendSimpleMessage(
-        registerTokenRequest.getEmail(),
-        "Registration process",
-        "Bienvenido a Dovit! Ingresa al siguiente link y termina tu registro: "
-            + APP_FRONTEND_DOMAIN
-            + "/userCompany/create/"
-            + token);
+    emailService.sendRegistration(
+        registerTokenRequest.getEmail(), APP_FRONTEND_DOMAIN + "/userCompany/create/" + token);
     return token;
   }
 
