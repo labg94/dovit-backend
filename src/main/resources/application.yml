@@ -1,0 +1,68 @@
+api:
+  jwt:
+    expirationInMs: ${API_JWT_EXPIRATION:86400000}
+    register:
+      expiration: ${API_JWT_EXPIRATION:86400000}
+    secret: ${API_JWT_SECRET:745db1c626ebe9dc1500b9950f5dff79aa27a2febfd7930a3ae3dda3728ce081}
+  ldap:
+    server: ${API_LDAP_SERVER:ldap://localhost:12345}
+  image:
+    route: ${API_IMAGE_ROUTE:http://localhost:8080/images}
+app:
+  frontend:
+    domain: ${APP_FRONTEND_DOMAIN:http://localhost:3000}
+azure:
+  activedirectory:
+    session-stateless: true
+    client-id: a7bf87ff-8a44-4557-b401-5c114b7dc217
+    user-group:
+      key: 2f116b34-3e59-40ba-9d8d-7891590d7adb
+
+dovit:
+  manager:
+    emails: ${DOVIT_MANAGER_EMAILS:ramon.paris@inacapmail.cl,luis.benavides04@inacapmail.cl,gustavo.alfaro@inacapmail.cl}
+spring:
+  banner:
+    location: classpath:banner.txt
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    time-zone: America/Santiago
+  datasource:
+    password: ${DB_PASSWORD:DOVIT2019}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/dovit}
+    username: ${DB_USERNAME:dovit}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            # To avoid Hibernate's BUG using PostgreSQL.
+            # References:
+            # - https://stackoverflow.com/questions/49680199/java-lang-reflect-invocationtargetexception-null
+            # - https://github.com/spring-projects/spring-boot/issues/12007
+            non_contextual_creation: true
+        proc:
+          param_null_passing: true
+  ldap:
+    embedded:
+      base-dn: dc=springframework,dc=org
+      ldif: classpath:users.ldif
+      port: 12345
+      validation:
+        enabled: false
+  main:
+    allow-bean-definition-overriding: true #To solve bug of bean overriding with repositories
+  #  security:
+  #    oauth2:
+  #      client:
+  #        registration:
+  #          azure:
+  #            client-id: ${AZURE_CLIENT_ID}
+  #            client-secret: ${AZURE_CLIENT_SECRET}
+  sendgrid:
+    api-key: ${SENDGRID_API_KEY}

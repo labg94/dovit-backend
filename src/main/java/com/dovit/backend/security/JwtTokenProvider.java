@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,12 +45,12 @@ public class JwtTokenProvider {
     customClaim.put("isLdapUser", false);
 
     return Jwts.builder()
-            .setClaims(customClaim)
-            .setSubject(Long.toString(userPrincipal.getId()))
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-            .compact();
+        .setClaims(customClaim)
+        .setSubject(Long.toString(userPrincipal.getId()))
+        .setIssuedAt(now)
+        .setExpiration(expiryDate)
+        .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+        .compact();
   }
 
   public String generateAuthToken(CustomLdapUserDetails userPrincipal) {
@@ -60,12 +61,12 @@ public class JwtTokenProvider {
     customClaim.put("isLdapUser", true);
 
     return Jwts.builder()
-            .setClaims(customClaim)
-            .setSubject(userPrincipal.getUsername())
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-            .compact();
+        .setClaims(customClaim)
+        .setSubject(userPrincipal.getUsername())
+        .setIssuedAt(now)
+        .setExpiration(expiryDate)
+        .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+        .compact();
   }
 
   public String generateRegisterToken(RegisterTokenRequest registerTokenRequest) {
@@ -75,12 +76,12 @@ public class JwtTokenProvider {
     claims.put("companyId", registerTokenRequest.getCompanyId());
 
     return Jwts.builder()
-            .setClaims(claims)
-            .setSubject(registerTokenRequest.getEmail())
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-            .compact();
+        .setClaims(claims)
+        .setSubject(registerTokenRequest.getEmail())
+        .setIssuedAt(now)
+        .setExpiration(expiryDate)
+        .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+        .compact();
   }
 
   public RegisterTokenRequest getRegisterRequestFromJWT(String token) {
@@ -89,14 +90,9 @@ public class JwtTokenProvider {
     return new RegisterTokenRequest(claims.getSubject(), claims.get("companyId", Long.class));
   }
 
-  public Map<String, Object> getUserIdFromJWT(String token) {
+  public Long getUserIdFromJWT(String token) {
     Claims claims = Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token).getBody();
-
-    Map<String, Object> map = new HashMap<>();
-    map.put("isLdapUser", claims.get("isLdapUser"));
-    map.put("subject", claims.getSubject());
-
-    return map;
+    return Long.parseLong(claims.getSubject());
   }
 
   public boolean validateToken(String authToken) {
@@ -116,5 +112,25 @@ public class JwtTokenProvider {
       logger.error("JWT claims string is empty.");
     }
     return false;
+  }
+
+  public String getTokenCreator(String token) {
+    SigningKeyResolver signingKeyResolver =
+        new SigningKeyResolver() {
+          @Override
+          public Key resolveSigningKey(JwsHeader jwsHeader, Claims claims) {
+            return null;
+          }
+
+          @Override
+          public Key resolveSigningKey(JwsHeader jwsHeader, String s) {
+            return null;
+          }
+        };
+
+    final Claims body =
+        Jwts.parser().setSigningKeyResolver(signingKeyResolver).parseClaimsJws(token).getBody();
+
+    return "";
   }
 }

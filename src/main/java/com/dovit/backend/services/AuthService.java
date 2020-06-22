@@ -1,6 +1,7 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.User;
+import com.dovit.backend.model.requests.AzureAuthRequest;
 import com.dovit.backend.payloads.requests.AuthRequest;
 import com.dovit.backend.payloads.requests.RegisterTokenRequest;
 import com.dovit.backend.payloads.requests.SignUpRequest;
@@ -14,7 +15,9 @@ public interface AuthService {
 
   AuthResponse authenticateUser(AuthRequest authRequest);
 
-    User registerUser(SignUpRequest signUpRequest);
+  AuthResponse authenticateByAzure(AzureAuthRequest azureAuthRequest);
 
-    RegisterTokenRequest getRegisterTokenInfo(String token);
+  User registerUser(SignUpRequest signUpRequest);
+
+  RegisterTokenRequest getRegisterTokenInfo(String token);
 }

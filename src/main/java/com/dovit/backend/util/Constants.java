@@ -37,4 +37,6 @@ public class Constants {
 
   public static final String TOOL_POINTS_EXISTS_TXT = "Exists in %s category";
   public static final int TOOL_POINTS_EXISTS = 1;
+  public static final String AZURE_ACCESS = "AZURE_ACCESS";
+  public static final String DOVIT_ACCESS = "DOVIT_ACCESS";
 }

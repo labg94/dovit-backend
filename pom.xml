@@ -146,6 +146,22 @@
             <version>2.3.30</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.microsoft.azure/azure-active-directory-spring-boot-starter -->
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>azure-active-directory-spring-boot-starter</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
+
 
     </dependencies>
 

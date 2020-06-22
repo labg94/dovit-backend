@@ -6,12 +6,14 @@ import com.dovit.backend.domain.User;
 import com.dovit.backend.exceptions.BadRequestException;
 import com.dovit.backend.exceptions.CustomAccessDeniedException;
 import com.dovit.backend.exceptions.CustomBadCredentialsException;
+import com.dovit.backend.model.requests.AzureAuthRequest;
 import com.dovit.backend.payloads.requests.AuthRequest;
 import com.dovit.backend.payloads.requests.RegisterTokenRequest;
 import com.dovit.backend.payloads.requests.SignUpRequest;
 import com.dovit.backend.payloads.responses.AuthResponse;
 import com.dovit.backend.repositories.RoleRepository;
 import com.dovit.backend.repositories.UserRepository;
+import com.dovit.backend.security.CustomAzureUserDetails;
 import com.dovit.backend.security.CustomLdapUserDetails;
 import com.dovit.backend.security.JwtTokenProvider;
 import com.dovit.backend.security.UserPrincipal;
@@ -24,6 +26,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
   private final CompanyService companyService;
   private final AuditService auditService;
   private final RoleRepository roleRepository;
+  private final CustomAzureUserDetails customAzureUserDetails;
 
   @Override
   public AuthResponse authenticateUser(AuthRequest request) {
@@ -112,6 +116,33 @@ public class AuthServiceImpl implements AuthService {
       auditService.registerAudit(response, "Login", "OK", null);
       return response;
     }
+  }
+
+  @Override
+  public AuthResponse authenticateByAzure(AzureAuthRequest azureAuthRequest) {
+    final UserDetails userDetails =
+        customAzureUserDetails.createUserDetailByAzure(azureAuthRequest.getTokenId());
+
+    UsernamePasswordAuthenticationToken authentication =
+        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    final UserPrincipal userPrincipal = (UserPrincipal) userDetails;
+    String rolesString =
+        authentication.getAuthorities().stream()
+            .map(Object::toString)
+            .collect(Collectors.joining(", "));
+
+    AuthResponse response =
+        new AuthResponse(
+            azureAuthRequest.getTokenId(),
+            userPrincipal.getName(),
+            userPrincipal.getLastName(),
+            rolesString,
+            Constants.CLEVER_IT,
+            0L);
+    auditService.registerAudit(response, "Login", "OK", null);
+    return response;
   }
 
   @Override

@@ -1,6 +1,7 @@
 package com.dovit.backend.config;
 
 import com.dovit.backend.security.*;
+import com.microsoft.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private final CustomUserDetailsService customUserDetailsService;
   private final JwtAuthenticationEntryPoint unauthorizedHandler;
   private final JwtAccessDeniedHandler accessDeniedHandler;
+  private final AADAppRoleStatelessAuthenticationFilter aadAuthFilter;
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -45,15 +47,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.ldapAuthentication()
-        .userDnPatterns("uid={0},ou=people")
-        .userSearchFilter("(|(uid={0})(mail={0}))")
-        .groupSearchBase("ou=groups")
-        .contextSource(contextSource())
-        .userDetailsContextMapper(userDetailsContextMapper())
-        .passwordCompare()
-        // .passwordEncoder(passwordEncoder()) // TODO activar cuando conecte real
-        .passwordAttribute("userPassword");
+    //    auth.ldapAuthentication()
+    //        .userDnPatterns("uid={0},ou=people")
+    //        .userSearchFilter("(|(uid={0})(mail={0}))")
+    //        .groupSearchBase("ou=groups")
+    //        .contextSource(contextSource())
+    //        .userDetailsContextMapper(userDetailsContextMapper())
+    //        .passwordCompare()
+    //        // .passwordEncoder(passwordEncoder()) // TODO activar cuando conecte real
+    //        .passwordAttribute("userPassword");
 
     auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
   }
@@ -113,5 +115,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .authenticated();
 
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+    http.addFilterBefore(aadAuthFilter, UsernamePasswordAuthenticationFilter.class);
   }
 }
