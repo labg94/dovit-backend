@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,22 +46,6 @@ public class JwtTokenProvider {
     return Jwts.builder()
         .setClaims(customClaim)
         .setSubject(Long.toString(userPrincipal.getId()))
-        .setIssuedAt(now)
-        .setExpiration(expiryDate)
-        .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-        .compact();
-  }
-
-  public String generateAuthToken(CustomLdapUserDetails userPrincipal) {
-    Date now = new Date();
-    Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_IN_MS);
-
-    Map<String, Object> customClaim = new HashMap<>();
-    customClaim.put("isLdapUser", true);
-
-    return Jwts.builder()
-        .setClaims(customClaim)
-        .setSubject(userPrincipal.getUsername())
         .setIssuedAt(now)
         .setExpiration(expiryDate)
         .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
@@ -112,25 +95,5 @@ public class JwtTokenProvider {
       logger.error("JWT claims string is empty.");
     }
     return false;
-  }
-
-  public String getTokenCreator(String token) {
-    SigningKeyResolver signingKeyResolver =
-        new SigningKeyResolver() {
-          @Override
-          public Key resolveSigningKey(JwsHeader jwsHeader, Claims claims) {
-            return null;
-          }
-
-          @Override
-          public Key resolveSigningKey(JwsHeader jwsHeader, String s) {
-            return null;
-          }
-        };
-
-    final Claims body =
-        Jwts.parser().setSigningKeyResolver(signingKeyResolver).parseClaimsJws(token).getBody();
-
-    return "";
   }
 }

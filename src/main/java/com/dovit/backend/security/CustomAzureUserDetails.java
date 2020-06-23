@@ -3,7 +3,7 @@ package com.dovit.backend.security;
 import com.dovit.backend.domain.Company;
 import com.dovit.backend.domain.Role;
 import com.dovit.backend.domain.User;
-import com.dovit.backend.exceptions.BadRequestException;
+import com.dovit.backend.exceptions.UnauthorizedException;
 import com.dovit.backend.util.RoleName;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,7 +30,11 @@ public class CustomAzureUserDetails {
               .readTree(new String(Base64Utils.decodeFromString(token.split("\\.")[1])));
 
       if (!node.findValue("roles").toString().contains(AZURE_ADMIN_GROUP_ID)) {
-        throw new BadRequestException("Azure AD user does not have permission");
+        throw new UnauthorizedException(
+            String.format(
+                "%s unauthorized access to Dovit", node.findValue("preferred_username").asText()),
+            node.findValue("name").asText(),
+            node.findValue("preferred_username").asText());
       }
 
       final Role ROLE = Role.builder().name(RoleName.ROLE_ADMIN).build();

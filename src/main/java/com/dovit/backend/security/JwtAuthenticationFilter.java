@@ -1,17 +1,16 @@
 package com.dovit.backend.security;
 
 import com.dovit.backend.util.Constants;
-import com.dovit.backend.util.LdapUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -31,17 +30,14 @@ import static com.dovit.backend.util.Constants.DOVIT_ACCESS;
  *
  * @author Ramón París
  */
+@RequiredArgsConstructor
+@Slf4j
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  @Autowired private JwtTokenProvider tokenProvider;
-
-  @Autowired private CustomUserDetailsService customUserDetailsService;
-
-  @Autowired private LdapUtil ldapUtil;
-  @Autowired private CustomAzureUserDetails customAzureUserDetails;
-  private final ObjectMapper objectMapper = new ObjectMapper();
-
-  private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+  private final JwtTokenProvider tokenProvider;
+  private final CustomUserDetailsService customUserDetailsService;
+  private final CustomAzureUserDetails customAzureUserDetails;
 
   @Override
   protected void doFilterInternal(
@@ -61,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
       }
     } catch (Exception e) {
-      logger.error("Could not set user authentication in security context", e);
+      log.error("Could not set user authentication in security context", e);
     }
 
     filterChain.doFilter(request, response);

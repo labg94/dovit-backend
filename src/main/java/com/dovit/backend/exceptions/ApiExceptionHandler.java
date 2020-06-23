@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.dovit.backend.util.Constants.AUDIT_STATUS_NOK;
+
 /**
  * @author Ramón París
  * @since 01-10-2019
@@ -49,6 +51,17 @@ public class ApiExceptionHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<?> handleUnauthorized(UnauthorizedException e) {
+    log.error(e.getFullName() + " - " + e.getMessage());
+    List<String> errorsMessages = Collections.singletonList(e.getMessage());
+    ErrorResponse errorResponse =
+        new ErrorResponse(new Date(), HttpStatus.UNAUTHORIZED.value(), errorsMessages);
+    auditService.registerAudit(e, "Login", AUDIT_STATUS_NOK, null);
+    return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+  }
+
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<?> handleNotFound(ResourceNotFoundException e) {
@@ -68,7 +81,7 @@ public class ApiExceptionHandler {
 
     //    ApiExceptionHandler apiExceptionHandler = get();
     e.getRequest().setPassword(null);
-    auditService.registerAudit(e.getRequest(), "Login", Constants.AUDIT_STATUS_NOK, null);
+    auditService.registerAudit(e.getRequest(), "Login", AUDIT_STATUS_NOK, null);
 
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }

@@ -4,8 +4,6 @@ api:
     register:
       expiration: ${API_JWT_EXPIRATION:86400000}
     secret: ${API_JWT_SECRET:745db1c626ebe9dc1500b9950f5dff79aa27a2febfd7930a3ae3dda3728ce081}
-  ldap:
-    server: ${API_LDAP_SERVER:ldap://localhost:12345}
   image:
     route: ${API_IMAGE_ROUTE:http://localhost:8080/images}
 app:
@@ -14,9 +12,9 @@ app:
 azure:
   activedirectory:
     session-stateless: true
-    client-id: a7bf87ff-8a44-4557-b401-5c114b7dc217
+    client-id: ${AZURE_CLIENT_ID}
     user-group:
-      key: 2f116b34-3e59-40ba-9d8d-7891590d7adb
+      key: ${AZURE_ADMIN_GROUP_ID:2f116b34-3e59-40ba-9d8d-7891590d7adb}
 
 dovit:
   manager:
@@ -48,21 +46,7 @@ spring:
             non_contextual_creation: true
         proc:
           param_null_passing: true
-  ldap:
-    embedded:
-      base-dn: dc=springframework,dc=org
-      ldif: classpath:users.ldif
-      port: 12345
-      validation:
-        enabled: false
   main:
     allow-bean-definition-overriding: true #To solve bug of bean overriding with repositories
-  #  security:
-  #    oauth2:
-  #      client:
-  #        registration:
-  #          azure:
-  #            client-id: ${AZURE_CLIENT_ID}
-  #            client-secret: ${AZURE_CLIENT_SECRET}
   sendgrid:
     api-key: ${SENDGRID_API_KEY}
