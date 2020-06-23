@@ -12,7 +12,7 @@ app:
 azure:
   activedirectory:
     session-stateless: true
-    client-id: ${AZURE_CLIENT_ID}
+    client-id: ${AZURE_CLIENT_ID:a7bf87ff-8a44-4557-b401-5c114b7dc217}
     user-group:
       key: ${AZURE_ADMIN_GROUP_ID:2f116b34-3e59-40ba-9d8d-7891590d7adb}
 
@@ -49,4 +49,4 @@ spring:
   main:
     allow-bean-definition-overriding: true #To solve bug of bean overriding with repositories
   sendgrid:
-    api-key: ${SENDGRID_API_KEY}
+    api-key: ${SENDGRID_API_KEY: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}
