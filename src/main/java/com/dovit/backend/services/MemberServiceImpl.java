@@ -97,7 +97,9 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public void areMembersInCompany(List<Long> membersId, Long companyId) {
     List<Member> members = memberRepository.findAllByCompanyIdAndIdIn(companyId, membersId);
-    if (members.size() != membersId.size()) {
+    final boolean allMatch =
+        members.stream().allMatch(member -> membersId.contains(member.getId()));
+    if (!allMatch) {
       throw new BadRequestException("Not all members are part of the company");
     }
   }
