@@ -29,7 +29,8 @@ public class CustomAzureUserDetails {
           new ObjectMapper()
               .readTree(new String(Base64Utils.decodeFromString(token.split("\\.")[1])));
 
-      if (!node.findValue("roles").toString().contains(AZURE_ADMIN_GROUP_ID)) {
+      if (node.findValue("roles") == null
+          || !node.findValue("roles").toString().contains(AZURE_ADMIN_GROUP_ID)) {
         throw new UnauthorizedException(
             String.format(
                 "%s unauthorized access to Dovit", node.findValue("preferred_username").asText()),

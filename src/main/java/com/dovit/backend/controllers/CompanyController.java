@@ -48,7 +48,12 @@ public class CompanyController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "Company created successfully"));
+        .body(
+            ApiResponse.builder()
+                .id(response.getId())
+                .success(true)
+                .message("Company created successfully")
+                .build());
   }
 
   @PutMapping("/company")
@@ -62,6 +67,11 @@ public class CompanyController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "Company updated successfully"));
+        .body(
+            ApiResponse.builder()
+                .id(response.getId())
+                .success(true)
+                .message("Company updated successfully")
+                .build());
   }
 }

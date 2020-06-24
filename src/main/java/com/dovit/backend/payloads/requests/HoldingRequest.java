@@ -9,18 +9,16 @@ import javax.validation.constraints.NotEmpty;
 
 /**
  * @author Ramón París
- * @since 03-10-2019
+ * @since 23-06-20
  */
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class CompanyRequest {
+public class HoldingRequest {
 
   private Long id;
 
-  @NotEmpty(message = "Company name cannot be empty")
+  @NotEmpty(message = "Name is a mandatory field")
   private String name;
-
-  private Long holdingId;
 }
