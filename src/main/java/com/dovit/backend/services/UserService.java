@@ -23,4 +23,6 @@ public interface UserService {
   UserResponse findResponseById(Long userId);
 
   String createUserToken(RegisterTokenRequest registerTokenRequest);
+
+  void toggleActive(Long userId);
 }

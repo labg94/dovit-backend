@@ -120,6 +120,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public void toggleActive(Long userId) {
+    User user = this.findById(userId);
+    user.setActive(!user.isActive());
+    userRepository.save(user);
+  }
+
+  @Override
   public UserResponse findResponseById(Long userId) {
     User u = this.findById(userId);
     return modelMapper.map(u, UserResponse.class);

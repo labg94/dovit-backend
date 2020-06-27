@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -161,6 +162,17 @@ public class ApiExceptionHandler {
     ErrorResponse errorResponse =
         new ErrorResponse(new Date(), HttpStatus.METHOD_NOT_ALLOWED.value(), errorsMessages);
     return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+  }
+
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ExceptionHandler({DisabledException.class})
+  public ResponseEntity<?> handleDisabledException(DisabledException e) {
+    log.error(e.getMessage(), e);
+    List<String> errorsMessages = Collections.singletonList(e.getMessage());
+
+    ErrorResponse errorResponse =
+        new ErrorResponse(new Date(), HttpStatus.FORBIDDEN.value(), errorsMessages);
+    return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
   }
 
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
