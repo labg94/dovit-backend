@@ -1,12 +1,13 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAuthenticated;
+import com.dovit.backend.annotations.IsMainAdmin;
 import com.dovit.backend.domain.License;
 import com.dovit.backend.payloads.requests.LicenseRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.LicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,18 +22,20 @@ import java.net.URI;
  */
 @RestController
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+@IsMainAdmin
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class LicenseController {
 
   private final LicenseService licenseService;
 
+  @IsAuthenticated
   @GetMapping("/tool/{toolId}/licenses")
   public ResponseEntity<?> findAllLicensesOfTool(@PathVariable Long toolId) {
     return ResponseEntity.ok(licenseService.findAllByToolId(toolId));
   }
 
+  @IsAuthenticated
   @GetMapping("/tool/{toolId}/licenses/active")
   public ResponseEntity<?> findAllActiveLicensesOfTool(@PathVariable Long toolId) {
     return ResponseEntity.ok(licenseService.findAllActivesByToolId(toolId));

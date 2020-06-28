@@ -1,12 +1,13 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAuthenticated;
+import com.dovit.backend.annotations.IsMainAdmin;
 import com.dovit.backend.domain.ProjectType;
 import com.dovit.backend.payloads.requests.ProjectTypeRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.ProjectTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -18,7 +19,7 @@ import java.net.URI;
  * @since 31-05-20
  */
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+@IsMainAdmin
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RestController
@@ -26,6 +27,7 @@ public class ProjectTypeController {
 
   private final ProjectTypeService projectTypeService;
 
+  @IsAuthenticated
   @GetMapping("/project/types")
   public ResponseEntity<?> findAllProjectTypes() {
     return ResponseEntity.ok(projectTypeService.findAll());

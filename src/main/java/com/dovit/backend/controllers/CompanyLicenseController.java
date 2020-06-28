@@ -1,12 +1,13 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAnyAdmin;
+import com.dovit.backend.annotations.IsAuthenticated;
 import com.dovit.backend.domain.CompanyLicense;
 import com.dovit.backend.payloads.requests.CompanyLicenseRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.CompanyLicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,7 +22,7 @@ import java.net.URI;
  */
 @RestController
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+@IsAnyAdmin
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class CompanyLicenseController {
@@ -33,6 +34,7 @@ public class CompanyLicenseController {
    *
    * @return Entity with list of CompanyLicensesResponse
    */
+  @IsAuthenticated
   @GetMapping("/company/{companyId}/tool/{toolId}")
   public ResponseEntity<?> findAllLicenses(
       @PathVariable Long companyId, @PathVariable Long toolId) {

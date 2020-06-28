@@ -8,6 +8,7 @@ public class Constants {
 
   public static final Long ROLE_ADMIN_ID = 1L;
   public static final Long ROLE_CLIENT_ID = 2L;
+  public static final Long ROLE_CLIENT_ADMIN_ID = 3L;
 
   public static final String ACCESS_DENIED = "Access is denied";
 

@@ -1,5 +1,7 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAuthenticated;
+import com.dovit.backend.annotations.IsMainAdmin;
 import com.dovit.backend.domain.DevOpsCategory;
 import com.dovit.backend.payloads.requests.CategoryRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
@@ -8,7 +10,6 @@ import com.dovit.backend.services.DevOpsCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,21 +21,23 @@ import java.net.URI;
  * @since 17-05-20
  */
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RestController
 @Slf4j
+@IsMainAdmin
 public class DevOpsCategoryController {
 
   private final DevOpsCategoryService devOpsCategoryService;
 
   @GetMapping("/categories/actives")
+  @IsAuthenticated
   public ResponseEntity<?> findAllActives() {
     return ResponseEntity.ok(devOpsCategoryService.findAllActives());
   }
 
   @GetMapping("/categories")
+  @IsAuthenticated
   public ResponseEntity<?> findAll() {
     return ResponseEntity.ok(devOpsCategoryService.findAll());
   }

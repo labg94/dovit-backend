@@ -20,6 +20,8 @@ INSERT INTO roles (id, name)
 VALUES (1, 'ROLE_ADMIN');
 INSERT INTO roles (id, name)
 VALUES (2, 'ROLE_CLIENT');
+INSERT INTO roles (id, name)
+VALUES (3, 'ROLE_CLIENT_ADMIN');
 
 insert into users (id, created_at, updated_at, active, email, last_name, name, password, company_id, role_id, rut)
 values (0, '2020-05-24 19:27:21.000000', '2020-05-24 19:27:24.000000', 'true', 'system@system.com', 'ADMINS', 'ADMINS',

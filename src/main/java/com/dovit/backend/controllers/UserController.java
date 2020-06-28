@@ -1,5 +1,7 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAnyAdmin;
+import com.dovit.backend.annotations.IsAuthenticated;
 import com.dovit.backend.domain.User;
 import com.dovit.backend.payloads.requests.RegisterTokenRequest;
 import com.dovit.backend.payloads.requests.UserRequest;
@@ -9,7 +11,6 @@ import com.dovit.backend.payloads.responses.UserResponse;
 import com.dovit.backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -22,7 +23,7 @@ import java.net.URI;
  */
 @RestController
 @RequestMapping("/api")
-@Secured("ROLE_ADMIN")
+@IsAnyAdmin
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class UserController {
@@ -34,7 +35,7 @@ public class UserController {
     return userService.findAllAdmins(page, size);
   }
 
-  @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
+  @IsAuthenticated
   @GetMapping("/company/{companyId}/users")
   public PagedResponse<UserResponse> findAllUsers(
       @Valid @PathVariable Long companyId, @RequestParam int page, @RequestParam int size) {
@@ -46,7 +47,7 @@ public class UserController {
     return userService.createUserToken(request);
   }
 
-  @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
+  @IsAuthenticated
   @GetMapping("/user/{userId}")
   public UserResponse findById(@PathVariable Long userId) {
     return userService.findResponseById(userId);
@@ -66,7 +67,7 @@ public class UserController {
         .body(new ApiResponse(true, "User created successfully"));
   }
 
-  @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
+  @IsAuthenticated
   @PutMapping("/user")
   public ResponseEntity<?> updateUser(@Valid @RequestBody UserRequest userRequest) {
     User response = userService.updateUser(userRequest);

@@ -1,5 +1,7 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAuthenticated;
+import com.dovit.backend.annotations.IsMainAdmin;
 import com.dovit.backend.domain.LicensePricing;
 import com.dovit.backend.payloads.requests.LicensePricingRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
@@ -7,7 +9,6 @@ import com.dovit.backend.services.LicensePricingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,7 +21,7 @@ import java.net.URI;
  */
 @RestController
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+@IsMainAdmin
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Slf4j
@@ -28,6 +29,7 @@ public class LicensePricingController {
 
   private final LicensePricingService licensePricingService;
 
+  @IsAuthenticated
   @GetMapping("/licensePricing/{id}")
   ResponseEntity<?> findById(@PathVariable Long id) {
     return ResponseEntity.ok(licensePricingService.findResponseById(id));

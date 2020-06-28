@@ -8,10 +8,10 @@ import com.dovit.backend.payloads.requests.ToolProfileRequest;
 import com.dovit.backend.payloads.responses.MemberResponseDetail;
 import com.dovit.backend.payloads.responses.MemberResponseResume;
 import com.dovit.backend.repositories.*;
+import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,13 +30,12 @@ public class MemberServiceImpl implements MemberService {
   private final ProfileRepository profileRepository;
   private final CustomRepository customRepository;
   private final ModelMapper modelMapper;
-
-  @Value("${api.image.route}")
-  private String BASE_IMAGE_URL;
+  private final ValidatorUtil validatorUtil;
 
   @Override
   @Transactional
   public Member save(MemberRequest member) {
+    validatorUtil.canActOnCompany(member.getCompanyId());
     Member mappedMember = mapMemberRequestToMember(member);
     Member saved = memberRepository.save(mappedMember);
     saved.getToolProfile().forEach(toolProfile -> toolProfile.setMemberId(saved.getId()));
@@ -58,18 +57,21 @@ public class MemberServiceImpl implements MemberService {
         memberRepository
             .findById(memberId)
             .orElseThrow(() -> new ResourceNotFoundException("Member", "MemberId", memberId));
+    validatorUtil.canActOnCompany(member.getCompany().getId());
 
     return modelMapper.map(member, MemberResponseDetail.class);
   }
 
   @Override
   public List<MemberResponseResume> findAllByCompanyId(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     return customRepository.findAllMembersResumeByCompanyId(companyId);
   }
 
   @Override
   @Transactional
   public Member update(MemberRequest memberRequest) {
+    validatorUtil.canActOnCompany(memberRequest.getCompanyId());
     toolProfileRepository.deleteAllByMemberId(memberRequest.getId());
 
     Member member =

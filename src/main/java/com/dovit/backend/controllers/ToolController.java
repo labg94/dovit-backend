@@ -1,12 +1,13 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAuthenticated;
+import com.dovit.backend.annotations.IsMainAdmin;
 import com.dovit.backend.domain.Tool;
 import com.dovit.backend.payloads.requests.ToolRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.ToolService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -22,46 +23,53 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
+@IsMainAdmin
 public class ToolController {
 
   private final ToolService toolService;
 
   @GetMapping("/tools")
+  @IsAuthenticated
   public ResponseEntity<?> findAll() {
     return ResponseEntity.ok(toolService.findAllTools());
   }
 
   @GetMapping("/tools/active")
+  @IsAuthenticated
   public ResponseEntity<?> findAllActives() {
     return ResponseEntity.ok(toolService.findAllActiveTools());
   }
 
-  @PostMapping("/tools/projectTypes")
-  public ResponseEntity<?> findAllByProjectTypes(@RequestBody List<Long> projectTypes) {
-    return ResponseEntity.ok(toolService.findAllByProjectTypes(projectTypes));
-  }
-
   @GetMapping("/subcategory/{subcategoryId}/tools/active")
+  @IsAuthenticated
   public ResponseEntity<?> findAllActivesBySubcategoryId(@PathVariable Long subcategoryId) {
     return ResponseEntity.ok(toolService.findAllActiveBySubcategory(subcategoryId));
   }
 
   @GetMapping("/subcategory/{subcategoryId}/tools")
+  @IsAuthenticated
   public ResponseEntity<?> findAllBySubcategoryId(@PathVariable Long subcategoryId) {
     return ResponseEntity.ok(toolService.findAllBySubcategory(subcategoryId));
   }
 
   @GetMapping("/company/{companyId}/tools")
+  @IsAuthenticated
   public ResponseEntity<?> findAllToolsByCompany(@PathVariable Long companyId) {
     return ResponseEntity.ok(toolService.findAllToolsOfCompany(companyId));
   }
 
   @GetMapping("/tool/{toolId}")
+  @IsAuthenticated
   public ResponseEntity<?> findById(@PathVariable Long toolId) {
     return ResponseEntity.ok(toolService.findById(toolId));
+  }
+
+  @PostMapping("/tools/projectTypes")
+  @IsAuthenticated
+  public ResponseEntity<?> findAllByProjectTypes(@RequestBody List<Long> projectTypes) {
+    return ResponseEntity.ok(toolService.findAllByProjectTypes(projectTypes));
   }
 
   @PostMapping("/tool")

@@ -1,12 +1,13 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAuthenticated;
+import com.dovit.backend.annotations.IsMainAdmin;
 import com.dovit.backend.domain.SuggestionMailbox;
 import com.dovit.backend.payloads.requests.SuggestionRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.SuggestionMailboxService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -19,7 +20,7 @@ import java.net.URI;
  */
 @RestController
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN"})
+@IsMainAdmin
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class SuggestionsMailboxController {
@@ -37,7 +38,7 @@ public class SuggestionsMailboxController {
   }
 
   @PostMapping("/suggestion")
-  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+  @IsAuthenticated
   public ResponseEntity<?> makeSuggestion(@RequestBody @Valid SuggestionRequest request) {
     SuggestionMailbox response = suggestionMailboxService.makeSuggestion(request);
 

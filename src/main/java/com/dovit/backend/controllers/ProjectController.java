@@ -1,12 +1,13 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAnyAdmin;
+import com.dovit.backend.annotations.IsAuthenticated;
 import com.dovit.backend.domain.Project;
 import com.dovit.backend.payloads.requests.ProjectRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -18,7 +19,7 @@ import java.net.URI;
  * @since 09-12-2019
  */
 @RequestMapping("/api")
-@Secured({"ROLE_ADMIN"})
+@IsAnyAdmin
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RestController
@@ -26,19 +27,19 @@ public class ProjectController {
 
   private final ProjectService projectService;
 
-  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+  @IsAuthenticated
   @GetMapping("/company/{companyId}/projects")
   public ResponseEntity<?> findAllByCompanyId(@PathVariable Long companyId) {
     return ResponseEntity.ok(projectService.findAllByCompanyId(companyId));
   }
 
-  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+  @IsAuthenticated
   @GetMapping("/project/{projectId}")
   public ResponseEntity<?> findByProjectId(@PathVariable Long projectId) {
     return ResponseEntity.ok(projectService.findByProjectId(projectId));
   }
 
-  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+  @IsAuthenticated
   @GetMapping("/company/{companyId}/project/availableMembers")
   public ResponseEntity<?> getMembersRecommendation(@PathVariable Long companyId) {
     return ResponseEntity.ok(projectService.findMemberRecommendation(companyId));

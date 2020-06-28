@@ -1,12 +1,13 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAuthenticated;
+import com.dovit.backend.annotations.IsMainAdmin;
 import com.dovit.backend.domain.Holding;
 import com.dovit.backend.payloads.requests.HoldingRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.HoldingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -16,19 +17,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@Secured("ROLE_ADMIN")
+@IsMainAdmin
 public class HoldingController {
 
   private final HoldingService holdingService;
 
   @GetMapping("/holdings")
-  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+  @IsAuthenticated
   public ResponseEntity<?> findAllHoldings() {
     return ResponseEntity.ok(holdingService.findAll());
   }
 
   @GetMapping("/holding/{holdingId}")
-  @Secured({"ROLE_ADMIN", "ROLE_CLIENT"})
+  @IsAuthenticated
   public ResponseEntity<?> findById(@PathVariable Long holdingId) {
     return ResponseEntity.ok(holdingService.findResponseById(holdingId));
   }
