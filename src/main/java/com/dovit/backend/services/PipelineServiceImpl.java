@@ -1,20 +1,18 @@
 package com.dovit.backend.services;
 
-import com.dovit.backend.domain.DevOpsCategory;
-import com.dovit.backend.domain.Pipeline;
-import com.dovit.backend.domain.PipelineTool;
-import com.dovit.backend.domain.Project;
+import com.dovit.backend.domain.*;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.model.RecommendationPointsDTO;
 import com.dovit.backend.model.ToolRecommendationDTO;
 import com.dovit.backend.payloads.requests.PipelineRecommendationRequest;
 import com.dovit.backend.payloads.requests.PipelineToolRequest;
+import com.dovit.backend.payloads.requests.ProjectMemberRequest;
 import com.dovit.backend.payloads.requests.ProjectRequest;
 import com.dovit.backend.payloads.responses.CategoryRecommendationResponse;
 import com.dovit.backend.payloads.responses.PipelineRecommendationResponse;
-import com.dovit.backend.payloads.responses.ProjectPipelineResponse;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.PipelineRepository;
+import com.dovit.backend.repositories.PipelineToolRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -36,6 +34,7 @@ import static com.dovit.backend.util.Constants.TOOL_POINTS_EXISTS_TXT;
 public class PipelineServiceImpl implements PipelineService {
 
   private final PipelineRepository pipelineRepository;
+  private final PipelineToolRepository pipelineToolRepository;
   private final DevOpsCategoryRepository devOpsCategoryRepository;
   private final ToolService toolService;
   private final ModelMapper modelMapper;
@@ -177,21 +176,6 @@ public class PipelineServiceImpl implements PipelineService {
                   .collect(Collectors.toList()));
         });
 
-    // TODO Integrar exclude tools id para presupuesto
-    //    final Double totalCost =
-    //        categoriesRecommendation.stream()
-    //            .collect(Collectors.groupingBy(c -> c.getRecommendedTool().getToolId()))
-    //            .values()
-    //            .stream()
-    //            .map(
-    //                values ->
-    //                    values.stream()
-    //                        .max(Comparator.comparing(c ->
-    // c.getRecommendedTool().getTotalPrice()))
-    //                        .map(c -> c.getRecommendedTool().getTotalPrice())
-    //                        .orElse(0.0))
-    //            .reduce(0.0, Double::sum);
-
     return PipelineRecommendationResponse.builder()
         .pipelineTools(categoriesRecommendation)
         .cost(null)
@@ -232,25 +216,67 @@ public class PipelineServiceImpl implements PipelineService {
     return Pipeline.builder()
         .recommended(true)
         .project(project)
-        .pipelineTools(
-            recommendation.getPipelineTools().stream()
-                .map(
-                    pipelineTool ->
-                        PipelineTool.builder()
-                            .categoryId(pipelineTool.getCategoryId())
-                            .toolId(
-                                pipelineTool.getRecommendedTool() != null
-                                    ? pipelineTool.getRecommendedTool().getToolId()
-                                    : null)
-                            .log(pipelineTool)
-                            .build())
-                .collect(Collectors.toList()))
+        .pipelineTools(createPipelineToolByRecommendation(recommendation))
         .cost(recommendation.getCost())
         .build();
   }
 
   @Override
-  public ProjectPipelineResponse findAllByProjectId(Long projectId) {
-    return null;
+  @Transactional
+  public void updateRecommendedPipeline(Project project) {
+    PipelineRecommendationRequest recommendationRequest =
+        PipelineRecommendationRequest.builder()
+            .projectTypeIds(
+                project.getProjectTypes().stream()
+                    .map(ProjectType::getId)
+                    .collect(Collectors.toList()))
+            .companyId(project.getCompany().getId())
+            .projectMembers(
+                project.getMembers().stream()
+                    .map(
+                        projectMember ->
+                            ProjectMemberRequest.builder()
+                                .memberId(projectMember.getMemberId())
+                                .devOpsCategoryId(projectMember.getDevOpsCategoryId())
+                                .build())
+                    .collect(Collectors.toList()))
+            .build();
+
+    final PipelineRecommendationResponse recommendation =
+        this.generatePipelineRecommendation(recommendationRequest);
+
+    final Pipeline pipeline =
+        project.getPipelines().stream().filter(Pipeline::isRecommended).findFirst().orElseThrow();
+
+    final List<PipelineTool> pipelineToolByRecommendation =
+        createPipelineToolByRecommendation(recommendation).stream()
+            .peek(
+                pipelineTool -> {
+                  pipelineTool.setPipelineId(pipeline.getId());
+                  pipelineTool.setPipeline(pipeline);
+                })
+            .collect(Collectors.toList());
+
+    pipelineToolRepository.deleteAllByPipelineId(pipeline.getId());
+    pipelineToolRepository.saveAll(pipelineToolByRecommendation);
+
+    pipeline.setPipelineTools(pipelineToolByRecommendation);
+    pipelineRepository.save(pipeline);
+  }
+
+  private List<PipelineTool> createPipelineToolByRecommendation(
+      PipelineRecommendationResponse recommendation) {
+    return recommendation.getPipelineTools().stream()
+        .map(
+            pipelineTool ->
+                PipelineTool.builder()
+                    .categoryId(pipelineTool.getCategoryId())
+                    .toolId(
+                        pipelineTool.getRecommendedTool() != null
+                            ? pipelineTool.getRecommendedTool().getToolId()
+                            : null)
+                    .log(pipelineTool)
+                    .build())
+        .collect(Collectors.toList());
   }
 }

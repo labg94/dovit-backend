@@ -37,10 +37,10 @@ public class Project extends DateAudit {
 
   @ManyToOne private Company company;
 
-  @OneToMany(mappedBy = "project")
+  @OneToMany(mappedBy = "project", cascade = CascadeType.REFRESH)
   private List<ProjectMember> members;
 
-  @ManyToMany
+  @ManyToMany(cascade = CascadeType.REFRESH)
   @JoinTable(
       name = "project_project_types",
       joinColumns = @JoinColumn(name = "project_id"),

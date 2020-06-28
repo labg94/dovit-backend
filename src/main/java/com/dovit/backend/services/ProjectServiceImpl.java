@@ -6,13 +6,13 @@ import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.payloads.requests.PipelineToolRequest;
 import com.dovit.backend.payloads.requests.ProjectMemberRequest;
 import com.dovit.backend.payloads.requests.ProjectRequest;
+import com.dovit.backend.payloads.requests.ProjectResumeRequest;
 import com.dovit.backend.payloads.responses.*;
 import com.dovit.backend.repositories.*;
 import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +43,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   @Transactional
   public Project saveProject(ProjectRequest request) {
+    validatorUtil.canActOnCompany(request.getCompanyId());
     checkAllCategoriesSelected(request.getSelectedTools());
     final List<Long> membersId =
         request.getMembers().stream()
@@ -103,38 +104,83 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   @Transactional
-  public Project updateProject(ProjectRequest request) {
-    Project project =
-        projectRepository
-            .findById(request.getId())
-            .orElseThrow(() -> new ResourceNotFoundException("Project", "id", request.getId()));
-    projectMemberRepository.deleteAllByProjectId(request.getId());
-    ModelMapper modelMapper = new ModelMapper();
-    modelMapper.getConfiguration().setCollectionsMergeEnabled(false);
-
-    PropertyMap<ProjectRequest, Project> skipModelMapper =
-        new PropertyMap<>() {
-          protected void configure() {
-            skip().setMembers(null);
-          }
-        };
-
-    modelMapper.addMappings(skipModelMapper);
+  public Project updateProjectResume(ProjectResumeRequest request) {
+    Project project = findProjectEntityById(request.getProjectId());
+    validatorUtil.canActOnCompany(project.getCompany().getId());
     modelMapper.map(request, project);
+    return projectRepository.save(project);
+  }
 
-    project = projectRepository.save(project);
-
-    List<ProjectMember> members =
-        request.getMembers().stream()
-            .map(m -> new ModelMapper().map(m, ProjectMember.class))
+  @Override
+  @Transactional
+  public Project updateProjectTypes(List<Long> projectTypeIds, Long projectId) {
+    Project project = findProjectEntityById(projectId);
+    validatorUtil.canActOnCompany(project.getCompany().getId());
+    List<ProjectType> projectTypes =
+        projectTypeIds.stream()
+            .map(id -> ProjectType.builder().id(id).build())
             .collect(Collectors.toList());
-    members.forEach(
-        m -> {
-          m.setProject(null);
-          m.setProjectId(request.getId());
-        });
-    projectMemberRepository.saveAll(members);
-    return project;
+    project.setProjectTypes(projectTypes);
+    pipelineService.updateRecommendedPipeline(project);
+    return projectRepository.save(project);
+  }
+
+  @Override
+  @Transactional
+  public Project updateProjectMembers(List<ProjectMemberRequest> members, Long projectId) {
+    Project project = findProjectEntityById(projectId);
+    validatorUtil.canActOnCompany(project.getCompany().getId());
+
+    final List<Long> membersId =
+        members.stream().map(ProjectMemberRequest::getMemberId).collect(Collectors.toList());
+    memberService.areMembersInCompany(membersId, project.getCompany().getId());
+
+    List<ProjectMember> projectMembers =
+        members.stream()
+            .map(member -> modelMapper.map(member, ProjectMember.class))
+            .peek(
+                member -> {
+                  member.setProjectId(projectId);
+                  member.setProject(project);
+                })
+            .collect(Collectors.toList());
+
+    projectMemberRepository.deleteAllByProjectId(projectId);
+    projectMemberRepository.saveAll(projectMembers);
+
+    project.setMembers(projectMembers);
+    pipelineService.updateRecommendedPipeline(project);
+    return projectRepository.save(project);
+  }
+
+  @Override
+  @Transactional
+  public Project updateProjectPipeline(List<PipelineToolRequest> pipelines, Long projectId) {
+    checkAllCategoriesSelected(pipelines);
+    Project project = findProjectEntityById(projectId);
+    validatorUtil.canActOnCompany(project.getCompany().getId());
+
+    final Pipeline pipeline =
+        project.getPipelines().stream()
+            .filter(pipeline1 -> !pipeline1.isRecommended())
+            .findFirst()
+            .orElseThrow();
+
+    final List<PipelineTool> pipelineTools =
+        pipelines.stream()
+            .map(pipelineTool -> modelMapper.map(pipelineTool, PipelineTool.class))
+            .peek(
+                pipelineTool -> {
+                  pipelineTool.setPipeline(pipeline);
+                  pipelineTool.setPipelineId(pipeline.getId());
+                })
+            .collect(Collectors.toList());
+
+    pipelineToolRepository.deleteAllByPipelineId(pipeline.getId());
+    pipelineToolRepository.saveAll(pipelineTools);
+
+    pipeline.setPipelineTools(pipelineTools);
+    return projectRepository.save(project);
   }
 
   @Override
@@ -150,10 +196,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Transactional
   @Override
   public ProjectResponse findByProjectId(Long projectId) {
-    Project project =
-        projectRepository
-            .findById(projectId)
-            .orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
+    Project project = findProjectEntityById(projectId);
 
     validatorUtil.canActOnCompany(project.getCompany().getId());
 
@@ -226,5 +269,11 @@ public class ProjectServiceImpl implements ProjectService {
   private boolean memberKnowsCategory(Long categoryId, Member member) {
     return member.getToolProfile().stream()
         .anyMatch(toolProfile -> toolInCategory(toolProfile, categoryId));
+  }
+
+  private Project findProjectEntityById(Long projectId) {
+    return projectRepository
+        .findById(projectId)
+        .orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
   }
 }

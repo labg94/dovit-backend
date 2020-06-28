@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
  * @since 31-05-20
  */
 @Repository
-public interface PipelineRepository extends JpaRepository<Pipeline, Long> {}
+public interface PipelineRepository extends JpaRepository<Pipeline, Long> {
+
+  void deleteAllByProjectIdAndRecommended(Long projectId, boolean recommended);
+}

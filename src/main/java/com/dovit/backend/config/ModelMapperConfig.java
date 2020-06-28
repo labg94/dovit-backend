@@ -1,10 +1,7 @@
 package com.dovit.backend.config;
 
 import com.dovit.backend.domain.*;
-import com.dovit.backend.payloads.requests.LicenseRequest;
-import com.dovit.backend.payloads.requests.ProjectMemberRequest;
-import com.dovit.backend.payloads.requests.ProjectRequest;
-import com.dovit.backend.payloads.requests.ToolRequest;
+import com.dovit.backend.payloads.requests.*;
 import com.dovit.backend.payloads.responses.*;
 import com.dovit.backend.util.DateUtil;
 import com.google.gson.Gson;
@@ -58,8 +55,21 @@ public class ModelMapperConfig {
     modelMapper.addMappings(projectRequestPropertyMap());
     modelMapper.addMappings(licensePropertyMap());
     modelMapper.addMappings(toolPropertyMap());
+    modelMapper.addMappings(pipelineToolPropertyMap());
 
     return modelMapper;
+  }
+
+  private PropertyMap<PipelineToolRequest, PipelineTool> pipelineToolPropertyMap() {
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        map(source.getCategoryId()).setCategoryId(1L);
+        map(source.getToolId()).setToolId(1L);
+        skip(destination.getPipeline());
+        skip(destination.getPipelineId());
+      }
+    };
   }
 
   private PropertyMap<SuggestionMailbox, SuggestionResponse> suggestionResponsePropertyMap() {

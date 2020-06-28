@@ -78,7 +78,7 @@ class ProjectControllerTest {
 
   @Test
   void updateProject() {
-    Mockito.when(projectService.updateProject(any(ProjectRequest.class))).thenReturn(project);
+    //    Mockito.when(projectService.updateProject(any(ProjectRequest.class))).thenReturn(project);
     TestUtils.testPutRequest(mockMvc, "/project", this.request);
   }
 }

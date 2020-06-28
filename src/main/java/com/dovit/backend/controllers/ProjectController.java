@@ -3,7 +3,10 @@ package com.dovit.backend.controllers;
 import com.dovit.backend.annotations.IsAnyAdmin;
 import com.dovit.backend.annotations.IsAuthenticated;
 import com.dovit.backend.domain.Project;
+import com.dovit.backend.payloads.requests.PipelineToolRequest;
+import com.dovit.backend.payloads.requests.ProjectMemberRequest;
 import com.dovit.backend.payloads.requests.ProjectRequest;
+import com.dovit.backend.payloads.requests.ProjectResumeRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 /**
  * @author Ramón París
@@ -64,9 +68,54 @@ public class ProjectController {
                 .build());
   }
 
-  @PutMapping("/project")
-  public ResponseEntity<?> updateProject(@RequestBody @Valid ProjectRequest request) {
-    Project response = projectService.updateProject(request);
+  @PatchMapping("/project/resume")
+  public ResponseEntity<?> updateProjectResume(@RequestBody @Valid ProjectResumeRequest request) {
+    Project response = projectService.updateProjectResume(request);
+
+    URI location =
+        ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(response.getId())
+            .toUri();
+
+    return ResponseEntity.created(location)
+        .body(new ApiResponse(true, "Project updated successfully"));
+  }
+
+  @PatchMapping("/project/{projectId}/projectType")
+  public ResponseEntity<?> updateProjectTypes(
+      @RequestBody List<Long> projectTypeIds, @PathVariable Long projectId) {
+    Project response = projectService.updateProjectTypes(projectTypeIds, projectId);
+
+    URI location =
+        ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(response.getId())
+            .toUri();
+
+    return ResponseEntity.created(location)
+        .body(new ApiResponse(true, "Project updated successfully"));
+  }
+
+  @PatchMapping("/project/{projectId}/members")
+  public ResponseEntity<?> updateProjectMembers(
+      @RequestBody List<ProjectMemberRequest> members, @PathVariable Long projectId) {
+    Project response = projectService.updateProjectMembers(members, projectId);
+
+    URI location =
+        ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(response.getId())
+            .toUri();
+
+    return ResponseEntity.created(location)
+        .body(new ApiResponse(true, "Project updated successfully"));
+  }
+
+  @PatchMapping("/project/{projectId}/pipeline")
+  public ResponseEntity<?> updateProjectPipeline(
+      @RequestBody List<PipelineToolRequest> pipelines, @PathVariable Long projectId) {
+    Project response = projectService.updateProjectPipeline(pipelines, projectId);
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()

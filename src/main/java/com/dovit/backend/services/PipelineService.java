@@ -6,7 +6,6 @@ import com.dovit.backend.payloads.requests.PipelineRecommendationRequest;
 import com.dovit.backend.payloads.requests.PipelineToolRequest;
 import com.dovit.backend.payloads.requests.ProjectRequest;
 import com.dovit.backend.payloads.responses.PipelineRecommendationResponse;
-import com.dovit.backend.payloads.responses.ProjectPipelineResponse;
 
 import java.util.List;
 
@@ -23,5 +22,5 @@ public interface PipelineService {
 
   Pipeline createRecommendedPipeline(Project project, ProjectRequest request);
 
-  ProjectPipelineResponse findAllByProjectId(Long projectId);
+  void updateRecommendedPipeline(Project project);
 }
