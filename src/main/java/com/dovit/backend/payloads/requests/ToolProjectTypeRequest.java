@@ -1,4 +1,4 @@
-package com.dovit.backend.model.requests;
+package com.dovit.backend.payloads.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,12 +6,13 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Ramón París
- * @since 22-06-20
+ * @since 08-06-20
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AzureAuthRequest {
-  private String tokenId;
-  private String accessToken;
+public class ToolProjectTypeRequest {
+
+  private Long toolId;
+  private Long projectTypeId;
 }

@@ -1,8 +1,8 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.User;
-import com.dovit.backend.model.requests.AzureAuthRequest;
 import com.dovit.backend.payloads.requests.AuthRequest;
+import com.dovit.backend.payloads.requests.AzureAuthRequest;
 import com.dovit.backend.payloads.requests.SignUpRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.payloads.responses.AuthResponse;

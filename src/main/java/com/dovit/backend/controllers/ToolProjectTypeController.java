@@ -2,7 +2,7 @@ package com.dovit.backend.controllers;
 
 import com.dovit.backend.annotations.IsAuthenticated;
 import com.dovit.backend.annotations.IsMainAdmin;
-import com.dovit.backend.model.requests.ToolProjectTypeRequest;
+import com.dovit.backend.payloads.requests.ToolProjectTypeRequest;
 import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.ToolProjectTypeService;
 import lombok.RequiredArgsConstructor;

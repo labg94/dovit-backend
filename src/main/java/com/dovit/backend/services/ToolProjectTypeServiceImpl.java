@@ -2,7 +2,7 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.domain.ToolProjectType;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
-import com.dovit.backend.model.requests.ToolProjectTypeRequest;
+import com.dovit.backend.payloads.requests.ToolProjectTypeRequest;
 import com.dovit.backend.payloads.responses.ProjectTypeResponse;
 import com.dovit.backend.repositories.ToolProjectTypeRepository;
 import lombok.RequiredArgsConstructor;
