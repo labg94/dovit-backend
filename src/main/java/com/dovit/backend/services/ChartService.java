@@ -22,4 +22,10 @@ public interface ChartService {
   List<ChartTopToolsByProject> findTopToolsByProject(Long companyId);
 
   List<ChartTopProjectTypes> findTopProjectTypes(Long companyId);
+
+  List<ChartLicenseResponse> findLicensesExpired(Long companyId);
+
+  List<ChartLicenseResponse> findLicensesExpiring(Long companyId);
+
+  List<ChartLicenseResponse> findLicensesActives(Long companyId);
 }

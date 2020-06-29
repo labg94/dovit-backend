@@ -51,4 +51,19 @@ public class ChartsController {
   public ResponseEntity<?> findTopProjectTypes(@PathVariable Long companyId) {
     return ResponseEntity.ok(chartService.findTopProjectTypes(companyId));
   }
+
+  @GetMapping("/chart/licenses/expiring")
+  public ResponseEntity<?> findLicensesExpiring(@PathVariable Long companyId) {
+    return ResponseEntity.ok(chartService.findLicensesExpiring(companyId));
+  }
+
+  @GetMapping("/chart/licenses/expired")
+  public ResponseEntity<?> findLicensesExpired(@PathVariable Long companyId) {
+    return ResponseEntity.ok(chartService.findLicensesExpired(companyId));
+  }
+
+  @GetMapping("/chart/licenses/actives")
+  public ResponseEntity<?> findLicensesActives(@PathVariable Long companyId) {
+    return ResponseEntity.ok(chartService.findLicensesActives(companyId));
+  }
 }

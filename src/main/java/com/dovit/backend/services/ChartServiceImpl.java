@@ -6,12 +6,14 @@ import com.dovit.backend.payloads.responses.MemberResponseResume;
 import com.dovit.backend.payloads.responses.charts.*;
 import com.dovit.backend.repositories.*;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +31,8 @@ public class ChartServiceImpl implements ChartService {
   private final ToolRepository toolRepository;
   private final DevOpsCategoryRepository devOpsCategoryRepository;
   private final ProjectTypeRepository projectTypeRepository;
+  private final CompanyLicenseRepository companyLicenseRepository;
+  private final ModelMapper modelMapper;
 
   @Override
   @Transactional
@@ -178,6 +182,36 @@ public class ChartServiceImpl implements ChartService {
                   .value((Long) objects[1])
                   .build();
             })
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ChartLicenseResponse> findLicensesExpired(Long companyId) {
+    final List<CompanyLicense> licenses =
+        companyLicenseRepository.findLicensesExpired(companyId, LocalDate.now());
+
+    return licenses.stream()
+        .map(license -> modelMapper.map(license, ChartLicenseResponse.class))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ChartLicenseResponse> findLicensesExpiring(Long companyId) {
+    final List<CompanyLicense> licenses =
+        companyLicenseRepository.findLicensesExpiring(companyId, LocalDate.now());
+
+    return licenses.stream()
+        .map(license -> modelMapper.map(license, ChartLicenseResponse.class))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ChartLicenseResponse> findLicensesActives(Long companyId) {
+    final List<CompanyLicense> licenses =
+        companyLicenseRepository.findLicensesActives(companyId, LocalDate.now());
+
+    return licenses.stream()
+        .map(license -> modelMapper.map(license, ChartLicenseResponse.class))
         .collect(Collectors.toList());
   }
 }
