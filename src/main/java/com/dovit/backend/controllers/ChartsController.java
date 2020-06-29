@@ -66,4 +66,9 @@ public class ChartsController {
   public ResponseEntity<?> findLicensesActives(@PathVariable Long companyId) {
     return ResponseEntity.ok(chartService.findLicensesActives(companyId));
   }
+
+  @GetMapping("/chart/licenses/conflicts")
+  public ResponseEntity<?> findLicensesConflicts(@PathVariable Long companyId) {
+    return ResponseEntity.ok(chartService.findLicensesConflicts(companyId));
+  }
 }

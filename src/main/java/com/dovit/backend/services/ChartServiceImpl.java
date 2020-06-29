@@ -1,6 +1,7 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.*;
+import com.dovit.backend.model.LicenseCategoryHelperDTO;
 import com.dovit.backend.model.MemberKnowledgeHelperDTO;
 import com.dovit.backend.payloads.responses.MemberResponseResume;
 import com.dovit.backend.payloads.responses.charts.*;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -168,6 +170,7 @@ public class ChartServiceImpl implements ChartService {
   }
 
   @Override
+  @Transactional
   public List<ChartTopProjectTypes> findTopProjectTypes(Long companyId) {
     Pageable pageable = PageRequest.of(0, 5);
     Page<Object[]> page = projectTypeRepository.findTopProjectTypes(pageable, companyId);
@@ -186,6 +189,7 @@ public class ChartServiceImpl implements ChartService {
   }
 
   @Override
+  @Transactional
   public List<ChartLicenseResponse> findLicensesExpired(Long companyId) {
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesExpired(companyId, LocalDate.now());
@@ -196,6 +200,7 @@ public class ChartServiceImpl implements ChartService {
   }
 
   @Override
+  @Transactional
   public List<ChartLicenseResponse> findLicensesExpiring(Long companyId) {
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesExpiring(companyId, LocalDate.now());
@@ -206,6 +211,7 @@ public class ChartServiceImpl implements ChartService {
   }
 
   @Override
+  @Transactional
   public List<ChartLicenseResponse> findLicensesActives(Long companyId) {
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesActives(companyId, LocalDate.now());
@@ -213,5 +219,86 @@ public class ChartServiceImpl implements ChartService {
     return licenses.stream()
         .map(license -> modelMapper.map(license, ChartLicenseResponse.class))
         .collect(Collectors.toList());
+  }
+
+  @Override
+  @Transactional
+  public List<ChartLicenseConflict> findLicensesConflicts(Long companyId) {
+    final List<CompanyLicense> licenses =
+        companyLicenseRepository.findLicensesActives(companyId, LocalDate.now());
+    final List<ChartLicenseConflict> charts =
+        licenses.stream()
+            .map(
+                companyLicense ->
+                    companyLicense.getLicense().getTool().getSubcategories().stream()
+                        .map(DevOpsSubcategory::getDevOpsCategory)
+                        .distinct()
+                        .map(
+                            devOpsCategory ->
+                                LicenseCategoryHelperDTO.builder()
+                                    .companyLicense(companyLicense)
+                                    .devOpsCategory(devOpsCategory)
+                                    .build())
+                        .collect(Collectors.toList()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.groupingBy(LicenseCategoryHelperDTO::getDevOpsCategory))
+            .entrySet()
+            .stream()
+            .map(
+                entrySet -> {
+                  DevOpsCategory category = entrySet.getKey();
+                  final int qty = entrySet.getValue().size();
+
+                  return ChartLicenseConflict.builder()
+                      .categoryId(category.getId())
+                      .category(category.getDescription())
+                      .qty(qty)
+                      .tools(
+                          entrySet.getValue().stream()
+                              .map(
+                                  licenseCategoryHelperDTO ->
+                                      licenseCategoryHelperDTO
+                                          .getCompanyLicense()
+                                          .getLicense()
+                                          .getTool()
+                                          .getName())
+                              .collect(Collectors.joining(", ")))
+                      .message(getLicenseConflictMessage(qty))
+                      .build();
+                })
+            .collect(Collectors.toList());
+
+    final List<DevOpsCategory> categories = devOpsCategoryRepository.findAllByActiveOrderById(true);
+    final List<Long> categoryIds =
+        charts.stream().map(ChartLicenseConflict::getCategoryId).collect(Collectors.toList());
+    final List<ChartLicenseConflict> emptyCategories =
+        categories.stream()
+            .filter(category -> !categoryIds.contains(category.getId()))
+            .map(
+                category ->
+                    ChartLicenseConflict.builder()
+                        .categoryId(category.getId())
+                        .tools("")
+                        .message(this.getLicenseConflictMessage(0))
+                        .qty(0)
+                        .category(category.getDescription())
+                        .build())
+            .collect(Collectors.toList());
+
+    charts.addAll(emptyCategories);
+    return charts.stream()
+        .sorted(Comparator.comparing(ChartLicenseConflict::getCategoryId))
+        .collect(Collectors.toList());
+  }
+
+  private String getLicenseConflictMessage(int qty) {
+    switch (qty) {
+      case 0:
+        return "There are not licenses for this category";
+      case 1:
+        return "OK";
+      default:
+        return "It seems that there are similar licenses active. Check if it is possible to use only one";
+    }
   }
 }
