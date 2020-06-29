@@ -31,4 +31,9 @@ public class ChartsController {
   public ResponseEntity<?> findTopWorkerMembers(@PathVariable Long companyId) {
     return ResponseEntity.ok(chartService.findTopWorkers(companyId));
   }
+
+  @GetMapping("/chart/members/tools")
+  public ResponseEntity<?> findTopToolsByMembers(@PathVariable Long companyId) {
+    return ResponseEntity.ok(chartService.findTopMemberTools(companyId));
+  }
 }

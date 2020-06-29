@@ -2,6 +2,8 @@ package com.dovit.backend.repositories;
 
 import com.dovit.backend.domain.DevOpsSubcategory;
 import com.dovit.backend.domain.Tool;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -57,4 +59,13 @@ public interface ToolRepository extends JpaRepository<Tool, Long> {
           + "   and tool.active = true "
           + "   and pipelineTool.category.id = :categoryId ")
   List<Tool> findRecommendationByProjectHistory(Long categoryId, Long companyId);
+
+  @Query(
+      "select tool, count(m) from Tool tool "
+          + "join tool.toolProfile toolProfile "
+          + "join toolProfile.member m "
+          + "where m.company.id = :companyId "
+          + "group by tool "
+          + "order by count(m) desc")
+  Page<Object[]> findTopMembersTool(Pageable pageable, long companyId);
 }

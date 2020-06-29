@@ -2,12 +2,15 @@ package com.dovit.backend.services;
 
 import com.dovit.backend.domain.DevOpsSubcategory;
 import com.dovit.backend.domain.Member;
+import com.dovit.backend.domain.Tool;
 import com.dovit.backend.model.MemberKnowledgeHelperDTO;
 import com.dovit.backend.payloads.responses.MemberResponseResume;
 import com.dovit.backend.payloads.responses.charts.ChartMemberKnowledge;
 import com.dovit.backend.payloads.responses.charts.ChartTopSeniorMemberResponse;
+import com.dovit.backend.payloads.responses.charts.ChartTopToolsByMembersResponse;
 import com.dovit.backend.repositories.CustomRepository;
 import com.dovit.backend.repositories.MemberRepository;
+import com.dovit.backend.repositories.ToolRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +32,7 @@ public class ChartServiceImpl implements ChartService {
 
   private final MemberRepository memberRepository;
   private final CustomRepository customRepository;
+  private final ToolRepository toolRepository;
 
   @Override
   @Transactional
@@ -108,5 +112,23 @@ public class ChartServiceImpl implements ChartService {
   @Override
   public List<MemberResponseResume> findTopWorkers(Long companyId) {
     return customRepository.findAllMembersResumeByCompanyId(companyId, true);
+  }
+
+  @Override
+  public List<ChartTopToolsByMembersResponse> findTopMemberTools(Long companyId) {
+    Pageable pageable = PageRequest.of(0, 5);
+    final Page<Object[]> topMembersTool = toolRepository.findTopMembersTool(pageable, companyId);
+    return topMembersTool
+        .get()
+        .map(
+            objects -> {
+              Tool tool = (Tool) objects[0];
+              return ChartTopToolsByMembersResponse.builder()
+                  .id(tool.getId())
+                  .name(tool.getName())
+                  .value((Long) objects[1])
+                  .build();
+            })
+        .collect(Collectors.toList());
   }
 }
