@@ -18,7 +18,8 @@ public class CustomRepositoryImpl implements CustomRepository {
   private final JdbcTemplate jdbcTemplate;
 
   @Override
-  public List<MemberResponseResume> findAllMembersResumeByCompanyId(Long companyId) {
+  public List<MemberResponseResume> findAllMembersResumeByCompanyId(Long companyId, boolean limit) {
+    // language=PostgreSQL
     String SQL =
         "SELECT members.*, "
             + "       case "
@@ -39,19 +40,30 @@ public class CustomRepositoryImpl implements CustomRepository {
             + "                c.company_id                              as company_id, "
             + "                c.name                                    as company_name, "
             + "                string_agg(distinct p2.description, ', ') as profiles, "
-            + "                count(case "
-            + "                          when not p.finished then 1 "
-            + "                    end)                                  as active_projects_qty, "
-            + "                count(p.id)                               as all_projects_qty "
+            + "                coalesce(pm.active_projects_qty,0)                    as active_projects_qty, "
+            + "                coalesce(pm.all_projects_qty,0)                      as all_projects_qty "
             + "         FROM members m "
-            + "                  left join project_members pm on m.id = pm.member_id "
-            + "                  left join project p on pm.project_id = p.id "
+            + "                  left join (select project_qty.member_id, "
+            + "                                    count(project_qty.project_id) all_projects_qty, "
+            + "                                    count(case "
+            + "                                              when not project_qty.finished then 1 "
+            + "                                        end) as                   active_projects_qty "
+            + "                             from ( "
+            + "                                      select member_id, project_id, p.finished "
+            + "                                      from project_members "
+            + "                                               join project p on project_members.project_id = p.id "
+            + "                                      group by member_id, project_id, p.finished) as project_qty "
+            + "                             group by project_qty.member_id) pm on pm.member_id = m.id "
             + "                  join companies c on m.company_company_id = c.company_id "
-            + "                                  and c.company_id = ? "
+            + "             and c.company_id = ? "
             + "                  join member_profiles mp on m.id = mp.member_id "
             + "                  left join profile p2 on mp.profile_id = p2.id "
-            + "         group by m.id, m.name, m.last_name, c.company_id, c.name, m.active "
-            + "     ) AS members";
+            + "         group by m.id, m.name, m.last_name, c.company_id, c.name, m.active, pm.active_projects_qty, pm.all_projects_qty "
+            + "     ) AS members "
+            + "order by members.all_projects_qty desc ";
+    if (limit) {
+      SQL += " limit 5";
+    }
     return jdbcTemplate.query(
         SQL,
         new Object[] {companyId},

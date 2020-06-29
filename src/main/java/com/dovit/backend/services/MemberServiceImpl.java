@@ -65,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public List<MemberResponseResume> findAllByCompanyId(Long companyId) {
     validatorUtil.canActOnCompany(companyId);
-    return customRepository.findAllMembersResumeByCompanyId(companyId);
+    return customRepository.findAllMembersResumeByCompanyId(companyId, false);
   }
 
   @Override

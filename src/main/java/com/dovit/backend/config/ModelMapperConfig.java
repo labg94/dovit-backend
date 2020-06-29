@@ -118,7 +118,7 @@ public class ModelMapperConfig {
     Converter<Long, Company> companyConverter =
         mappingContext -> Company.builder().id(mappingContext.getSource()).build();
 
-    return new PropertyMap<ProjectRequest, Project>() {
+    return new PropertyMap<>() {
       @Override
       protected void configure() {
         using(memberConverter).map(source.getMembers()).setMembers(Collections.emptyList());
@@ -249,17 +249,16 @@ public class ModelMapperConfig {
 
     Converter<List<ProjectMember>, Long> activeProjectsQtyConverter =
         mappingContext ->
-            (long)
+            this.calculateProjectQtyOfMembers(
                 mappingContext.getSource().stream()
-                    .filter(projectMember -> !projectMember.getProject().getFinished())
-                    .count();
+                    .filter(projectMember -> !projectMember.getProject().getFinished()));
 
     Converter<List<ProjectMember>, String> availableStatusDescriptionConverter =
         mappingContext -> {
           final long totalActive =
-              mappingContext.getSource().stream()
-                  .filter(projectMember -> !projectMember.getProject().getFinished())
-                  .count();
+              this.calculateProjectQtyOfMembers(
+                  mappingContext.getSource().stream()
+                      .filter(projectMember -> !projectMember.getProject().getFinished()));
 
           if (totalActive == 0L) {
             return "Available";
@@ -273,9 +272,9 @@ public class ModelMapperConfig {
     Converter<List<ProjectMember>, Long> availableStatusIdConverter =
         mappingContext -> {
           final long totalActive =
-              mappingContext.getSource().stream()
-                  .filter(projectMember -> !projectMember.getProject().getFinished())
-                  .count();
+              this.calculateProjectQtyOfMembers(
+                  mappingContext.getSource().stream()
+                      .filter(projectMember -> !projectMember.getProject().getFinished()));
 
           if (totalActive == 0L) {
             return 1L;
@@ -287,7 +286,7 @@ public class ModelMapperConfig {
         };
 
     Converter<List<ProjectMember>, Long> allProjectsQtyConverter =
-        mappingContext -> (long) mappingContext.getSource().size();
+        mappingContext -> this.calculateProjectQtyOfMembers(mappingContext.getSource().stream());
 
     return new PropertyMap<>() {
       @Override
@@ -449,5 +448,9 @@ public class ModelMapperConfig {
         map(source.getProjectType().getId()).setProjectTypeId(1L);
       }
     };
+  }
+
+  private Long calculateProjectQtyOfMembers(Stream<ProjectMember> stream) {
+    return (long) stream.collect(Collectors.groupingBy(ProjectMember::getProject)).keySet().size();
   }
 }

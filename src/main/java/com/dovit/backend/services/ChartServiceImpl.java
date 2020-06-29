@@ -3,8 +3,10 @@ package com.dovit.backend.services;
 import com.dovit.backend.domain.DevOpsSubcategory;
 import com.dovit.backend.domain.Member;
 import com.dovit.backend.model.MemberKnowledgeHelperDTO;
+import com.dovit.backend.payloads.responses.MemberResponseResume;
 import com.dovit.backend.payloads.responses.charts.ChartMemberKnowledge;
 import com.dovit.backend.payloads.responses.charts.ChartTopSeniorMemberResponse;
+import com.dovit.backend.repositories.CustomRepository;
 import com.dovit.backend.repositories.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class ChartServiceImpl implements ChartService {
 
   private final MemberRepository memberRepository;
+  private final CustomRepository customRepository;
 
   @Override
   @Transactional
@@ -100,5 +103,10 @@ public class ChartServiceImpl implements ChartService {
         .ifPresent(max -> charts.forEach(chart -> chart.setMaxValue(max)));
 
     return charts;
+  }
+
+  @Override
+  public List<MemberResponseResume> findTopWorkers(Long companyId) {
+    return customRepository.findAllMembersResumeByCompanyId(companyId, true);
   }
 }

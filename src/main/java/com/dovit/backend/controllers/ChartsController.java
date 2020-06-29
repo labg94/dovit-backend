@@ -19,11 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/company/{companyId}")
 public class ChartsController {
 
-    private final ChartService chartService;
+  private final ChartService chartService;
 
-    @GetMapping("/chart/seniors")
-    public ResponseEntity<?> findTopSeniorMembers(@PathVariable Long companyId) {
-        return ResponseEntity.ok(chartService.findTopSeniorMembers(companyId));
-    }
+  @GetMapping("/chart/seniors")
+  public ResponseEntity<?> findTopSeniorMembers(@PathVariable Long companyId) {
+    return ResponseEntity.ok(chartService.findTopSeniorMembers(companyId));
+  }
 
+  /** Returns a list of members that has worked on most projects */
+  @GetMapping("/chart/workers")
+  public ResponseEntity<?> findTopWorkerMembers(@PathVariable Long companyId) {
+    return ResponseEntity.ok(chartService.findTopWorkers(companyId));
+  }
 }

@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface CustomRepository {
 
-  List<MemberResponseResume> findAllMembersResumeByCompanyId(Long companyId);
+  List<MemberResponseResume> findAllMembersResumeByCompanyId(Long companyId, boolean limit);
 }
