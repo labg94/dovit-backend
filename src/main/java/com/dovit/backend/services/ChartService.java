@@ -4,6 +4,7 @@ import com.dovit.backend.payloads.responses.MemberResponseResume;
 import com.dovit.backend.payloads.responses.charts.ChartMemberByCategory;
 import com.dovit.backend.payloads.responses.charts.ChartTopSeniorMemberResponse;
 import com.dovit.backend.payloads.responses.charts.ChartTopToolsByMembersResponse;
+import com.dovit.backend.payloads.responses.charts.ChartTopToolsByProject;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface ChartService {
   List<ChartTopToolsByMembersResponse> findTopMemberTools(Long companyId);
 
   List<ChartMemberByCategory> findQtyMemberByCategory(Long companyId);
+
+  List<ChartTopToolsByProject> findTopToolsByProject(Long companyId);
 }

@@ -3,10 +3,7 @@ package com.dovit.backend.services;
 import com.dovit.backend.domain.*;
 import com.dovit.backend.model.MemberKnowledgeHelperDTO;
 import com.dovit.backend.payloads.responses.MemberResponseResume;
-import com.dovit.backend.payloads.responses.charts.ChartMemberByCategory;
-import com.dovit.backend.payloads.responses.charts.ChartMemberKnowledge;
-import com.dovit.backend.payloads.responses.charts.ChartTopSeniorMemberResponse;
-import com.dovit.backend.payloads.responses.charts.ChartTopToolsByMembersResponse;
+import com.dovit.backend.payloads.responses.charts.*;
 import com.dovit.backend.repositories.CustomRepository;
 import com.dovit.backend.repositories.DevOpsCategoryRepository;
 import com.dovit.backend.repositories.MemberRepository;
@@ -161,5 +158,10 @@ public class ChartServiceImpl implements ChartService {
                   .build();
             })
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ChartTopToolsByProject> findTopToolsByProject(Long companyId) {
+    return customRepository.findTopToolsByProject(companyId);
   }
 }
