@@ -34,6 +34,7 @@ public class ChartServiceImpl implements ChartService {
   private final DevOpsCategoryRepository devOpsCategoryRepository;
   private final ProjectTypeRepository projectTypeRepository;
   private final CompanyLicenseRepository companyLicenseRepository;
+  private final ProjectRepository projectRepository;
   private final ModelMapper modelMapper;
 
   @Override
@@ -289,6 +290,15 @@ public class ChartServiceImpl implements ChartService {
     return charts.stream()
         .sorted(Comparator.comparing(ChartLicenseConflict::getCategoryId))
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public ChartProjectQty findProjectQty(Long companyId) {
+    final List<Project> projects = projectRepository.findAllByCompanyId(companyId);
+    return ChartProjectQty.builder()
+        .allQty(projects.size())
+        .activesQty((int) projects.stream().filter(project -> !project.getFinished()).count())
+        .build();
   }
 
   private String getLicenseConflictMessage(int qty) {

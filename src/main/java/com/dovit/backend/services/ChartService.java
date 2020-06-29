@@ -30,4 +30,6 @@ public interface ChartService {
   List<ChartLicenseResponse> findLicensesActives(Long companyId);
 
   List<ChartLicenseConflict> findLicensesConflicts(Long companyId);
+
+  ChartProjectQty findProjectQty(Long companyId);
 }
