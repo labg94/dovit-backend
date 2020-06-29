@@ -113,8 +113,21 @@ public class ChartServiceImpl implements ChartService {
   }
 
   @Override
-  public List<MemberResponseResume> findTopWorkers(Long companyId) {
-    return customRepository.findAllMembersResumeByCompanyId(companyId, true);
+  public List<ChartMemberProjectQty> findTopWorkers(Long companyId) {
+    final List<MemberResponseResume> members =
+        customRepository.findAllMembersResumeByCompanyId(companyId, true);
+    return members.stream()
+        .map(
+            member ->
+                ChartMemberProjectQty.builder()
+                    .fullName(
+                        String.format(
+                            "%s. %s", member.getMemberName().charAt(0), member.getMemberLastName()))
+                    .activeProjectsQty(member.getActiveProjectsQty())
+                    .closedProjectsQty(member.getAllProjectsQty() - member.getActiveProjectsQty())
+                    .id(member.getId())
+                    .build())
+        .collect(Collectors.toList());
   }
 
   @Override
