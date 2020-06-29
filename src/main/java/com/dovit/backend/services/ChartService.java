@@ -1,6 +1,7 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.payloads.responses.MemberResponseResume;
+import com.dovit.backend.payloads.responses.charts.ChartMemberByCategory;
 import com.dovit.backend.payloads.responses.charts.ChartTopSeniorMemberResponse;
 import com.dovit.backend.payloads.responses.charts.ChartTopToolsByMembersResponse;
 
@@ -17,4 +18,6 @@ public interface ChartService {
   List<MemberResponseResume> findTopWorkers(Long companyId);
 
   List<ChartTopToolsByMembersResponse> findTopMemberTools(Long companyId);
+
+  List<ChartMemberByCategory> findQtyMemberByCategory(Long companyId);
 }
