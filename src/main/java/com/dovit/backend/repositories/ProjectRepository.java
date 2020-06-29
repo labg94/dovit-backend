@@ -10,6 +10,5 @@ import java.util.List;
  * @since 09-12-2019
  */
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-
   List<Project> findAllByCompanyId(Long companyId);
 }

@@ -46,4 +46,9 @@ public class ChartsController {
   public ResponseEntity<?> findTopProjectTools(@PathVariable Long companyId) {
     return ResponseEntity.ok(chartService.findTopToolsByProject(companyId));
   }
+
+  @GetMapping("/chart/projects/types")
+  public ResponseEntity<?> findTopProjectTypes(@PathVariable Long companyId) {
+    return ResponseEntity.ok(chartService.findTopProjectTypes(companyId));
+  }
 }

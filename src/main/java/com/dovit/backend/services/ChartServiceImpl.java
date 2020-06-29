@@ -4,10 +4,7 @@ import com.dovit.backend.domain.*;
 import com.dovit.backend.model.MemberKnowledgeHelperDTO;
 import com.dovit.backend.payloads.responses.MemberResponseResume;
 import com.dovit.backend.payloads.responses.charts.*;
-import com.dovit.backend.repositories.CustomRepository;
-import com.dovit.backend.repositories.DevOpsCategoryRepository;
-import com.dovit.backend.repositories.MemberRepository;
-import com.dovit.backend.repositories.ToolRepository;
+import com.dovit.backend.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +28,7 @@ public class ChartServiceImpl implements ChartService {
   private final CustomRepository customRepository;
   private final ToolRepository toolRepository;
   private final DevOpsCategoryRepository devOpsCategoryRepository;
+  private final ProjectTypeRepository projectTypeRepository;
 
   @Override
   @Transactional
@@ -163,5 +161,23 @@ public class ChartServiceImpl implements ChartService {
   @Override
   public List<ChartTopToolsByProject> findTopToolsByProject(Long companyId) {
     return customRepository.findTopToolsByProject(companyId);
+  }
+
+  @Override
+  public List<ChartTopProjectTypes> findTopProjectTypes(Long companyId) {
+    Pageable pageable = PageRequest.of(0, 5);
+    Page<Object[]> page = projectTypeRepository.findTopProjectTypes(pageable, companyId);
+
+    return page.get()
+        .map(
+            objects -> {
+              ProjectType projectType = (ProjectType) objects[0];
+              return ChartTopProjectTypes.builder()
+                  .description(projectType.getDescription())
+                  .projectTypeId(projectType.getId())
+                  .value((Long) objects[1])
+                  .build();
+            })
+        .collect(Collectors.toList());
   }
 }
