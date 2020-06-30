@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class ChartMemberKnowledge {
 
   private String category;
+  private Long categoryId;
   private int value;
   private String tools;
 }

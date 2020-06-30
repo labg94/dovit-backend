@@ -80,6 +80,7 @@ public class ChartServiceImpl implements ChartService {
                           .map(
                               entrySet ->
                                   ChartMemberKnowledge.builder()
+                                      .categoryId(entrySet.getKey().getId())
                                       .category(entrySet.getKey().getDescription())
                                       .value(
                                           entrySet.getValue().stream()
@@ -101,6 +102,35 @@ public class ChartServiceImpl implements ChartService {
                       .build();
                 })
             .collect(Collectors.toList());
+
+    // Agregando todas las categorías siempre
+    List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAllByActiveOrderById(true);
+    charts.forEach(
+        chart -> {
+          final List<Long> categoryIds =
+              chart.getKnowledgeList().stream()
+                  .map(ChartMemberKnowledge::getCategoryId)
+                  .collect(Collectors.toList());
+
+          final List<ChartMemberKnowledge> otherKnowledge =
+              devOpsCategories.stream()
+                  .filter(category -> !categoryIds.contains(category.getId()))
+                  .map(
+                      category ->
+                          ChartMemberKnowledge.builder()
+                              .categoryId(category.getId())
+                              .category(category.getDescription())
+                              .value(0)
+                              .tools("")
+                              .build())
+                  .collect(Collectors.toList());
+
+          chart.getKnowledgeList().addAll(otherKnowledge);
+          chart.setKnowledgeList(
+              chart.getKnowledgeList().stream()
+                  .sorted(Comparator.comparing(ChartMemberKnowledge::getCategoryId))
+                  .collect(Collectors.toList()));
+        });
 
     charts.stream()
         .map(ChartTopSeniorMemberResponse::getKnowledgeList)
