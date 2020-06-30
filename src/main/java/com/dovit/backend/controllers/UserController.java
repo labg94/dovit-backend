@@ -16,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 /**
  * @author Ramón París
@@ -35,11 +36,14 @@ public class UserController {
     return userService.findAllAdmins(page, size);
   }
 
-  @IsAuthenticated
+  @GetMapping("/users")
+  public ResponseEntity<?> findAll() {
+    return ResponseEntity.ok(userService.findAll());
+  }
+
   @GetMapping("/company/{companyId}/users")
-  public PagedResponse<UserResponse> findAllUsers(
-      @Valid @PathVariable Long companyId, @RequestParam int page, @RequestParam int size) {
-    return userService.findAllClients(companyId, page, size);
+  public ResponseEntity<List<UserResponse>> findAll(@PathVariable Long companyId) {
+    return ResponseEntity.ok(userService.findAllByCompanyId(companyId));
   }
 
   @PostMapping("/user/token")

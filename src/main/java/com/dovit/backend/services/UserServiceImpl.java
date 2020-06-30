@@ -127,6 +127,22 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public List<UserResponse> findAll() {
+    List<User> users = userRepository.findAll();
+    return users.stream()
+        .map(u -> modelMapper.map(u, UserResponse.class))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<UserResponse> findAllByCompanyId(Long companyId) {
+    List<User> users = userRepository.findAllByCompanyId(companyId);
+    return users.stream()
+        .map(u -> modelMapper.map(u, UserResponse.class))
+        .collect(Collectors.toList());
+  }
+
+  @Override
   public UserResponse findResponseById(Long userId) {
     User u = this.findById(userId);
     return modelMapper.map(u, UserResponse.class);

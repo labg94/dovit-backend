@@ -6,6 +6,8 @@ import com.dovit.backend.payloads.requests.UserRequest;
 import com.dovit.backend.payloads.responses.PagedResponse;
 import com.dovit.backend.payloads.responses.UserResponse;
 
+import java.util.List;
+
 /**
  * @author Ramón París
  * @since 02-10-2019
@@ -25,4 +27,8 @@ public interface UserService {
   String createUserToken(RegisterTokenRequest registerTokenRequest);
 
   void toggleActive(Long userId);
+
+  List<UserResponse> findAll();
+
+  List<UserResponse> findAllByCompanyId(Long companyId);
 }
