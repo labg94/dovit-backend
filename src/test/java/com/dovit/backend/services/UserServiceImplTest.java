@@ -71,7 +71,7 @@ class UserServiceImplTest {
     List<User> usersList = new ArrayList<>();
     usersList.add(Mockito.mock(User.class));
     this.pages = new PageImpl<>(usersList);
-    Mockito.when(userRepository.findAllByCompanyId(anyLong(), any())).thenReturn(pages);
+    Mockito.when(userRepository.findAllByCompanyIdOrderById(anyLong(), any())).thenReturn(pages);
     assertNotNull(userService.findAllClients(1L, 1, 25));
   }
 

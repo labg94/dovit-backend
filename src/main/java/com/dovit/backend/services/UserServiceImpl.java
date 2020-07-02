@@ -9,7 +9,6 @@ import com.dovit.backend.payloads.responses.PagedResponse;
 import com.dovit.backend.payloads.responses.UserResponse;
 import com.dovit.backend.repositories.UserRepository;
 import com.dovit.backend.security.JwtTokenProvider;
-import com.dovit.backend.util.Constants;
 import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +21,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.dovit.backend.util.Constants.*;
 
 /**
  * @author Ramón París
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public PagedResponse<UserResponse> findAllAdmins(int page, int size) {
     Pageable pagination = PageRequest.of(page, size);
-    Page<User> usersPage = userRepository.findAllByRoleId(Constants.ROLE_ADMIN_ID, pagination);
+    Page<User> usersPage = userRepository.findAllByRoleId(ROLE_ADMIN_ID, pagination);
     List<UserResponse> users =
         usersPage.getContent().stream()
             .map(u -> modelMapper.map(u, UserResponse.class))
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
   public PagedResponse<UserResponse> findAllClients(Long companyId, int page, int size) {
     validatorUtil.canActOnCompany(companyId);
     Pageable pagination = PageRequest.of(page, size);
-    Page<User> usersPage = userRepository.findAllByCompanyId(companyId, pagination);
+    Page<User> usersPage = userRepository.findAllByCompanyIdOrderById(companyId, pagination);
     List<UserResponse> users =
         usersPage.getContent().stream()
             .map(u -> modelMapper.map(u, UserResponse.class))
@@ -132,12 +134,13 @@ public class UserServiceImpl implements UserService {
     List<User> users = userRepository.findAll();
     return users.stream()
         .map(u -> modelMapper.map(u, UserResponse.class))
+        .sorted(Comparator.comparing(UserResponse::getId))
         .collect(Collectors.toList());
   }
 
   @Override
   public List<UserResponse> findAllByCompanyId(Long companyId) {
-    List<User> users = userRepository.findAllByCompanyId(companyId);
+    List<User> users = userRepository.findAllByCompanyIdOrderById(companyId);
     return users.stream()
         .map(u -> modelMapper.map(u, UserResponse.class))
         .collect(Collectors.toList());
@@ -156,12 +159,12 @@ public class UserServiceImpl implements UserService {
   }
 
   private void checkValidRequest(UserRequest userRequest) {
-    if (userRequest.getRoleId().equals(Constants.ROLE_ADMIN_ID)
-        && userRequest.getCompanyId() != null) {
+    if (userRequest.getRoleId().equals(ROLE_ADMIN_ID) && userRequest.getCompanyId() != null) {
       throw new BadRequestException("Administrator role should not have any company associated");
     }
 
-    if (userRequest.getRoleId().equals(Constants.ROLE_CLIENT_ID)
+    if ((userRequest.getRoleId().equals(ROLE_CLIENT_ID)
+            || userRequest.getRoleId().equals(ROLE_CLIENT_ADMIN_ID))
         && userRequest.getCompanyId() == null) {
       throw new BadRequestException("Client role should have a company associated");
     }
