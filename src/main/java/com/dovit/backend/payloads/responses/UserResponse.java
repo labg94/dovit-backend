@@ -19,7 +19,7 @@ public class UserResponse {
   private String email;
   private String rut;
 
-  private String roleName;
+  private String roleDescription;
   private Long roleId;
 
   private boolean active;

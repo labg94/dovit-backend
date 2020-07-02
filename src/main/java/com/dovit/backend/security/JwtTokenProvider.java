@@ -57,6 +57,7 @@ public class JwtTokenProvider {
     Date expiryDate = new Date(now.getTime() + JWT_REGISTER_EXPIRATION);
     Map<String, Object> claims = new HashMap<>();
     claims.put("companyId", registerTokenRequest.getCompanyId());
+    claims.put("roleId", registerTokenRequest.getRoleId());
 
     return Jwts.builder()
         .setClaims(claims)
@@ -70,7 +71,11 @@ public class JwtTokenProvider {
   public RegisterTokenRequest getRegisterRequestFromJWT(String token) {
     Claims claims = Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token).getBody();
 
-    return new RegisterTokenRequest(claims.getSubject(), claims.get("companyId", Long.class));
+    return RegisterTokenRequest.builder()
+        .email(claims.getSubject())
+        .companyId(claims.get("companyId", Long.class))
+        .roleId(claims.get("roleId", Long.class))
+        .build();
   }
 
   public Long getUserIdFromJWT(String token) {

@@ -28,4 +28,7 @@ public class RegisterTokenRequest {
 
   @NotNull(message = "companyId cannot be null")
   private Long companyId;
+
+  @NotNull(message = "Role cannot be null")
+  private Long roleId;
 }

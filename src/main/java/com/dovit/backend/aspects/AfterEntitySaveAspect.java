@@ -30,8 +30,7 @@ public class AfterEntitySaveAspect {
   @AfterReturning(value = "execution(* com.dovit.backend.repositories.*Repository.save*(..))")
   @Transactional
   public void afterSavingEntity(JoinPoint joinPoint) {
-    UserPrincipal loggedUser =
-        (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    UserPrincipal loggedUser = getContextUser();
     Object argument = joinPoint.getArgs()[0];
     String entityName = argument.getClass().getSimpleName();
     Map<String, Object> persistedEntity = this.createMap(joinPoint);
@@ -42,14 +41,21 @@ public class AfterEntitySaveAspect {
 
   @AfterThrowing(value = "execution(* com.dovit.backend.repositories.*Repository.save*(..))")
   public void afterThrowingSavingEntity(JoinPoint joinPoint) {
-    UserPrincipal loggedUser =
-        (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    UserPrincipal loggedUser = getContextUser();
     Object argument = joinPoint.getArgs()[0];
     String entityName = argument.getClass().getSimpleName();
     Map<String, Object> persistedEntity = this.createMap(joinPoint);
     String auditMessage = String.format("Error Save or update over %s entity", entityName);
     log.error(auditMessage + " by userId: " + loggedUser.getId());
     auditService.registerAudit(persistedEntity, auditMessage, "ERROR", loggedUser.getId());
+  }
+
+  private UserPrincipal getContextUser() {
+    try {
+      return (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    } catch (Exception e) {
+      return new UserPrincipal();
+    }
   }
 
   private Map<String, Object> createMap(JoinPoint joinPoint) {

@@ -1,6 +1,9 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Role;
+import com.dovit.backend.payloads.responses.RoleResponse;
+
+import java.util.List;
 
 /**
  * @author Ramón París
@@ -8,4 +11,6 @@ import com.dovit.backend.domain.Role;
  */
 public interface RoleService {
   Role findById(Long id);
+
+  List<RoleResponse> findAllButAdmin();
 }

@@ -116,7 +116,7 @@ public class AuthServiceImpl implements AuthService {
     RegisterTokenRequest tokenInfo =
         this.getRegisterTokenInfo(signUpRequest.getRegistrationToken());
     Company company = companyService.findById(tokenInfo.getCompanyId());
-    Role role = roleService.findById(Constants.ROLE_CLIENT_ID);
+    Role role = roleService.findById(tokenInfo.getRoleId());
 
     User user = new User();
     user.setName(signUpRequest.getName());

@@ -27,6 +27,7 @@ public class CompanyController {
 
   private final CompanyService companyService;
 
+  @IsAuthenticated
   @GetMapping("/companies")
   public ResponseEntity<?> findAll() {
     return ResponseEntity.ok().body(companyService.findAll());

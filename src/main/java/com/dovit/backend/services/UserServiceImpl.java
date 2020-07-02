@@ -115,7 +115,8 @@ public class UserServiceImpl implements UserService {
 
     String token = tokenProvider.generateRegisterToken(registerTokenRequest);
     emailService.sendRegistration(
-        registerTokenRequest.getEmail(), APP_FRONTEND_DOMAIN + "/userCompany/create/" + token);
+        registerTokenRequest.getEmail(),
+        APP_FRONTEND_DOMAIN + "/userCompany/create?token=" + token);
     return token;
   }
 
