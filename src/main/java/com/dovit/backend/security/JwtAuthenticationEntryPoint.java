@@ -1,6 +1,6 @@
 package com.dovit.backend.security;
 
-import com.dovit.backend.model.responses.ErrorResponse;
+import com.dovit.backend.payloads.responses.ErrorResponse;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +28,21 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   @Override
   public void commence(
-          HttpServletRequest request,
-          HttpServletResponse response,
-          AuthenticationException authException)
-          throws IOException {
-    logger.error("Responding with unauthorized error. Message - {}", authException.getMessage());
+      HttpServletRequest request,
+      HttpServletResponse response,
+      AuthenticationException authException)
+      throws IOException {
+    logger.error(
+        "Responding with unauthorized error. Message - {}. Resource: {}. Method: {}",
+        authException.getMessage(),
+        request.getServletPath(),
+        request.getMethod());
     response.setContentType("application/json");
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     List<String> errorsMessages = new ArrayList<>();
     errorsMessages.add(authException.getMessage());
     ErrorResponse errorResponse =
-            new ErrorResponse(new Date(), HttpServletResponse.SC_UNAUTHORIZED, errorsMessages);
+        new ErrorResponse(new Date(), HttpServletResponse.SC_UNAUTHORIZED, errorsMessages);
     response.getOutputStream().println(new Gson().toJson(errorResponse));
   }
 }

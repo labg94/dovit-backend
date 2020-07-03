@@ -1,0 +1,26 @@
+{
+  "id": 1,
+  "name": "Cualquiervaina JS",
+  "description": "Javascript framework",
+  "subcategoryIds": [
+    1,
+    2
+  ],
+  "licenses": [
+    {
+      "licenseId": 1,
+      "licenseName": "Open source",
+      "licensePayCycleId": 4,
+      "licenseObservation": "Open source framework",
+      "licenseTypeId": 1,
+      "licensePrices": [
+        {
+          "id": 0,
+          "minUsers": 0,
+          "maxUsers": -1,
+          "price": 0
+        }
+      ]
+    }
+  ]
+}

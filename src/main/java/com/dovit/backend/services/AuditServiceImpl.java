@@ -1,8 +1,8 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.Audit;
-import com.dovit.backend.model.responses.AuditResponse;
-import com.dovit.backend.model.responses.PagedResponse;
+import com.dovit.backend.payloads.responses.AuditResponse;
+import com.dovit.backend.payloads.responses.PagedResponse;
 import com.dovit.backend.repositories.AuditRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,10 +28,11 @@ import java.util.stream.Collectors;
 public class AuditServiceImpl implements AuditService {
 
   private final AuditRepository auditRepository;
-  private final Gson gson = new Gson();
+  private final Gson gson;
   private final ModelMapper modelMapper;
 
   @Override
+  @Transactional
   public void registerAudit(Object data, String message, String status, Long userId) {
     new Thread(
             () -> {

@@ -1,10 +1,10 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsMainAdmin;
 import com.dovit.backend.services.AuditService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@Secured("ROLE_ADMIN")
+@IsMainAdmin
 @CrossOrigin(origins = "*")
 public class AuditController {
 

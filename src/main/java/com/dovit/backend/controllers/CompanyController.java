@@ -1,12 +1,13 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.annotations.IsAuthenticated;
+import com.dovit.backend.annotations.IsMainAdmin;
 import com.dovit.backend.domain.Company;
-import com.dovit.backend.model.requests.CompanyRequest;
-import com.dovit.backend.model.responses.ApiResponse;
+import com.dovit.backend.payloads.requests.CompanyRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
 import com.dovit.backend.services.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,18 +21,19 @@ import java.net.URI;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
-@Secured("ROLE_ADMIN")
+@IsMainAdmin
 @RequiredArgsConstructor
 public class CompanyController {
 
   private final CompanyService companyService;
 
+  @IsAuthenticated
   @GetMapping("/companies")
   public ResponseEntity<?> findAll() {
     return ResponseEntity.ok().body(companyService.findAll());
   }
 
-  @Secured({"ROLE_CLIENT", "ROLE_ADMIN"})
+  @IsAuthenticated
   @GetMapping("/company/{companyId}")
   public ResponseEntity<?> findById(@PathVariable Long companyId) {
     return ResponseEntity.ok(companyService.findCompanyResponseById(companyId));
@@ -48,7 +50,12 @@ public class CompanyController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "Company created successfully"));
+        .body(
+            ApiResponse.builder()
+                .id(response.getId())
+                .success(true)
+                .message("Company created successfully")
+                .build());
   }
 
   @PutMapping("/company")
@@ -62,6 +69,11 @@ public class CompanyController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "Company updated successfully"));
+        .body(
+            ApiResponse.builder()
+                .id(response.getId())
+                .success(true)
+                .message("Company updated successfully")
+                .build());
   }
 }

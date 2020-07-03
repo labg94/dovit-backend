@@ -1,10 +1,10 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.User;
-import com.dovit.backend.model.requests.RegisterTokenRequest;
-import com.dovit.backend.model.requests.UserRequest;
-import com.dovit.backend.model.responses.PagedResponse;
-import com.dovit.backend.model.responses.UserResponse;
+import com.dovit.backend.payloads.requests.RegisterTokenRequest;
+import com.dovit.backend.payloads.requests.UserRequest;
+import com.dovit.backend.payloads.responses.PagedResponse;
+import com.dovit.backend.payloads.responses.UserResponse;
 import com.dovit.backend.services.UserServiceImpl;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +42,7 @@ class UserControllerTest {
           .lastName("París")
           .email("ramon.paris@inacapmail.cl")
           .password("password")
+          .rut("25412683-7")
           .active(true)
           .build();
 
@@ -53,6 +54,7 @@ class UserControllerTest {
           .name("Ramón")
           .lastName("París")
           .email("ramon.paris@inacapmail.cl")
+          .rut("25412683-7")
           .active(true)
           .roleId(1L)
           .companyId(null)

@@ -1,10 +1,11 @@
 package com.dovit.backend.controllers;
 
 import com.dovit.backend.domain.User;
-import com.dovit.backend.model.requests.AuthRequest;
-import com.dovit.backend.model.requests.SignUpRequest;
-import com.dovit.backend.model.responses.ApiResponse;
-import com.dovit.backend.model.responses.AuthResponse;
+import com.dovit.backend.payloads.requests.AuthRequest;
+import com.dovit.backend.payloads.requests.AzureAuthRequest;
+import com.dovit.backend.payloads.requests.SignUpRequest;
+import com.dovit.backend.payloads.responses.ApiResponse;
+import com.dovit.backend.payloads.responses.AuthResponse;
 import com.dovit.backend.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,12 @@ public class AuthController {
   @PostMapping("/signIn")
   public ResponseEntity<?> signIn(@Valid @RequestBody AuthRequest authRequest) {
     AuthResponse token = authService.authenticateUser(authRequest);
+    return ResponseEntity.ok(token);
+  }
+
+  @PostMapping("/azureSignIn")
+  public ResponseEntity<?> signInByAzure(@Valid @RequestBody AzureAuthRequest azureAuthRequest) {
+    AuthResponse token = authService.authenticateByAzure(azureAuthRequest);
     return ResponseEntity.ok(token);
   }
 

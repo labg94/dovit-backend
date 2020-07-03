@@ -1,6 +1,7 @@
 package com.dovit.backend.domain;
 
 import com.dovit.backend.domain.audit.DateAudit;
+import com.dovit.backend.domain.keys.ProjectMemberId;
 import lombok.*;
 
 import javax.persistence.*;

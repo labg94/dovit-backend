@@ -1,9 +1,7 @@
 package com.dovit.backend.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.dovit.backend.domain.audit.DateAudit;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,12 +12,13 @@ import java.util.List;
  * @author Ramón París
  * @since 09-12-2019
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Project {
+public class Project extends DateAudit {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,14 +26,27 @@ public class Project {
 
   @NotBlank private String name;
 
-  private LocalDate start;
+  @Column private LocalDate start;
 
-  private String observation;
+  @Column(name = "end_date")
+  private LocalDate endDate;
 
-  private Boolean finished;
+  @Column private String observation;
+
+  @Column private Boolean finished;
 
   @ManyToOne private Company company;
 
-  @OneToMany(mappedBy = "project")
+  @OneToMany(mappedBy = "project", cascade = CascadeType.REFRESH)
   private List<ProjectMember> members;
+
+  @ManyToMany(cascade = CascadeType.REFRESH)
+  @JoinTable(
+      name = "project_project_types",
+      joinColumns = @JoinColumn(name = "project_id"),
+      inverseJoinColumns = @JoinColumn(name = "project_type_id"))
+  private List<ProjectType> projectTypes;
+
+  @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+  private List<Pipeline> pipelines;
 }

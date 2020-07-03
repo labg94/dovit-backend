@@ -24,15 +24,21 @@ import java.util.List;
 public class License extends DateAudit {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "license_sequence")
+  @SequenceGenerator(initialValue = 100, name = "license_sequence")
   @Column(name = "license_id")
   private Long id;
 
   @NotEmpty private String name;
 
-  @NotEmpty private String payCycle;
+  @ManyToOne
+  @JoinColumn(nullable = false)
+  private LicensePayCycle payCycle;
 
   private String observation;
+
+  @Column(columnDefinition = "boolean default true")
+  private boolean active;
 
   @ManyToOne
   @JoinColumn(nullable = false)
@@ -45,6 +51,6 @@ public class License extends DateAudit {
   @JoinColumn(name = "tool_id", nullable = false)
   private Tool tool;
 
-  @OneToMany(mappedBy = "license")
+  @OneToMany(mappedBy = "license", cascade = CascadeType.ALL)
   private List<LicensePricing> licensePrices;
 }

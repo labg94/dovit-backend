@@ -17,10 +17,10 @@ public class DomainBuilderUtil {
   public static Level level = Level.builder().levelId(1L).description("Senior").build();
 
   public static DevOpsCategory devOpsCategoryPlanning =
-      DevOpsCategory.builder().id(1L).description("Planning").build();
+      DevOpsCategory.builder().id(1L).description("Planning").active(true).build();
 
   public static DevOpsCategory devOpsCategoryCICD =
-      DevOpsCategory.builder().id(3L).description("CI/CD").build();
+      DevOpsCategory.builder().id(3L).description("CI/CD").active(true).build();
 
   public static DevOpsSubcategory issue_tracking =
       DevOpsSubcategory.builder()
@@ -50,12 +50,20 @@ public class DomainBuilderUtil {
           .devOpsCategory(devOpsCategoryCICD)
           .build();
 
-  public static Tool tool =
+  public static Tool gitlabTool =
       Tool.builder()
           .id(1L)
           .imageUrl("/url")
           .name("Gitlab")
           .subcategories(Arrays.asList(issue_tracking, repositories, CI, CD))
+          .build();
+
+  public static Tool azureDevOpsTool =
+      Tool.builder()
+          .id(2L)
+          .imageUrl("/url")
+          .name("Azure DevOps")
+          .subcategories(Collections.singletonList(issue_tracking))
           .build();
 
   public static LicenseType licenseType =
@@ -66,9 +74,9 @@ public class DomainBuilderUtil {
           .id(1L)
           .name("Basic plan")
           .observation("Observation")
-          .payCycle("Monthly")
+          //          .payCycle("Monthly")
           .licenseType(licenseType)
-          .tool(tool)
+          .tool(gitlabTool)
           .build();
 
   public static Company company = Company.builder().id(1L).name("Clever IT").build();
@@ -82,8 +90,8 @@ public class DomainBuilderUtil {
           .company(company)
           .build();
 
-  public static ToolProfile toolProfile =
-      ToolProfile.builder().level(level).levelId(1L).tool(tool).toolId(1L).build();
+  public static ToolProfile toolProfileGitlab =
+      ToolProfile.builder().level(level).levelId(1L).tool(gitlabTool).toolId(1L).build();
 
   public static Member member =
       Member.builder()
@@ -93,7 +101,7 @@ public class DomainBuilderUtil {
           .name("Pepe")
           .lastName("Lota")
           .profiles(Collections.singletonList(profile))
-          .toolProfile(Collections.singletonList(toolProfile))
+          .toolProfile(Collections.singletonList(toolProfileGitlab))
           .build();
 
   public static ProjectMember projectMember =

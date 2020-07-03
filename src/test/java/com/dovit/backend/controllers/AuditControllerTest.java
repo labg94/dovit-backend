@@ -1,6 +1,6 @@
 package com.dovit.backend.controllers;
 
-import com.dovit.backend.model.responses.PagedResponse;
+import com.dovit.backend.payloads.responses.PagedResponse;
 import com.dovit.backend.services.AuditServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

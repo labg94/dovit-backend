@@ -1,7 +1,7 @@
 package com.dovit.backend.security;
 
 import com.dovit.backend.exceptions.BadRequestException;
-import com.dovit.backend.model.requests.RegisterTokenRequest;
+import com.dovit.backend.payloads.requests.RegisterTokenRequest;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,28 +44,12 @@ public class JwtTokenProvider {
     customClaim.put("isLdapUser", false);
 
     return Jwts.builder()
-            .setClaims(customClaim)
-            .setSubject(Long.toString(userPrincipal.getId()))
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-            .compact();
-  }
-
-  public String generateAuthToken(CustomLdapUserDetails userPrincipal) {
-    Date now = new Date();
-    Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_IN_MS);
-
-    Map<String, Object> customClaim = new HashMap<>();
-    customClaim.put("isLdapUser", true);
-
-    return Jwts.builder()
-            .setClaims(customClaim)
-            .setSubject(userPrincipal.getUsername())
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-            .compact();
+        .setClaims(customClaim)
+        .setSubject(Long.toString(userPrincipal.getId()))
+        .setIssuedAt(now)
+        .setExpiration(expiryDate)
+        .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+        .compact();
   }
 
   public String generateRegisterToken(RegisterTokenRequest registerTokenRequest) {
@@ -73,30 +57,30 @@ public class JwtTokenProvider {
     Date expiryDate = new Date(now.getTime() + JWT_REGISTER_EXPIRATION);
     Map<String, Object> claims = new HashMap<>();
     claims.put("companyId", registerTokenRequest.getCompanyId());
+    claims.put("roleId", registerTokenRequest.getRoleId());
 
     return Jwts.builder()
-            .setClaims(claims)
-            .setSubject(registerTokenRequest.getEmail())
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-            .compact();
+        .setClaims(claims)
+        .setSubject(registerTokenRequest.getEmail())
+        .setIssuedAt(now)
+        .setExpiration(expiryDate)
+        .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+        .compact();
   }
 
   public RegisterTokenRequest getRegisterRequestFromJWT(String token) {
     Claims claims = Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token).getBody();
 
-    return new RegisterTokenRequest(claims.getSubject(), claims.get("companyId", Long.class));
+    return RegisterTokenRequest.builder()
+        .email(claims.getSubject())
+        .companyId(claims.get("companyId", Long.class))
+        .roleId(claims.get("roleId", Long.class))
+        .build();
   }
 
-  public Map<String, Object> getUserIdFromJWT(String token) {
+  public Long getUserIdFromJWT(String token) {
     Claims claims = Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token).getBody();
-
-    Map<String, Object> map = new HashMap<>();
-    map.put("isLdapUser", claims.get("isLdapUser"));
-    map.put("subject", claims.getSubject());
-
-    return map;
+    return Long.parseLong(claims.getSubject());
   }
 
   public boolean validateToken(String authToken) {

@@ -1,10 +1,12 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.User;
-import com.dovit.backend.model.requests.RegisterTokenRequest;
-import com.dovit.backend.model.requests.UserRequest;
-import com.dovit.backend.model.responses.PagedResponse;
-import com.dovit.backend.model.responses.UserResponse;
+import com.dovit.backend.payloads.requests.RegisterTokenRequest;
+import com.dovit.backend.payloads.requests.UserRequest;
+import com.dovit.backend.payloads.responses.PagedResponse;
+import com.dovit.backend.payloads.responses.UserResponse;
+
+import java.util.List;
 
 /**
  * @author Ramón París
@@ -23,4 +25,10 @@ public interface UserService {
   UserResponse findResponseById(Long userId);
 
   String createUserToken(RegisterTokenRequest registerTokenRequest);
+
+  void toggleActive(Long userId);
+
+  List<UserResponse> findAll();
+
+  List<UserResponse> findAllByCompanyId(Long companyId);
 }

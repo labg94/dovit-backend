@@ -9,7 +9,7 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 @EntityScan(basePackageClasses = {DovitBackendApplication.class, Jsr310JpaConverters.class})
 public class DovitBackendApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(DovitBackendApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(DovitBackendApplication.class, args);
+  }
 }

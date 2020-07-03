@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,7 +20,10 @@ import java.util.List;
 @Entity
 @Table(
     name = "users",
-    uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
+    uniqueConstraints = {
+      @UniqueConstraint(columnNames = {"email"}),
+      @UniqueConstraint(columnNames = {"rut"})
+    })
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -37,25 +41,20 @@ public class User extends DateAudit {
 
   @NotBlank private String password;
 
+  @NotBlank private String rut;
+
   @ManyToOne private Role role;
 
   @ManyToOne
   @JoinColumn(name = "company_id")
   private Company company;
 
+  @Column(columnDefinition = "boolean default true")
   private boolean active;
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   private List<Audit> auditList;
 
-  public User(
-      @NotBlank String name,
-      @NotBlank String lastName,
-      @NotBlank @Email String email,
-      boolean active) {
-    this.name = name;
-    this.lastName = lastName;
-    this.email = email;
-    this.active = active;
-  }
+  @OneToMany(mappedBy = "suggestedBy")
+  private Collection<SuggestionMailbox> suggestionMailbox;
 }

@@ -1,12 +1,11 @@
 package com.dovit.backend.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.dovit.backend.domain.audit.DateAudit;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,23 +16,34 @@ import java.util.List;
  * @author Ramón París
  * @since 01-10-2019
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Table(name = "devops_categories")
 @Builder
-public class DevOpsCategory {
+public class DevOpsCategory extends DateAudit {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_sequence")
+  @SequenceGenerator(initialValue = 100, name = "category_sequence")
   private Long id;
 
   @NotEmpty private String description;
+
+  @Column(columnDefinition = "boolean default true")
+  private boolean active;
 
   @OneToMany(mappedBy = "devOpsCategory")
   private List<DevOpsSubcategory> subcategories;
 
   @OneToMany(mappedBy = "devOpsCategories")
   private List<ProjectMember> projectMembers;
+
+  @OneToMany(mappedBy = "category")
+  private List<PipelineTool> pipelineTools;
+
+  @OneToMany(mappedBy = "category")
+  private Collection<SuggestionMailbox> suggestions;
 }

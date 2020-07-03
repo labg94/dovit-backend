@@ -1,9 +1,9 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.User;
-import com.dovit.backend.model.requests.RegisterTokenRequest;
-import com.dovit.backend.model.requests.UserRequest;
-import com.dovit.backend.model.responses.UserResponse;
+import com.dovit.backend.payloads.requests.RegisterTokenRequest;
+import com.dovit.backend.payloads.requests.UserRequest;
+import com.dovit.backend.payloads.responses.UserResponse;
 import com.dovit.backend.repositories.UserRepository;
 import com.dovit.backend.security.JwtTokenProvider;
 import com.dovit.backend.util.ValidatorUtil;
@@ -71,7 +71,7 @@ class UserServiceImplTest {
     List<User> usersList = new ArrayList<>();
     usersList.add(Mockito.mock(User.class));
     this.pages = new PageImpl<>(usersList);
-    Mockito.when(userRepository.findAllByCompanyId(anyLong(), any())).thenReturn(pages);
+    Mockito.when(userRepository.findAllByCompanyIdOrderById(anyLong(), any())).thenReturn(pages);
     assertNotNull(userService.findAllClients(1L, 1, 25));
   }
 
@@ -113,7 +113,7 @@ class UserServiceImplTest {
     Mockito.when(userRepository.existsByEmail(anyString())).thenReturn(false);
     Mockito.when(jwtTokenProvider.generateRegisterToken(any(RegisterTokenRequest.class)))
         .thenReturn("token");
-    Mockito.doNothing().when(emailService).sendSimpleMessage(anyString(), anyString(), anyString());
+    Mockito.doNothing().when(emailService).sendRegistration(anyString(), anyString());
     String response = userService.createUserToken(registerTokenRequest);
     assertNotNull(response);
     assertEquals(response, "token");

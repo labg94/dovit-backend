@@ -1,5 +1,7 @@
 package com.dovit.backend.controllers;
 
+import com.dovit.backend.domain.License;
+import com.dovit.backend.payloads.requests.LicenseRequest;
 import com.dovit.backend.services.LicenseServiceImpl;
 import com.dovit.backend.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 
+import static com.dovit.backend.util.RequestBuilderUtil.getLicenseRequest;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 
 /**
@@ -36,5 +40,17 @@ class LicenseControllerTest {
   void findAllLicensesOfTool() {
     Mockito.when(licenseService.findAllByToolId(anyLong())).thenReturn(new ArrayList<>());
     TestUtils.testGetRequest(mockMvc, "/tool/1/licenses");
+  }
+
+  @Test
+  void save() {
+    Mockito.when(licenseService.save(any(LicenseRequest.class))).thenReturn(new License());
+    TestUtils.testPostRequest(mockMvc, "/license", getLicenseRequest());
+  }
+
+  @Test
+  void update() {
+    Mockito.when(licenseService.update(any(LicenseRequest.class))).thenReturn(new License());
+    TestUtils.testPutRequest(mockMvc, "/license", getLicenseRequest());
   }
 }

@@ -1,6 +1,6 @@
 package com.dovit.backend.security;
 
-import com.dovit.backend.model.responses.ErrorResponse;
+import com.dovit.backend.payloads.responses.ErrorResponse;
 import com.google.gson.Gson;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

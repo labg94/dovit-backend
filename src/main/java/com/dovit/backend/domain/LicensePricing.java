@@ -21,12 +21,13 @@ import javax.persistence.*;
 public class LicensePricing extends DateAudit {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "license_pricing_sequence")
+  @SequenceGenerator(initialValue = 100, name = "license_pricing_sequence")
   @Column(name = "license_pricing_id")
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "license_id")
+  @JoinColumn(name = "license_id", nullable = false)
   private License license;
 
   private Long minUsers;

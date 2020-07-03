@@ -1,6 +1,6 @@
 package com.dovit.backend.services;
 
-import com.dovit.backend.model.responses.LevelResponse;
+import com.dovit.backend.payloads.responses.LevelResponse;
 
 import java.util.List;
 

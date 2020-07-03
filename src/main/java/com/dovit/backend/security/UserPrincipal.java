@@ -2,6 +2,7 @@ package com.dovit.backend.security;
 
 import com.dovit.backend.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import java.util.Objects;
  *
  * @author Ramón París
  */
+@NoArgsConstructor
 public class UserPrincipal implements UserDetails {
 
   private Long id;

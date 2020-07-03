@@ -1,17 +1,17 @@
 package com.dovit.backend.security;
 
-import com.dovit.backend.exceptions.CustomAccessDeniedException;
-import com.dovit.backend.exceptions.ResourceNotFoundException;
-import com.dovit.backend.util.LdapUtil;
-import com.dovit.backend.util.RoleName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dovit.backend.util.Constants;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,7 +20,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
+
+import static com.dovit.backend.util.Constants.AZURE_ACCESS;
+import static com.dovit.backend.util.Constants.DOVIT_ACCESS;
 
 /**
  * To get the JWT token from the request, validate it, load the user associated with the token, and
@@ -28,74 +30,68 @@ import java.util.Map;
  *
  * @author Ramón París
  */
+@RequiredArgsConstructor
+@Slf4j
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtTokenProvider tokenProvider;
+  private final JwtTokenProvider tokenProvider;
+  private final CustomUserDetailsService customUserDetailsService;
+  private final CustomAzureUserDetails customAzureUserDetails;
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-
-    @Autowired
-    private LdapUtil ldapUtil;
-
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-
-    @Override
-    protected void doFilterInternal(
-            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        try {
-            String jwt = getJwtFromRequest(request);
-
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                Map<String, Object> translatedToken = tokenProvider.getUserIdFromJWT(jwt);
-                boolean isLdapUser = ((boolean) translatedToken.getOrDefault("isLdapUser", false));
-
-                UserDetails userDetails;
-                if (!isLdapUser) {
-                    Long userId = (Long.parseLong(translatedToken.get("subject").toString()));
-                    userDetails = customUserDetailsService.loadUserById(userId);
-                } else {
-                    String username = translatedToken.get("subject").toString();
-                    userDetails = ldapUtil.findDataByUsername(username);
-                }
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (Exception e) {
-            logger.error("Could not set user authentication in security context", e);
+  @Override
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
+    try {
+      final String jwt = getJwtFromRequest(request);
+      if (StringUtils.hasText(jwt)) {
+        final String tokenCreator = getTokenCreator(jwt);
+        if (tokenCreator.equals(AZURE_ACCESS)) {
+          final UserDetails userDetails = customAzureUserDetails.createUserDetailByAzure(jwt);
+          setSecurityContext(request, userDetails);
+        } else if (tokenCreator.equals(DOVIT_ACCESS)) {
+          Long userId = tokenProvider.getUserIdFromJWT(jwt);
+          UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+          setSecurityContext(request, userDetails);
         }
-
-        filterChain.doFilter(request, response);
+      }
+    } catch (Exception e) {
+      log.error("Could not set user authentication in security context", e);
     }
 
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
+    filterChain.doFilter(request, response);
+  }
+
+  private void setSecurityContext(HttpServletRequest request, UserDetails userDetails) {
+    UsernamePasswordAuthenticationToken authentication =
+        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+  }
+
+  private String getJwtFromRequest(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+      return bearerToken.substring(7);
+    }
+    return null;
+  }
+
+  private String getTokenCreator(String token) {
+    try {
+      final JsonNode isLdapUser =
+          new ObjectMapper()
+              .readTree(new String(Base64Utils.decodeFromString(token.split("\\.")[1])))
+              .findValue("isLdapUser");
+      if (isLdapUser == null) {
+        return AZURE_ACCESS;
+      }
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
     }
 
-    public static Boolean canActOnCompany(Long companyId) {
-        UserPrincipal userPrincipal =
-                (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String roleName =
-                userPrincipal.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .findFirst()
-                        .orElseThrow(() -> new ResourceNotFoundException("Role", "name", ""));
-        if (RoleName.ROLE_ADMIN.name().equals(roleName)) return true;
-
-        if (companyId.equals(userPrincipal.getCompanyId())) {
-            return true;
-        } else {
-            throw new CustomAccessDeniedException("Access denied");
-        }
-    }
+    return Constants.DOVIT_ACCESS;
+  }
 }

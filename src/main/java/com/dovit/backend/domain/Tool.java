@@ -1,5 +1,6 @@
 package com.dovit.backend.domain;
 
+import com.dovit.backend.domain.audit.DateAudit;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
  * @author Ramón París
  * @since 29-09-2019
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,21 +21,27 @@ import java.util.List;
 @Table(name = "tools")
 @Builder
 @ToString
-public class Tool {
+public class Tool extends DateAudit {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tool_sequence")
+  @SequenceGenerator(initialValue = 100, name = "tool_sequence")
   @Column(name = "tool_id")
   private Long id;
 
   @NotEmpty private String name;
 
+  private String description;
+
   private String imageUrl;
+
+  @Column(columnDefinition = "boolean default true")
+  private boolean active;
 
   @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<License> licenses;
 
-  @ManyToMany
+  @ManyToMany(cascade = CascadeType.REFRESH)
   @JoinTable(
       name = "tool_subcategory",
       joinColumns = @JoinColumn(name = "tool_id"),
@@ -42,4 +50,10 @@ public class Tool {
 
   @OneToMany(mappedBy = "tool")
   private List<ToolProfile> toolProfile;
+
+  @OneToMany(mappedBy = "tool")
+  private List<PipelineTool> pipelineTools;
+
+  @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL)
+  private List<ToolProjectType> projectTypes;
 }

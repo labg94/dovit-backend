@@ -28,6 +28,8 @@ public class Role {
   @Enumerated(EnumType.STRING)
   private RoleName name;
 
+  private String description;
+
   @OneToMany(mappedBy = "role")
   private List<User> users;
 }

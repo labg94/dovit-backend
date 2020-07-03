@@ -1,6 +1,6 @@
 package com.dovit.backend.services;
 
-import com.dovit.backend.model.responses.ProfileResponse;
+import com.dovit.backend.payloads.responses.ProfileResponse;
 
 import java.util.List;
 
