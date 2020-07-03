@@ -56,6 +56,7 @@ public class ModelMapperConfig {
     modelMapper.addMappings(licensePropertyMap());
     modelMapper.addMappings(toolPropertyMap());
     modelMapper.addMappings(pipelineToolPropertyMap());
+    modelMapper.addMappings(userRequestUserPropertyMap());
 
     return modelMapper;
   }
@@ -68,6 +69,19 @@ public class ModelMapperConfig {
         map(source.getToolId()).setToolId(1L);
         skip(destination.getPipeline());
         skip(destination.getPipelineId());
+      }
+    };
+  }
+
+  private PropertyMap<UserRequest, User> userRequestUserPropertyMap() {
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        skip(destination.getPassword());
+        skip(destination.getRole());
+        skip(destination.getCompany());
+        skip(destination.getUpdatedAt());
+        skip(destination.getCreatedAt());
       }
     };
   }

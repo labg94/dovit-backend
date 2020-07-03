@@ -1,7 +1,8 @@
 package com.dovit.backend.services;
 
+import com.dovit.backend.domain.Company;
+import com.dovit.backend.domain.Role;
 import com.dovit.backend.domain.User;
-import com.dovit.backend.exceptions.BadRequestException;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.payloads.requests.RegisterTokenRequest;
 import com.dovit.backend.payloads.requests.UserRequest;
@@ -20,12 +21,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.dovit.backend.util.Constants.*;
+import static com.dovit.backend.util.Constants.ROLE_ADMIN_ID;
 
 /**
  * @author Ramón París
@@ -85,20 +87,24 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User createUser(UserRequest userRequest) {
-    checkValidRequest(userRequest);
     User user = modelMapper.map(userRequest, User.class);
+    user.setRole(Role.builder().id(userRequest.getRoleId()).build());
+    user.setCompany(Company.builder().id(userRequest.getCompanyId()).build());
     user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
     return userRepository.save(user);
   }
 
   @Override
+  @Transactional
   public User updateUser(UserRequest userRequest) {
-    checkValidRequest(userRequest);
     User user = this.findById(userRequest.getId());
     modelMapper.map(userRequest, user);
     if (userRequest.getPassword() != null) {
       user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
     }
+
+    user.setRole(Role.builder().id(userRequest.getRoleId()).build());
+    user.setCompany(Company.builder().id(userRequest.getCompanyId()).build());
 
     if (userRequest.getCompanyId() == null) {
       user.setCompany(null);
@@ -156,17 +162,5 @@ public class UserServiceImpl implements UserService {
     return userRepository
         .findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
-  }
-
-  private void checkValidRequest(UserRequest userRequest) {
-    if (userRequest.getRoleId().equals(ROLE_ADMIN_ID) && userRequest.getCompanyId() != null) {
-      throw new BadRequestException("Administrator role should not have any company associated");
-    }
-
-    if ((userRequest.getRoleId().equals(ROLE_CLIENT_ID)
-            || userRequest.getRoleId().equals(ROLE_CLIENT_ADMIN_ID))
-        && userRequest.getCompanyId() == null) {
-      throw new BadRequestException("Client role should have a company associated");
-    }
   }
 }
