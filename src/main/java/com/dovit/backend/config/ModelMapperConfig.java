@@ -28,8 +28,6 @@ import java.util.stream.Stream;
 @Configuration
 public class ModelMapperConfig {
 
-  private final Gson gson = new Gson();
-
   @Value("${api.image.route}")
   private String BASE_IMAGE_URL;
 
@@ -232,15 +230,11 @@ public class ModelMapperConfig {
     Converter<LocalDateTime, String> dateConverter =
         mappingContext -> DateUtil.formatDateToString(mappingContext.getSource());
 
-    Converter<Object, String> jsonConverter =
-        mappingContext -> gson.toJson(mappingContext.getSource());
-
     return new PropertyMap<>() {
       @Override
       protected void configure() {
         using(fullNameConverter).map(source.getUser()).setUserFullName("");
         using(dateConverter).map(source.getActionDate()).setActionDate("");
-        using(jsonConverter).map(source.getData()).setData("");
       }
     };
   }

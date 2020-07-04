@@ -22,5 +22,5 @@ public class AuditResponse {
   private String status;
   private String message;
 
-  private String data;
+  private Object data;
 }

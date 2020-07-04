@@ -27,10 +27,8 @@ public class AuditController {
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
           LocalDateTime fromDate,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-          LocalDateTime toDate,
-      @RequestParam int page,
-      @RequestParam int size) {
+          LocalDateTime toDate) {
 
-    return ResponseEntity.ok(auditService.findAllBetweenDates(fromDate, toDate, page, size));
+    return ResponseEntity.ok(auditService.findAllBetweenDates(fromDate, toDate));
   }
 }

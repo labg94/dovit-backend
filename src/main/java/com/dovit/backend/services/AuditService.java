@@ -1,9 +1,9 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.payloads.responses.AuditResponse;
-import com.dovit.backend.payloads.responses.PagedResponse;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Ramón París
@@ -13,6 +13,5 @@ public interface AuditService {
 
   void registerAudit(Object data, String message, String status, Long userId);
 
-  PagedResponse<AuditResponse> findAllBetweenDates(
-      LocalDateTime from, LocalDateTime to, int page, int size);
+  List<AuditResponse> findAllBetweenDates(LocalDateTime from, LocalDateTime to);
 }
