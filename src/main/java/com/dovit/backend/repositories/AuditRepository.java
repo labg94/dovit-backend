@@ -22,5 +22,5 @@ public interface AuditRepository extends JpaRepository<Audit, Long> {
       @Param("user_id") Long user_id)
       throws Exception;
 
-  List<Audit> findAllByActionDateBetween(LocalDateTime from, LocalDateTime to);
+  List<Audit> findAllByActionDateBetweenOrderByActionDate(LocalDateTime from, LocalDateTime to);
 }

@@ -50,7 +50,7 @@ public class AuditServiceImpl implements AuditService {
   @Override
   public List<AuditResponse> findAllBetweenDates(LocalDateTime from, LocalDateTime to) {
 
-    List<Audit> audits = auditRepository.findAllByActionDateBetween(from, to);
+    List<Audit> audits = auditRepository.findAllByActionDateBetweenOrderByActionDate(from, to);
     return audits.stream()
         .map(u -> modelMapper.map(u, AuditResponse.class))
         .collect(Collectors.toList());
