@@ -8,6 +8,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.hibernate.collection.internal.PersistentBag;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class AfterEntitySaveAspect {
   public void afterSavingEntity(JoinPoint joinPoint) {
     UserPrincipal loggedUser = getContextUser();
     Object argument = joinPoint.getArgs()[0];
-    String entityName = argument.getClass().getSimpleName();
+    String entityName = getEntityName(argument);
     Map<String, Object> persistedEntity = this.createMap(joinPoint);
     String auditMessage = String.format("Save or update over %s entity", entityName);
     log.info(auditMessage + " by userId: " + loggedUser.getId());
@@ -43,7 +44,7 @@ public class AfterEntitySaveAspect {
   public void afterThrowingSavingEntity(JoinPoint joinPoint) {
     UserPrincipal loggedUser = getContextUser();
     Object argument = joinPoint.getArgs()[0];
-    String entityName = argument.getClass().getSimpleName();
+    String entityName = getEntityName(argument);
     Map<String, Object> persistedEntity = this.createMap(joinPoint);
     String auditMessage = String.format("Error Save or update over %s entity", entityName);
     log.error(auditMessage + " by userId: " + loggedUser.getId());
@@ -56,6 +57,14 @@ public class AfterEntitySaveAspect {
     } catch (Exception e) {
       return new UserPrincipal();
     }
+  }
+
+  private String getEntityName(Object argument) {
+    if (argument.getClass().equals(PersistentBag.class)) {
+      return ((PersistentBag) argument).get(0).getClass().getSimpleName();
+    }
+
+    return argument.getClass().getSimpleName();
   }
 
   private Map<String, Object> createMap(JoinPoint joinPoint) {
