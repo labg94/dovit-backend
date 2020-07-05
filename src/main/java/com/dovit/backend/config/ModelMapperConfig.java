@@ -296,17 +296,52 @@ public class ModelMapperConfig {
     Converter<List<ProjectMember>, Long> allProjectsQtyConverter =
         mappingContext -> this.calculateProjectQtyOfMembers(mappingContext.getSource().stream());
 
+    Converter<List<ProjectMember>, Long> closedProjectsQtyConverter =
+        mappingContext ->
+            this.calculateProjectQtyOfMembers(mappingContext.getSource().stream())
+                - this.calculateProjectQtyOfMembers(
+                    mappingContext.getSource().stream()
+                        .filter(projectMember -> !projectMember.getProject().getFinished()));
+
+    Converter<List<ProjectMember>, List<ProjectMemberResume>> projectMemberConverter =
+        context ->
+            context.getSource().stream()
+                .collect(Collectors.groupingBy(ProjectMember::getProject))
+                .entrySet()
+                .stream()
+                .map(
+                    entrySet ->
+                        ProjectMemberResume.builder()
+                            .projectName(entrySet.getKey().getName())
+                            .projectId(entrySet.getKey().getId())
+                            .projectStart(entrySet.getKey().getStart().toString())
+                            .projectFinished(entrySet.getKey().getFinished())
+                            .projectEndDate(
+                                entrySet.getKey().getEndDate() != null
+                                    ? entrySet.getKey().getEndDate().toString()
+                                    : null)
+                            .categoriesParticipation(
+                                entrySet.getValue().stream()
+                                    .map(pm -> pm.getDevOpsCategories().getDescription())
+                                    .collect(Collectors.toList()))
+                            .build())
+                .collect(Collectors.toList());
+
     return new PropertyMap<>() {
       @Override
       protected void configure() {
         using(toolConverter).map(source.getToolProfile()).setTools(new ArrayList<>());
         using(allProjectsQtyConverter).map(source.getProjects()).setAllProjectsQty(1L);
         using(activeProjectsQtyConverter).map(source.getProjects()).setActiveProjectsQty(1L);
+        using(closedProjectsQtyConverter).map(source.getProjects()).setClosedProjectsQty(1L);
         using(availableStatusDescriptionConverter)
             .map(source.getProjects())
             .setAvailableStatusDescription("");
 
         using(availableStatusIdConverter).map(source.getProjects()).setAvailableStatusId(1L);
+        using(projectMemberConverter)
+            .map(source.getProjects())
+            .setProjects(Collections.emptyList());
       }
     };
   }

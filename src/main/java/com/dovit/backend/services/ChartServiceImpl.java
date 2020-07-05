@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -53,84 +54,12 @@ public class ChartServiceImpl implements ChartService {
             .collect(Collectors.toList());
     final List<ChartTopSeniorMemberResponse> charts =
         topMembers.stream()
-            .map(
-                member -> {
-                  final String fullName =
-                      String.format("%s %s", member.getName(), member.getLastName());
-
-                  final List<ChartMemberKnowledge> knowledgeList =
-                      member.getToolProfile().stream()
-                          .map(
-                              toolProfile ->
-                                  toolProfile.getTool().getSubcategories().stream()
-                                      .map(DevOpsSubcategory::getDevOpsCategory)
-                                      .distinct()
-                                      .map(
-                                          category ->
-                                              MemberKnowledgeHelperDTO.builder()
-                                                  .toolProfile(toolProfile)
-                                                  .devOpsCategory(category)
-                                                  .build())
-                                      .collect(Collectors.toList()))
-                          .flatMap(Collection::stream)
-                          .collect(
-                              Collectors.groupingBy(MemberKnowledgeHelperDTO::getDevOpsCategory))
-                          .entrySet()
-                          .stream()
-                          .map(
-                              entrySet ->
-                                  ChartMemberKnowledge.builder()
-                                      .categoryId(entrySet.getKey().getId())
-                                      .category(entrySet.getKey().getDescription())
-                                      .value(
-                                          entrySet.getValue().stream()
-                                              .map(
-                                                  value ->
-                                                      value.getToolProfile().getLevel().getPoints())
-                                              .reduce(0, Integer::sum))
-                                      .tools(
-                                          entrySet.getValue().stream()
-                                              .map(
-                                                  tool -> tool.getToolProfile().getTool().getName())
-                                              .collect(Collectors.joining(", ")))
-                                      .build())
-                          .collect(Collectors.toList());
-                  return ChartTopSeniorMemberResponse.builder()
-                      .id(member.getId())
-                      .fullName(fullName)
-                      .knowledgeList(knowledgeList)
-                      .build();
-                })
+            .map(this::mapMemberToChartSeniorMemberResponse)
             .collect(Collectors.toList());
 
     // Agregando todas las categorías siempre
     List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAllByActiveOrderById(true);
-    charts.forEach(
-        chart -> {
-          final List<Long> categoryIds =
-              chart.getKnowledgeList().stream()
-                  .map(ChartMemberKnowledge::getCategoryId)
-                  .collect(Collectors.toList());
-
-          final List<ChartMemberKnowledge> otherKnowledge =
-              devOpsCategories.stream()
-                  .filter(category -> !categoryIds.contains(category.getId()))
-                  .map(
-                      category ->
-                          ChartMemberKnowledge.builder()
-                              .categoryId(category.getId())
-                              .category(category.getDescription())
-                              .value(0)
-                              .tools("")
-                              .build())
-                  .collect(Collectors.toList());
-
-          chart.getKnowledgeList().addAll(otherKnowledge);
-          chart.setKnowledgeList(
-              chart.getKnowledgeList().stream()
-                  .sorted(Comparator.comparing(ChartMemberKnowledge::getCategoryId))
-                  .collect(Collectors.toList()));
-        });
+    charts.forEach(chart -> setMissingCategoriesInSeniorChart(devOpsCategories, chart));
 
     charts.stream()
         .map(ChartTopSeniorMemberResponse::getKnowledgeList)
@@ -140,6 +69,25 @@ public class ChartServiceImpl implements ChartService {
         .ifPresent(max -> charts.forEach(chart -> chart.setMaxValue(max)));
 
     return charts;
+  }
+
+  @Override
+  public ChartTopSeniorMemberResponse findMemberKnowledgeById(Long memberId) {
+    final Optional<Member> memberEntity = memberRepository.findById(memberId);
+    List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAllByActiveOrderById(true);
+
+    return memberEntity
+        .map(this::mapMemberToChartSeniorMemberResponse)
+        .map(
+            chart -> {
+              setMissingCategoriesInSeniorChart(devOpsCategories, chart);
+              chart.getKnowledgeList().stream()
+                  .map(ChartMemberKnowledge::getValue)
+                  .max(Integer::compareTo)
+                  .ifPresent(chart::setMaxValue);
+              return chart;
+            })
+        .orElseThrow();
   }
 
   @Override
@@ -353,5 +301,75 @@ public class ChartServiceImpl implements ChartService {
       default:
         return "It seems that there are similar licenses active. Check if it is possible to use only one";
     }
+  }
+
+  private void setMissingCategoriesInSeniorChart(
+      List<DevOpsCategory> devOpsCategories, ChartTopSeniorMemberResponse chart) {
+    final List<Long> categoryIds =
+        chart.getKnowledgeList().stream()
+            .map(ChartMemberKnowledge::getCategoryId)
+            .collect(Collectors.toList());
+
+    final List<ChartMemberKnowledge> otherKnowledge =
+        devOpsCategories.stream()
+            .filter(category -> !categoryIds.contains(category.getId()))
+            .map(
+                category ->
+                    ChartMemberKnowledge.builder()
+                        .categoryId(category.getId())
+                        .category(category.getDescription())
+                        .value(0)
+                        .tools("")
+                        .build())
+            .collect(Collectors.toList());
+
+    chart.getKnowledgeList().addAll(otherKnowledge);
+    chart.setKnowledgeList(
+        chart.getKnowledgeList().stream()
+            .sorted(Comparator.comparing(ChartMemberKnowledge::getCategoryId))
+            .collect(Collectors.toList()));
+  }
+
+  private ChartTopSeniorMemberResponse mapMemberToChartSeniorMemberResponse(Member member) {
+    final String fullName = String.format("%s %s", member.getName(), member.getLastName());
+
+    final List<ChartMemberKnowledge> knowledgeList =
+        member.getToolProfile().stream()
+            .map(
+                toolProfile ->
+                    toolProfile.getTool().getSubcategories().stream()
+                        .map(DevOpsSubcategory::getDevOpsCategory)
+                        .distinct()
+                        .map(
+                            category ->
+                                MemberKnowledgeHelperDTO.builder()
+                                    .toolProfile(toolProfile)
+                                    .devOpsCategory(category)
+                                    .build())
+                        .collect(Collectors.toList()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.groupingBy(MemberKnowledgeHelperDTO::getDevOpsCategory))
+            .entrySet()
+            .stream()
+            .map(
+                entrySet ->
+                    ChartMemberKnowledge.builder()
+                        .categoryId(entrySet.getKey().getId())
+                        .category(entrySet.getKey().getDescription())
+                        .value(
+                            entrySet.getValue().stream()
+                                .map(value -> value.getToolProfile().getLevel().getPoints())
+                                .reduce(0, Integer::sum))
+                        .tools(
+                            entrySet.getValue().stream()
+                                .map(tool -> tool.getToolProfile().getTool().getName())
+                                .collect(Collectors.joining(", ")))
+                        .build())
+            .collect(Collectors.toList());
+    return ChartTopSeniorMemberResponse.builder()
+        .id(member.getId())
+        .fullName(fullName)
+        .knowledgeList(knowledgeList)
+        .build();
   }
 }

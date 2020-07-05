@@ -31,4 +31,6 @@ public interface ChartService {
   List<ChartLicenseConflict> findLicensesConflicts(Long companyId);
 
   ChartProjectQty findProjectQty(Long companyId);
+
+  ChartTopSeniorMemberResponse findMemberKnowledgeById(Long memberId);
 }

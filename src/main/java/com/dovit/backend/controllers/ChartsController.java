@@ -37,6 +37,12 @@ public class ChartsController {
     return ResponseEntity.ok(chartService.findTopMemberTools(companyId));
   }
 
+  @GetMapping("/chart/member/{memberId}/knowledge")
+  public ResponseEntity<?> findMemberKnowledge(
+      @PathVariable Long companyId, @PathVariable Long memberId) {
+    return ResponseEntity.ok(chartService.findMemberKnowledgeById(memberId));
+  }
+
   @GetMapping("/chart/categories/members")
   public ResponseEntity<?> findQtyMemberByCategory(@PathVariable Long companyId) {
     return ResponseEntity.ok(chartService.findQtyMemberByCategory(companyId));
