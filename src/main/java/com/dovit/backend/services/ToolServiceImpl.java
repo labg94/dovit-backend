@@ -53,6 +53,7 @@ public class ToolServiceImpl implements ToolService {
     List<Tool> tools = toolRepository.findAllByCompanyId(companyId);
     return tools.stream()
         .map(tool -> modelMapper.map(tool, ToolResponse.class))
+        .sorted(Comparator.comparing(ToolResponse::getToolId))
         .collect(Collectors.toList());
   }
 
@@ -210,8 +211,7 @@ public class ToolServiceImpl implements ToolService {
     return createToolRecommendation(tools)
         .map(
             recommendation ->
-                recommendation
-                    .toBuilder()
+                recommendation.toBuilder()
                     .points(
                         Collections.singletonList(
                             RecommendationPointsDTO.builder()
@@ -253,9 +253,7 @@ public class ToolServiceImpl implements ToolService {
                                           toolProjectType.getProjectType().getDescription()))
                                   .build())
                       .collect(Collectors.toList());
-              return modelMapper
-                  .map(tool, ToolRecommendationDTO.class)
-                  .toBuilder()
+              return modelMapper.map(tool, ToolRecommendationDTO.class).toBuilder()
                   .points(points)
                   .totalPoints(
                       points.stream()
@@ -275,8 +273,7 @@ public class ToolServiceImpl implements ToolService {
     return createToolRecommendation(tools)
         .map(
             recommendation ->
-                recommendation
-                    .toBuilder()
+                recommendation.toBuilder()
                     .points(
                         Collections.singletonList(
                             RecommendationPointsDTO.builder()

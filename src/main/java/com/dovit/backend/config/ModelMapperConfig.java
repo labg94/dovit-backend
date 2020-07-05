@@ -472,6 +472,14 @@ public class ModelMapperConfig {
           return Stream.concat(parentTags.stream(), tags.stream()).collect(Collectors.toList());
         };
 
+    Converter<List<DevOpsSubcategory>, List<String>> converterParentTags =
+        mappingContext ->
+            mappingContext.getSource().stream()
+                .map(DevOpsSubcategory::getDevOpsCategory)
+                .map(DevOpsCategory::getDescription)
+                .distinct()
+                .collect(Collectors.toList());
+
     Converter<String, String> convertImgUrl =
         mappingContext -> BASE_IMAGE_URL + mappingContext.getSource();
 
@@ -479,6 +487,7 @@ public class ModelMapperConfig {
       @Override
       protected void configure() {
         using(converterTags).map(source.getSubcategories()).setTags(new ArrayList<>());
+        using(converterParentTags).map(source.getSubcategories()).setParentTags(new ArrayList<>());
         using(convertImgUrl).map(source.getImageUrl()).setImageUrl(BASE_IMAGE_URL);
       }
     };
