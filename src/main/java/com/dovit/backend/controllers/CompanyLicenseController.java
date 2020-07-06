@@ -34,11 +34,17 @@ public class CompanyLicenseController {
    *
    * @return Entity with list of CompanyLicensesResponse
    */
+  //  @IsAuthenticated
+  //  @GetMapping("/company/{companyId}/tool/{toolId}")
+  //  public ResponseEntity<?> findLicensesByToolId(
+  //      @PathVariable Long companyId, @PathVariable Long toolId) {
+  //    return ResponseEntity.ok(companyLicenseService.findAllByCompanyId(companyId));
+  //  }
+
   @IsAuthenticated
-  @GetMapping("/company/{companyId}/tool/{toolId}")
-  public ResponseEntity<?> findAllLicenses(
-      @PathVariable Long companyId, @PathVariable Long toolId) {
-    return ResponseEntity.ok(companyLicenseService.findAllByCompanyIdAndToolId(companyId, toolId));
+  @GetMapping("/company/{companyId}/licenses")
+  public ResponseEntity<?> findAllLicenses(@PathVariable Long companyId) {
+    return ResponseEntity.ok(companyLicenseService.findAllByCompanyId(companyId));
   }
 
   @PostMapping("/company/license")

@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,14 +34,42 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
 
   @Override
   @Transactional
-  public List<CompanyLicensesResponse> findAllByCompanyIdAndToolId(Long companyId, Long toolId) {
+  public List<CompanyLicensesResponse> findAllByCompanyId(Long companyId) {
     validatorUtil.canActOnCompany(companyId);
     List<CompanyLicense> companyLicenses =
-        companyLicenseRepository.findAllByCompanyIdAndLicenseToolIdOrderByStartDateDesc(
-            companyId, toolId);
+        companyLicenseRepository.findAllByCompanyIdOrderByStartDateDesc(companyId);
 
+    final LocalDate now = LocalDate.now();
     return companyLicenses.stream()
-        .map(c -> modelMapper.map(c, CompanyLicensesResponse.class))
+        .map(
+            c -> {
+              final CompanyLicensesResponse response =
+                  modelMapper.map(c, CompanyLicensesResponse.class);
+
+              response.setActive(isBetween(now, c.getStartDate(), c.getExpirationDate()));
+
+              final Long membersUsingQty =
+                  c.getLicense().getTool().getToolProfile().stream()
+                      .filter(
+                          toolProfile ->
+                              toolProfile.getMember().getCompany().getId().equals(companyId))
+                      .count();
+              response.setMembersUsingQty(membersUsingQty);
+
+              c.getLicense().getLicensePrices().stream()
+                  .filter(
+                      licensePricing ->
+                          membersUsingQty.compareTo(licensePricing.getMinUsers()) >= 0
+                              && (licensePricing.getMaxUsers().compareTo(-1L) == 0
+                                  || membersUsingQty.compareTo(licensePricing.getMaxUsers()) <= 0))
+                  .filter(licensePricing -> licensePricing.getPrice() != null)
+                  .findFirst()
+                  .ifPresent(
+                      licensePricing ->
+                          response.setPricing(licensePricing.getPrice() * membersUsingQty));
+
+              return response;
+            })
         .collect(Collectors.toList());
   }
 

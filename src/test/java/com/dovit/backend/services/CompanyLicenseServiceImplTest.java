@@ -57,7 +57,7 @@ class CompanyLicenseServiceImplTest {
         .thenReturn(Collections.singletonList(companyLicense));
 
     List<CompanyLicensesResponse> responseList =
-        companyLicenseService.findAllByCompanyIdAndToolId(1L, 1L);
+        companyLicenseService.findAllByCompanyId(1L);
 
     assertNotNull(responseList);
     responseList.forEach(Assert::assertNotNull);

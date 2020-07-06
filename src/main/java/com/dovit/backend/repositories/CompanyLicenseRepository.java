@@ -16,6 +16,8 @@ public interface CompanyLicenseRepository extends JpaRepository<CompanyLicense, 
   List<CompanyLicense> findAllByCompanyIdAndLicenseToolIdOrderByStartDateDesc(
       Long companyId, Long toolId);
 
+  List<CompanyLicense> findAllByCompanyIdOrderByStartDateDesc(Long companyId);
+
   @Query(
       "select cl from CompanyLicense cl"
           + " join Company company on company = cl.company "

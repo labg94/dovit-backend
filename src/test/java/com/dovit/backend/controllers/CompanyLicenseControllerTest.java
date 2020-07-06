@@ -47,7 +47,7 @@ class CompanyLicenseControllerTest {
 
   @Test
   void findAllLicenses() throws Exception {
-    Mockito.when(companyService.findAllByCompanyIdAndToolId(anyLong(), anyLong()))
+    Mockito.when(companyService.findAllByCompanyId(anyLong()))
         .thenReturn(new ArrayList<>());
     MvcResult mvcResult =
         mockMvc
