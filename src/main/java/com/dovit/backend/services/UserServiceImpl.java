@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
     final Boolean exists = userRepository.existsByEmail(registerTokenRequest.getEmail());
     if (exists) {
       throw new DataIntegrityViolationException(
-          "Detail:Email " + registerTokenRequest.getEmail() + " ya se encuentra en base de datos");
+          "Detail:Email " + registerTokenRequest.getEmail() + " already exists in database");
     }
 
     String token = tokenProvider.generateRegisterToken(registerTokenRequest);

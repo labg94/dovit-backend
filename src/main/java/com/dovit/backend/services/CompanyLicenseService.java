@@ -19,4 +19,6 @@ public interface CompanyLicenseService {
   CompanyLicense updateCompanyLicense(CompanyLicenseRequest request);
 
   boolean deleteCompanyLicense(Long companyLicenseId);
+
+  CompanyLicensesResponse findAllByCompanyIdAndToolId(Long companyId, Long toolId);
 }

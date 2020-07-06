@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Ramón París
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public interface CompanyLicenseRepository extends JpaRepository<CompanyLicense, Long> {
 
-  List<CompanyLicense> findAllByCompanyIdAndLicenseToolIdOrderByStartDateDesc(
+  Optional<CompanyLicense> findByCompanyIdAndLicenseToolIdOrderByStartDateDesc(
       Long companyId, Long toolId);
 
   List<CompanyLicense> findAllByCompanyIdOrderByStartDateDesc(Long companyId);
