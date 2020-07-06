@@ -22,5 +22,7 @@ public class CompanyRequest {
   @NotEmpty(message = "Company name cannot be empty")
   private String name;
 
+  private boolean active;
+
   private Long holdingId;
 }

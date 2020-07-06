@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,7 @@ public class CompanyServiceImpl implements CompanyService {
     List<Company> companies = companyRepository.findAll();
     return companies.stream()
         .map(c -> modelMapper.map(c, CompanyResponse.class))
+        .sorted(Comparator.comparing(CompanyResponse::getName))
         .collect(Collectors.toList());
   }
 
@@ -64,5 +67,23 @@ public class CompanyServiceImpl implements CompanyService {
     company = companyRepository.save(company);
     log.info("Company {} updated with id {}", company.getName(), company.getId());
     return company;
+  }
+
+  @Override
+  @Transactional
+  public void toggleCompanyStatus(Long id) {
+    final Company company = findById(id);
+    company.setActive(!company.isActive());
+    companyRepository.save(company);
+    log.info("Company {} toggle status", id);
+  }
+
+  @Override
+  public List<CompanyResponse> findAllActives() {
+    final List<Company> companies = companyRepository.findAllByActive(true);
+    return companies.stream()
+        .map(c -> modelMapper.map(c, CompanyResponse.class))
+        .sorted(Comparator.comparing(CompanyResponse::getName))
+        .collect(Collectors.toList());
   }
 }
