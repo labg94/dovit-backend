@@ -6,6 +6,7 @@ import com.dovit.backend.model.MemberKnowledgeHelperDTO;
 import com.dovit.backend.payloads.responses.MemberResponseResume;
 import com.dovit.backend.payloads.responses.charts.*;
 import com.dovit.backend.repositories.*;
+import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -37,10 +38,12 @@ public class ChartServiceImpl implements ChartService {
   private final CompanyLicenseRepository companyLicenseRepository;
   private final ProjectRepository projectRepository;
   private final ModelMapper modelMapper;
+  private final ValidatorUtil validatorUtil;
 
   @Override
   @Transactional
   public List<ChartTopSeniorMemberResponse> findTopSeniorMembers(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     Pageable pageable = PageRequest.of(0, 3);
     final Page<Object[]> page = memberRepository.findTopSeniorMembers(companyId, pageable);
 
@@ -74,6 +77,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   public ChartTopSeniorMemberResponse findMemberKnowledgeById(Long memberId) {
     final Optional<Member> memberEntity = memberRepository.findById(memberId);
+    memberEntity.ifPresent(member -> validatorUtil.canActOnCompany(member.getCompany().getId()));
     List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAllByActiveOrderById(true);
 
     return memberEntity
@@ -92,6 +96,7 @@ public class ChartServiceImpl implements ChartService {
 
   @Override
   public List<ChartMemberProjectQty> findTopWorkers(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<MemberResponseResume> members =
         customRepository.findAllMembersResumeByCompanyId(companyId, true);
     return members.stream()
@@ -111,6 +116,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartTopToolsByMembersResponse> findTopMemberTools(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     Pageable pageable = PageRequest.of(0, 5);
     final Page<Object[]> topMembersTool = toolRepository.findTopMembersTool(pageable, companyId);
     return topMembersTool
@@ -130,6 +136,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartMemberByCategory> findQtyMemberByCategory(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<DevOpsCategory> categories = devOpsCategoryRepository.findAllByActiveOrderById(true);
     return categories.stream()
         .map(
@@ -158,12 +165,14 @@ public class ChartServiceImpl implements ChartService {
 
   @Override
   public List<ChartTopToolsByProject> findTopToolsByProject(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     return customRepository.findTopToolsByProject(companyId);
   }
 
   @Override
   @Transactional
   public List<ChartTopProjectTypes> findTopProjectTypes(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     Pageable pageable = PageRequest.of(0, 5);
     Page<Object[]> page = projectTypeRepository.findTopProjectTypes(pageable, companyId);
 
@@ -183,6 +192,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartLicenseResponse> findLicensesExpired(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesExpired(companyId, LocalDate.now());
 
@@ -194,6 +204,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartLicenseResponse> findLicensesExpiring(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesExpiring(companyId, LocalDate.now());
 
@@ -205,6 +216,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartLicenseResponse> findLicensesActives(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesActives(companyId, LocalDate.now());
 
@@ -216,6 +228,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartLicenseConflict> findLicensesConflicts(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesActives(companyId, LocalDate.now());
     final List<ChartLicenseConflict> charts =
@@ -285,6 +298,7 @@ public class ChartServiceImpl implements ChartService {
 
   @Override
   public ChartProjectQty findProjectQty(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<Project> projects = projectRepository.findAllByCompanyId(companyId);
     return ChartProjectQty.builder()
         .allQty(projects.size())

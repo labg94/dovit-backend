@@ -1,6 +1,7 @@
 package com.dovit.backend.config;
 
 import com.dovit.backend.domain.*;
+import com.dovit.backend.model.ToolRecommendationDTO;
 import com.dovit.backend.payloads.requests.*;
 import com.dovit.backend.payloads.responses.*;
 import com.dovit.backend.util.DateUtil;
@@ -49,6 +50,7 @@ public class ModelMapperConfig {
     modelMapper.addMappings(this.pipelineToolResponsePropertyMap(BASE_IMAGE_URL));
     modelMapper.addMappings(this.categoryRecommendationResponsePropertyMap());
     modelMapper.addMappings(this.companyLicensesResponsePropertyMap(BASE_IMAGE_URL));
+    modelMapper.addMappings(this.toolRecommendationDTOPropertyMap(BASE_IMAGE_URL));
 
     // Add requests mappers
     modelMapper.addMappings(projectRequestPropertyMap());
@@ -68,6 +70,19 @@ public class ModelMapperConfig {
         map(source.getToolId()).setToolId(1L);
         skip(destination.getPipeline());
         skip(destination.getPipelineId());
+      }
+    };
+  }
+
+  private PropertyMap<Tool, ToolRecommendationDTO> toolRecommendationDTOPropertyMap(
+      String BASE_IMAGE_URL) {
+    Converter<String, String> convertImageUrl =
+        mappingContext -> BASE_IMAGE_URL + mappingContext.getSource();
+
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        using(convertImageUrl).map(source.getImageUrl()).setToolImageUrl("");
       }
     };
   }

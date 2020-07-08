@@ -15,6 +15,7 @@ import com.dovit.backend.repositories.PipelineRepository;
 import com.dovit.backend.repositories.PipelineToolRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,9 @@ public class PipelineServiceImpl implements PipelineService {
   private final DevOpsCategoryRepository devOpsCategoryRepository;
   private final ToolService toolService;
   private final ModelMapper modelMapper;
+
+  @Value("${api.image.route}")
+  private String BASE_IMAGE_URL;
 
   @Override
   @Transactional
@@ -96,8 +100,7 @@ public class PipelineServiceImpl implements PipelineService {
                                         .collect(Collectors.toList());
 
                                 // build the tool recommendation with correct points
-                                return currentTool
-                                    .toBuilder()
+                                return currentTool.toBuilder()
                                     .points(points)
                                     .totalPoints(
                                         points.stream()
@@ -160,20 +163,37 @@ public class PipelineServiceImpl implements PipelineService {
           ToolRecommendationDTO recommendedTool =
               category.getAllTools().stream()
                   .max(Comparator.comparing(ToolRecommendationDTO::getTotalPoints))
-                  // TODO acá se debe hacer la lógica de los precios de las licencias y presupuesto
-                  // para elegir una en caso de que sea más de una con el mismo puntaje
                   .orElse(null);
 
           category.setRecommendedTool(recommendedTool);
-          category.setOtherTools(
-              category.getAllTools().stream()
-                  .filter(Objects::nonNull)
-                  .filter(
-                      r ->
-                          recommendedTool != null
-                              && !r.getToolId().equals(recommendedTool.getToolId()))
-                  .sorted(Comparator.comparing(ToolRecommendationDTO::getTotalPoints).reversed())
-                  .collect(Collectors.toList()));
+          if (recommendedTool != null) {
+            category.setOtherTools(
+                category.getAllTools().stream()
+                    .filter(Objects::nonNull)
+                    .filter(r -> !r.getToolId().equals(recommendedTool.getToolId()))
+                    .sorted(Comparator.comparing(ToolRecommendationDTO::getTotalPoints).reversed())
+                    .collect(Collectors.toList()));
+          } else { // if there are no recommendation, brings all the tools of the category
+            categories.stream()
+                .filter(devOpsCategory1 -> devOpsCategory1.getId().equals(category.getCategoryId()))
+                .findFirst()
+                .ifPresent(
+                    devOpsCategory ->
+                        category.setOtherTools(
+                            devOpsCategory.getSubcategories().stream()
+                                .map(DevOpsSubcategory::getTools)
+                                .flatMap(Collection::stream)
+                                .distinct()
+                                .map(
+                                    tool ->
+                                        modelMapper
+                                            .map(tool, ToolRecommendationDTO.class)
+                                            .toBuilder()
+                                            .totalPoints(0)
+                                            .points(Collections.emptyList())
+                                            .build())
+                                .collect(Collectors.toList())));
+          }
         });
 
     return PipelineRecommendationResponse.builder()
