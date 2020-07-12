@@ -4,6 +4,7 @@ import com.dovit.backend.domain.audit.DateAudit;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class Tool extends DateAudit {
 
   @NotEmpty private String name;
 
+  @Max(value = 2000)
   private String description;
 
   private String imageUrl;

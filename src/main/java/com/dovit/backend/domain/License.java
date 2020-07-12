@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "licenses")
+@Table(name = "licenses", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "tool_id"}))
 @ToString
 @Builder
 public class License extends DateAudit {

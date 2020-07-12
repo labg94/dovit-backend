@@ -53,7 +53,7 @@ public class ToolServiceImpl implements ToolService {
     List<Tool> tools = toolRepository.findAllByCompanyId(companyId);
     return tools.stream()
         .map(tool -> modelMapper.map(tool, ToolResponse.class))
-        .sorted(Comparator.comparing(ToolResponse::getToolId))
+        .sorted(Comparator.comparing(ToolResponse::getToolName))
         .collect(Collectors.toList());
   }
 
@@ -63,6 +63,7 @@ public class ToolServiceImpl implements ToolService {
     List<Tool> tools = toolRepository.findAll();
     return tools.stream()
         .map(tool -> modelMapper.map(tool, ToolResponse.class))
+        .sorted(Comparator.comparing(ToolResponse::getToolName))
         .collect(Collectors.toList());
   }
 

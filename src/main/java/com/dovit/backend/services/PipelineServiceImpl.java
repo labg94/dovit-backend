@@ -197,7 +197,11 @@ public class PipelineServiceImpl implements PipelineService {
         });
 
     return PipelineRecommendationResponse.builder()
-        .pipelineTools(categoriesRecommendation)
+        .pipelineTools(
+            categoriesRecommendation.stream()
+                .filter(cat -> cat.getOtherTools() != null)
+                .filter(cat -> cat.getRecommendedTool() != null)
+                .collect(Collectors.toList()))
         .cost(null)
         .build();
   }
