@@ -183,20 +183,21 @@ public class ModelMapperConfig {
                 .map(id -> DevOpsSubcategory.builder().id(id).build())
                 .collect(Collectors.toList());
 
-    Converter<String, String> imageUrlConverter =
-        mappingContext -> "/" + mappingContext.getSource().toLowerCase();
+    //    Converter<String, String> imageUrlConverter =
+    //        mappingContext -> "/" + mappingContext.getSource().toLowerCase();
 
     return new PropertyMap<>() {
       @Override
       protected void configure() {
         using(converter).map(source.getSubcategoryIds()).setSubcategories(new ArrayList<>());
-        using(imageUrlConverter).map(source.getName()).setImageUrl("");
+        //        using(imageUrlConverter).map(source.getName()).setImageUrl("");
 
+        skip(destination.getImageUrl());
         skip(destination.getProjectTypes());
         skip(destination.getCreatedAt());
         skip(destination.getUpdatedAt());
         skip(destination.getToolProfile());
-        skip(destination.isActive());
+        //        skip(destination.isActive());
       }
     };
   }
@@ -221,7 +222,7 @@ public class ModelMapperConfig {
         using(licenseIdConverter).map(source).setId(1L);
         //        map(source.getLicenseId()).setId(1L);
 
-        skip(destination.isActive());
+        //        skip(destination.isActive());
         skip(destination.getCreatedAt());
         skip(destination.getUpdatedAt());
         skip(destination.getCompanyLicenses());

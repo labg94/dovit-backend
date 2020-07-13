@@ -44,7 +44,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Transactional
   public Project saveProject(ProjectRequest request) {
     validatorUtil.canActOnCompany(request.getCompanyId());
-    checkAllCategoriesSelected(request.getSelectedTools());
+    //    checkAllCategoriesSelected(request.getSelectedTools());
     final List<Long> membersId =
         request.getMembers().stream()
             .map(ProjectMemberRequest::getMemberId)
@@ -156,7 +156,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   @Transactional
   public Project updateProjectPipeline(List<PipelineToolRequest> pipelines, Long projectId) {
-    checkAllCategoriesSelected(pipelines);
+    //    checkAllCategoriesSelected(pipelines);
     Project project = findProjectEntityById(projectId);
     validatorUtil.canActOnCompany(project.getCompany().getId());
 
@@ -239,8 +239,7 @@ public class ProjectServiceImpl implements ProjectService {
                               memberKnowsCategory(recommendation.getDevOpsCategoryId(), member))
                       .map( // returns members with tools that match with actual category
                           member ->
-                              member
-                                  .toBuilder()
+                              member.toBuilder()
                                   .toolProfile(
                                       findToolsByCategory(
                                           recommendation.getDevOpsCategoryId(), member))

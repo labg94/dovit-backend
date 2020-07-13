@@ -122,6 +122,23 @@ public class ToolServiceImpl implements ToolService {
     // Should not update licenses
     request.setLicenses(null);
     modelMapper.map(request, tool);
+
+    final List<ToolProjectType> projectTypeToDelete =
+        tool.getProjectTypes().stream()
+            .filter(pt -> !request.getProjectTypeIds().contains(pt.getProjectTypeId()))
+            .collect(Collectors.toList());
+
+    toolProjectTypeRepository.deleteAll(projectTypeToDelete);
+    List<ToolProjectType> toolProjectTypes =
+        request.getProjectTypeIds().stream()
+            .map(
+                projectTypeId ->
+                    ToolProjectType.builder()
+                        .projectTypeId(projectTypeId)
+                        .toolId(tool.getId())
+                        .build())
+            .collect(Collectors.toList());
+    tool.setProjectTypes(toolProjectTypes);
     return toolRepository.save(tool);
   }
 
