@@ -22,5 +22,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   List<User> findAllByCompanyIdOrderById(Long companyId);
 
-  Boolean existsByEmail(String email);
+  Boolean existsByEmailIgnoreCase(String email);
 }

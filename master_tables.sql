@@ -24,7 +24,7 @@ INSERT INTO roles (id, name, description)
 VALUES (3, 'ROLE_CLIENT_ADMIN', 'Client administrator');
 
 insert into users (id, created_at, updated_at, active, email, last_name, name, password, company_id, role_id, rut)
-values (0, '2020-05-24 19:27:21.000000', '2020-05-24 19:27:24.000000', 'true', 'system@system.com', 'ADMINS', 'ADMINS',
+values (0, '2020-05-24 19:27:21.000000', '2020-05-24 19:27:24.000000', 'true', 'ramon@dovit.cl', 'Ramón', 'París',
         'admins', null, 1, 0);
 INSERT INTO public.users (id, created_at, updated_at, active, email, last_name, name, password, rut, company_id, role_id) VALUES (-1, '2020-06-20 00:04:29.549000', '2020-07-02 12:00:16.486000', true, 'pariis78@gmail.com', 'París', 'Ramón', '$2a$10$ZB14LcTUwH5tKN5MgdWJCunOaEjBCmfgTbKAJtTz/umO.yS2byRci', '254126837-3', null, 1);
 
@@ -175,6 +175,54 @@ VALUES (18, 11);
 INSERT INTO tool_subcategory (tool_id, subcategory_id)
 VALUES (19, 12);
 
+-- Project type - Tool
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 15, '2020-07-17 23:23:57.644000', '2020-07-17 23:23:57.644000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 15, '2020-07-17 23:23:57.686000', '2020-07-17 23:23:57.686000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 13, '2020-07-17 23:26:30.940000', '2020-07-17 23:26:30.940000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 13, '2020-07-17 23:26:30.942000', '2020-07-17 23:26:30.942000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (3, 13, '2020-07-17 23:26:30.944000', '2020-07-17 23:26:30.944000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (4, 13, '2020-07-17 23:26:30.946000', '2020-07-17 23:26:30.946000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 2, '2020-07-17 23:28:18.131000', '2020-07-17 23:28:18.131000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 2, '2020-07-17 23:28:18.134000', '2020-07-17 23:28:18.134000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (3, 2, '2020-07-17 23:28:18.136000', '2020-07-17 23:28:18.136000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (4, 2, '2020-07-17 23:28:18.139000', '2020-07-17 23:28:18.139000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (5, 2, '2020-07-17 23:28:18.141000', '2020-07-17 23:28:18.141000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 5, '2020-07-18 01:38:47.914000', '2020-07-18 01:38:47.914000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 5, '2020-07-18 01:38:47.923000', '2020-07-18 01:38:47.923000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 19, '2020-07-17 23:25:04.789000', '2020-07-18 02:18:46.505000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 19, '2020-07-17 23:25:04.791000', '2020-07-18 02:18:46.506000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 1, '2020-07-17 23:23:16.140000', '2020-07-18 04:06:49.233000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 1, '2020-07-17 23:23:16.198000', '2020-07-18 04:06:49.233000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (3, 1, '2020-07-17 23:23:16.209000', '2020-07-18 04:06:49.233000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (4, 1, '2020-07-17 23:23:16.218000', '2020-07-18 04:06:49.234000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (5, 1, '2020-07-17 23:23:16.220000', '2020-07-18 04:06:49.234000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 17, '2020-07-17 23:21:08.056000', '2020-07-18 04:08:44.591000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 17, '2020-07-17 23:21:08.085000', '2020-07-18 04:08:44.591000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 11, '2020-07-18 04:10:53.793000', '2020-07-18 04:10:53.793000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 11, '2020-07-18 04:10:53.801000', '2020-07-18 04:10:53.801000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 14, '2020-07-18 04:12:02.494000', '2020-07-18 04:12:38.310000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 14, '2020-07-18 04:12:02.502000', '2020-07-18 04:12:38.311000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (5, 3, '2020-07-18 04:15:20.904000', '2020-07-18 04:15:20.904000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (3, 10, '2020-07-18 04:17:49.818000', '2020-07-18 04:17:49.818000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (4, 10, '2020-07-18 04:17:49.820000', '2020-07-18 04:17:49.820000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 10, '2020-07-18 04:17:15.451000', '2020-07-18 04:17:49.887000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 10, '2020-07-18 04:17:15.452000', '2020-07-18 04:17:49.887000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 12, '2020-07-18 04:18:23.777000', '2020-07-18 04:18:23.777000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 12, '2020-07-18 04:18:23.786000', '2020-07-18 04:18:23.786000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 7, '2020-07-18 04:19:29.797000', '2020-07-18 04:19:29.797000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 7, '2020-07-18 04:19:29.799000', '2020-07-18 04:19:29.799000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 6, '2020-07-18 04:21:17.378000', '2020-07-18 04:22:29.029000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 6, '2020-07-18 04:21:17.379000', '2020-07-18 04:22:29.031000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 18, '2020-07-18 04:26:27.355000', '2020-07-18 04:26:27.355000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 18, '2020-07-18 04:26:27.357000', '2020-07-18 04:26:27.357000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 8, '2020-07-18 04:28:26.190000', '2020-07-18 04:28:26.190000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 8, '2020-07-18 04:28:26.192000', '2020-07-18 04:28:26.192000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 16, '2020-07-18 04:30:05.543000', '2020-07-18 04:30:05.543000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 16, '2020-07-18 04:30:05.545000', '2020-07-18 04:30:05.545000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 9, '2020-07-18 04:32:36.860000', '2020-07-18 04:32:36.860000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 9, '2020-07-18 04:32:36.866000', '2020-07-18 04:32:36.866000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (5, 4, '2020-07-18 04:32:59.211000', '2020-07-18 04:32:59.211000');
+
 -- licenses
 INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (29, '2020-07-13 21:18:59.274894', '2020-07-13 21:18:59.274894', true, 'Enterprise', 'test', 2, 2, 16);
 INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (6, '2020-07-13 21:18:26.350627', '2020-07-13 23:23:18.555000', true, 'Gold', 'Secure & monitor production', 2, 2, 2);
@@ -221,62 +269,62 @@ INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, o
 INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (20, '2020-07-13 21:18:44.523851', '2020-07-13 23:45:50.763000', true, 'Selenium', 'Open source license', 1, 3, 9);
 
 -- licenses pricing
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (180, '2020-07-13 23:40:28.320000', '2020-07-13 23:40:28.320000', -1, 1, 0, 19);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (217, '2020-07-13 23:42:36.191000', '2020-07-13 23:42:36.191000', -1, 1, 3495, 33);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (181, '2020-07-13 23:43:00.320000', '2020-07-13 23:43:00.320000', -1, 1, 1995, 32);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (219, '2020-07-13 23:43:26.574000', '2020-07-13 23:43:26.574000', 10, 1, 0, 28);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (220, '2020-07-13 23:44:43.859000', '2020-07-13 23:44:43.859000', 20, 1, 20.83, 15);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (221, '2020-07-13 23:44:43.865000', '2020-07-13 23:44:43.865000', 500, 21, 17.5, 15);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (222, '2020-07-13 23:44:43.866000', '2020-07-13 23:44:43.866000', 1000, 501, 12.92, 15);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (223, '2020-07-13 23:44:43.866000', '2020-07-13 23:44:43.866000', 10000, 1001, 4.83, 15);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (182, '2020-07-13 23:45:50.746000', '2020-07-13 23:45:50.746000', -1, 1, 0, 20);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (183, '2020-07-13 23:46:18.731000', '2020-07-13 23:46:18.731000', 100, 1, 9.99, 14);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (50, '2020-07-13 21:20:01.263611', '2020-07-13 21:20:01.263611', -1, 1, 0, 29);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (151, '2020-07-13 22:51:51.867000', '2020-07-13 22:51:51.867000', -1, 1, -1, 30);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (201, '2020-07-13 22:52:12.256000', '2020-07-13 22:52:12.256000', -1, 1, -1, 31);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (205, '2020-07-13 23:02:04.768000', '2020-07-13 23:02:04.768000', 5, 1, 0, 1);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (206, '2020-07-13 23:02:04.774000', '2020-07-13 23:02:04.774000', 20, 6, 6, 1);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (207, '2020-07-13 23:03:36.657000', '2020-07-13 23:03:36.657000', 20, 1, 52, 2);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (152, '2020-07-13 23:06:38.748000', '2020-07-13 23:06:38.748000', -1, 1, -1, 3);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (153, '2020-07-13 23:11:13.231000', '2020-07-13 23:11:13.231000', -1, 1, 0, 27);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (154, '2020-07-13 23:13:52.722000', '2020-07-13 23:13:52.722000', -1, 1, 36, 35);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (208, '2020-07-13 23:14:13.389000', '2020-07-13 23:14:13.389000', 1, 1, 18, 34);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (155, '2020-07-13 23:14:55.807000', '2020-07-13 23:14:55.807000', -1, 1, 1.91, 36);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (102, '2020-07-13 23:18:50.667000', '2020-07-13 23:18:50.667000', -1, 1, 0, 16);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (210, '2020-07-13 23:19:09.611000', '2020-07-13 23:19:09.611000', -1, 1, 4, 24);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (103, '2020-07-13 23:19:55.377000', '2020-07-13 23:19:55.377000', -1, 1, 21, 25);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (158, '2020-07-13 23:20:53.651000', '2020-07-13 23:20:53.651000', -1, 1, 4, 4);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (105, '2020-07-13 23:21:50.299000', '2020-07-13 23:21:50.299000', -1, 1, 99, 9);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (212, '2020-07-13 23:22:42.601000', '2020-07-13 23:22:42.601000', -1, 0, 19, 5);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (107, '2020-07-13 23:22:51.862000', '2020-07-13 23:22:51.862000', -1, 1, 19, 8);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (213, '2020-07-13 23:23:18.552000', '2020-07-13 23:23:18.552000', -1, 1, 99, 6);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (108, '2020-07-13 23:23:41.879000', '2020-07-13 23:23:41.879000', -1, 1, 4, 7);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (214, '2020-07-13 23:24:18.479000', '2020-07-13 23:24:18.479000', -1, 1, 0, 26);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (159, '2020-07-13 23:28:44.213000', '2020-07-13 23:28:44.213000', -1, 1, 0, 22);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (215, '2020-07-13 23:33:33.500000', '2020-07-13 23:33:33.500000', -1, 1, 0, 21);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (160, '2020-07-13 23:33:56.623000', '2020-07-13 23:33:56.623000', 100, 1, 7, 10);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (161, '2020-07-13 23:33:56.623000', '2020-07-13 23:33:56.623000', 250, 101, 6, 10);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (162, '2020-07-13 23:33:56.623000', '2020-07-13 23:33:56.623000', 5000, 251, 5, 10);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (163, '2020-07-13 23:34:28.237000', '2020-07-13 23:34:28.237000', 100, 1, 14, 11);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (164, '2020-07-13 23:34:28.238000', '2020-07-13 23:34:28.238000', 250, 101, 10, 11);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (165, '2020-07-13 23:34:28.238000', '2020-07-13 23:34:28.238000', 5000, 251, 7, 11);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (166, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 10, 1, 10, 12);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (167, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 25, 1, 3500, 12);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (168, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 50, 1, 6800, 12);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (169, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 100, 1, 13300, 12);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (170, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 250, 1, 26400, 12);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (171, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 500, 1, 40000, 12);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (172, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 2000, 1, 60000, 12);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (173, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 10000, 1, 120000, 12);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (174, '2020-07-13 23:35:33.416000', '2020-07-13 23:35:33.416000', -1, 1, 200000, 12);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (175, '2020-07-13 23:36:05.641000', '2020-07-13 23:36:05.641000', 500, 1, 20400, 13);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (176, '2020-07-13 23:36:05.642000', '2020-07-13 23:36:05.642000', 1000, 1, 30000, 13);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (177, '2020-07-13 23:36:05.642000', '2020-07-13 23:36:05.642000', 2000, 1, 52800, 13);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (178, '2020-07-13 23:36:05.642000', '2020-07-13 23:36:05.642000', 3000, 1, 79200, 13);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (179, '2020-07-13 23:36:05.643000', '2020-07-13 23:36:05.643000', 10000, 1, 264000, 13);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (109, '2020-07-13 23:36:19.554000', '2020-07-13 23:36:19.554000', 50, 1, 0, 23);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (110, '2020-07-13 23:37:43.506000', '2020-07-13 23:37:43.506000', -1, 1, 0, 17);
-INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (216, '2020-07-13 23:38:57.172000', '2020-07-13 23:38:57.172000', -1, 1, 0, 18);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (1, '2020-07-13 23:40:28.320000', '2020-07-13 23:40:28.320000', -1, 1, 0, 19);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (2, '2020-07-13 23:42:36.191000', '2020-07-13 23:42:36.191000', -1, 1, 3495, 33);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (3, '2020-07-13 23:43:00.320000', '2020-07-13 23:43:00.320000', -1, 1, 1995, 32);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (4, '2020-07-13 23:43:26.574000', '2020-07-13 23:43:26.574000', 10, 1, 0, 28);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (5, '2020-07-13 23:44:43.859000', '2020-07-13 23:44:43.859000', 20, 1, 20.83, 15);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (6, '2020-07-13 23:44:43.865000', '2020-07-13 23:44:43.865000', 500, 21, 17.5, 15);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (7, '2020-07-13 23:44:43.866000', '2020-07-13 23:44:43.866000', 1000, 501, 12.92, 15);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (8, '2020-07-13 23:44:43.866000', '2020-07-13 23:44:43.866000', 10000, 1001, 4.83, 15);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (9, '2020-07-13 23:45:50.746000', '2020-07-13 23:45:50.746000', -1, 1, 0, 20);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10, '2020-07-13 23:46:18.731000', '2020-07-13 23:46:18.731000', 100, 1, 9.99, 14);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (11, '2020-07-13 21:20:01.263611', '2020-07-13 21:20:01.263611', -1, 1, 0, 29);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (12, '2020-07-13 22:51:51.867000', '2020-07-13 22:51:51.867000', -1, 1, -1, 30);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (13, '2020-07-13 22:52:12.256000', '2020-07-13 22:52:12.256000', -1, 1, -1, 31);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (14, '2020-07-13 23:02:04.768000', '2020-07-13 23:02:04.768000', 5, 1, 0, 1);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (15, '2020-07-13 23:02:04.774000', '2020-07-13 23:02:04.774000', 20, 6, 6, 1);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16, '2020-07-13 23:03:36.657000', '2020-07-13 23:03:36.657000', 20, 1, 52, 2);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17, '2020-07-13 23:06:38.748000', '2020-07-13 23:06:38.748000', -1, 1, -1, 3);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (18, '2020-07-13 23:11:13.231000', '2020-07-13 23:11:13.231000', -1, 1, 0, 27);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (19, '2020-07-13 23:13:52.722000', '2020-07-13 23:13:52.722000', -1, 1, 36, 35);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (20, '2020-07-13 23:14:13.389000', '2020-07-13 23:14:13.389000', 1, 1, 18, 34);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (15500, '2020-07-13 23:14:55.807000', '2020-07-13 23:14:55.807000', -1, 1, 1.91, 36);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10200, '2020-07-13 23:18:50.667000', '2020-07-13 23:18:50.667000', -1, 1, 0, 16);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21000, '2020-07-13 23:19:09.611000', '2020-07-13 23:19:09.611000', -1, 1, 4, 24);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10300, '2020-07-13 23:19:55.377000', '2020-07-13 23:19:55.377000', -1, 1, 21, 25);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (15800, '2020-07-13 23:20:53.651000', '2020-07-13 23:20:53.651000', -1, 1, 4, 4);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10500, '2020-07-13 23:21:50.299000', '2020-07-13 23:21:50.299000', -1, 1, 99, 9);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21200, '2020-07-13 23:22:42.601000', '2020-07-13 23:22:42.601000', -1, 0, 19, 5);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10700, '2020-07-13 23:22:51.862000', '2020-07-13 23:22:51.862000', -1, 1, 19, 8);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21300, '2020-07-13 23:23:18.552000', '2020-07-13 23:23:18.552000', -1, 1, 99, 6);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10800, '2020-07-13 23:23:41.879000', '2020-07-13 23:23:41.879000', -1, 1, 4, 7);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21400, '2020-07-13 23:24:18.479000', '2020-07-13 23:24:18.479000', -1, 1, 0, 26);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (15900, '2020-07-13 23:28:44.213000', '2020-07-13 23:28:44.213000', -1, 1, 0, 22);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21500, '2020-07-13 23:33:33.500000', '2020-07-13 23:33:33.500000', -1, 1, 0, 21);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16000, '2020-07-13 23:33:56.623000', '2020-07-13 23:33:56.623000', 100, 1, 7, 10);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16100, '2020-07-13 23:33:56.623000', '2020-07-13 23:33:56.623000', 250, 101, 6, 10);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16200, '2020-07-13 23:33:56.623000', '2020-07-13 23:33:56.623000', 5000, 251, 5, 10);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16300, '2020-07-13 23:34:28.237000', '2020-07-13 23:34:28.237000', 100, 1, 14, 11);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16400, '2020-07-13 23:34:28.238000', '2020-07-13 23:34:28.238000', 250, 101, 10, 11);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16500, '2020-07-13 23:34:28.238000', '2020-07-13 23:34:28.238000', 5000, 251, 7, 11);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16600, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 10, 1, 10, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16700, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 25, 1, 3500, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16800, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 50, 1, 6800, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16900, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 100, 1, 13300, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17000, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 250, 1, 26400, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17100, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 500, 1, 40000, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17200, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 2000, 1, 60000, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17300, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 10000, 1, 120000, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17400, '2020-07-13 23:35:33.416000', '2020-07-13 23:35:33.416000', -1, 1, 200000, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17500, '2020-07-13 23:36:05.641000', '2020-07-13 23:36:05.641000', 500, 1, 20400, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17600, '2020-07-13 23:36:05.642000', '2020-07-13 23:36:05.642000', 1000, 1, 30000, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17700, '2020-07-13 23:36:05.642000', '2020-07-13 23:36:05.642000', 2000, 1, 52800, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17800, '2020-07-13 23:36:05.642000', '2020-07-13 23:36:05.642000', 3000, 1, 79200, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17900, '2020-07-13 23:36:05.643000', '2020-07-13 23:36:05.643000', 10000, 1, 264000, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10900, '2020-07-13 23:36:19.554000', '2020-07-13 23:36:19.554000', 50, 1, 0, 23);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (11000, '2020-07-13 23:37:43.506000', '2020-07-13 23:37:43.506000', -1, 1, 0, 17);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21600, '2020-07-13 23:38:57.172000', '2020-07-13 23:38:57.172000', -1, 1, 0, 18);
 
 
 INSERT INTO level (level_id, description, points)
@@ -295,4 +343,4 @@ VALUES (3, 'Frontend Developer');
 INSERT INTO profile (id, description)
 VALUES (4, 'DevOps Engineer');
 INSERT INTO profile (id, description)
-VALUES (5, 'DevOps Engineer');
+VALUES (5, 'Scrum master');

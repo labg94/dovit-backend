@@ -105,12 +105,12 @@ class UserServiceImplTest {
     RegisterTokenRequest registerTokenRequest =
         RegisterTokenRequest.builder().companyId(1L).email("").build();
 
-    Mockito.when(userRepository.existsByEmail(anyString())).thenReturn(true);
+    Mockito.when(userRepository.existsByEmailIgnoreCase(anyString())).thenReturn(true);
     assertThrows(
         DataIntegrityViolationException.class,
         () -> userService.createUserToken(registerTokenRequest));
 
-    Mockito.when(userRepository.existsByEmail(anyString())).thenReturn(false);
+    Mockito.when(userRepository.existsByEmailIgnoreCase(anyString())).thenReturn(false);
     Mockito.when(jwtTokenProvider.generateRegisterToken(any(RegisterTokenRequest.class)))
         .thenReturn("token");
     Mockito.doNothing().when(emailService).sendRegistration(anyString(), anyString());

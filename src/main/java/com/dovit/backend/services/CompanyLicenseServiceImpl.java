@@ -60,6 +60,8 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
     response.setMembersUsingQty(membersUsingQty);
 
     c.getLicense().getLicensePrices().stream()
+        .filter(licensePricing -> licensePricing.getPrice() != null)
+        .filter(licensePricing -> licensePricing.getPrice().compareTo(-1.0) > 0)
         .filter(
             licensePricing ->
                 membersUsingQty.compareTo(licensePricing.getMinUsers()) >= 0

@@ -108,6 +108,7 @@ public class ProjectServiceImpl implements ProjectService {
     Project project = findProjectEntityById(request.getProjectId());
     validatorUtil.canActOnCompany(project.getCompany().getId());
     modelMapper.map(request, project);
+    project.setEndDate(request.getEndDate());
     return projectRepository.save(project);
   }
 
