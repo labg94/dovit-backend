@@ -36,4 +36,6 @@ public class LicenseRequest {
   @Nullable
   @Size(min = 1, message = "Prices cannot be empty")
   private List<LicensePricingRequest> licensePrices;
+
+  private Boolean active;
 }

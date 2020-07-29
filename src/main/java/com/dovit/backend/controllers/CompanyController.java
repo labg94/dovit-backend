@@ -34,6 +34,12 @@ public class CompanyController {
   }
 
   @IsAuthenticated
+  @GetMapping("/companies/active")
+  public ResponseEntity<?> findAllActives() {
+    return ResponseEntity.ok().body(companyService.findAllActives());
+  }
+
+  @IsAuthenticated
   @GetMapping("/company/{companyId}")
   public ResponseEntity<?> findById(@PathVariable Long companyId) {
     return ResponseEntity.ok(companyService.findCompanyResponseById(companyId));
@@ -75,5 +81,12 @@ public class CompanyController {
                 .success(true)
                 .message("Company updated successfully")
                 .build());
+  }
+
+  @PatchMapping("/company/{companyId}")
+  public ResponseEntity<?> toggleCompanyId(@PathVariable Long companyId) {
+    companyService.toggleCompanyStatus(companyId);
+    return ResponseEntity.ok(
+        ApiResponse.builder().id(companyId).success(true).message("Toggled successfully").build());
   }
 }

@@ -24,8 +24,9 @@ INSERT INTO roles (id, name, description)
 VALUES (3, 'ROLE_CLIENT_ADMIN', 'Client administrator');
 
 insert into users (id, created_at, updated_at, active, email, last_name, name, password, company_id, role_id, rut)
-values (0, '2020-05-24 19:27:21.000000', '2020-05-24 19:27:24.000000', 'true', 'system@system.com', 'ADMINS', 'ADMINS',
+values (0, '2020-05-24 19:27:21.000000', '2020-05-24 19:27:24.000000', 'true', 'ramon@dovit.cl', 'Ramón', 'París',
         'admins', null, 1, 0);
+INSERT INTO public.users (id, created_at, updated_at, active, email, last_name, name, password, rut, company_id, role_id) VALUES (-1, '2020-06-20 00:04:29.549000', '2020-07-02 12:00:16.486000', true, 'pariis78@gmail.com', 'París', 'Ramón', '$2a$10$ZB14LcTUwH5tKN5MgdWJCunOaEjBCmfgTbKAJtTz/umO.yS2byRci', '254126837-3', null, 1);
 
 
 INSERT INTO member_available_status(id, description)
@@ -91,26 +92,27 @@ VALUES (11, 'Servers', 6, NOW(), NOW());
 INSERT INTO devops_subcategories (devops_subcategory_id, description, devops_category_id, created_at, updated_at)
 VALUES (12, 'Logging', 6, NOW(), NOW());
 
-INSERT INTO TOOLS(tool_id, image_url, name, created_at, updated_at)
-VALUES (1, '/plan/azure_devops.png', 'Azure DevOps', now(), now()),
-       (2, '/plan/gitlab.png', 'Gitlab', now(), now()),
-       (3, '/plan/jira.png', 'Jira', now(), now()),
-       (4, '/plan/trello.png', 'Trello', now(), now()),
-       (5, '/build/gradle.png', 'Gradle', now(), now()),
-       (6, '/build/maven.png', 'Maven', now(), now()),
-       (7, '/build/msbuild.png', 'MSBuild', now(), now()),
-       (8, '/build/nant.png', 'Nant', now(), now()),
-       (9, '/test/selenium.png', 'Selenium', now(), now()),
-       (10, '/test/katalon.png', 'Katalon', now(), now()),
-       (11, '/test/jmeter.svg', 'Jmeter', now(), now()),
-       (12, '/test/load_runner.png', 'Load runner', now(), now()),
-       (13, '/cicd/github.png', 'Github', now(), now()),
-       (14, '/cicd/jenkins.png', 'Jenkins', now(), now()),
-       (15, '/configure/chef.png', 'Chef', now(), now()),
-       (16, '/configure/puppet.png', 'Puppet', now(), now()),
-       (17, '/configure/ansible.png', 'Ansible', now(), now()),
-       (18, '/monitor/nagios.png', 'Nagios', now(), now()),
-       (19, '/monitor/datadog.png', 'Datadog', now(), now())
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (6, '2020-07-13 21:17:37.847255', '2020-07-13 23:37:31.234000', true, 'Apache Maven is a software project management and comprehension tool. Based on the concept of a project object model (POM), Maven can manage a project''s build, reporting and documentation from a central piece of information.', '/build/maven.png', 'Maven');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (7, '2020-07-13 21:17:37.847255', '2020-07-13 23:38:23.803000', true, 'Microsoft product that helps automate the process of creating a software product, including compiling the source code, packaging, testing, deployment and creating documentations.', '/build/msbuild.png', 'MSBuild');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (17, '2020-07-13 21:17:37.847255', '2020-07-13 22:52:54.719000', true, 'Ansible is an open-source software provisioning, configuration management, and application-deployment tool enabling infrastructure as code. It runs on many Unix-like systems, and can configure both Unix-like systems as well as Microsoft Windows. It includes its own declarative language to describe system configuration', '/configure/ansible.png', 'Ansible');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (1, '2020-07-13 21:17:37.847255', '2020-07-13 22:54:51.406000', true, 'This is a Microsoft product that provides version control (either with Team Foundation Version Control (TFVC) or Git), reporting, requirements management, project management (for both agile software development and waterfall teams), automated builds, testing and release management capabilities. It covers the entire application lifecycle, and enables DevOps capabilities.', '/plan/azure_devops.png', 'Azure DevOps');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (19, '2020-07-13 21:17:37.847255', '2020-07-13 23:07:32.420000', true, 'Datadog is the essential monitoring platform for cloud applications. We bring together data from servers, containers, databases, and third-party services to make your stack entirely observable. These capabilities help DevOps teams avoid downtime, resolve performance issues, and ensure customers are getting the best user experience.', '/monitor/datadog.png', 'Datadog');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (5, '2020-07-13 21:17:37.847255', '2020-07-13 23:08:57.318000', true, 'Gradle is an open-source build automation tool that is designed to be flexible enough to build almost any type of software. ', '/build/gradle.png', 'Gradle');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (15, '2020-07-13 21:17:37.847255', '2020-07-13 23:09:25.545000', true, 'Chef is used to streamline the task of configuring and maintaining a company''s servers, and can integrate with cloud-based platforms such as Internap, Amazon EC2, Google Cloud Platform, Oracle Cloud, OpenStack, SoftLayer, Microsoft Azure, and Rackspace to automatically provision and configure new machines. Chef contains solutions for both small and large scale systems, with features and pricing for the respective ranges.', '/configure/chef.png', 'Chef');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (2, '2020-07-13 21:17:37.847255', '2020-07-13 23:11:44.038000', true, 'GitLab is a complete DevOps platform
+With GitLab, you get a complete CI/CD toolchain in a single application. One interface. One conversation. One permission model. Thousands of features. You''ll be amazed at everything GitLab can do today. And we''re just getting started.', '/plan/gitlab.png', 'Gitlab');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (13, '2020-07-13 21:17:37.847255', '2020-07-13 23:16:57.644000', true, 'It offers the distributed version control and source code management (SCM) functionality of Git, plus its own features. It provides access control and several collaboration features such as bug tracking, feature requests, task management, and wikis for every project.', '/cicd/github.png', 'Github');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (14, '2020-07-13 21:17:37.847255', '2020-07-13 23:23:15.658000', true, 'It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery. It is a server-based system that runs in servlet containers such as Apache Tomcat. It supports version control tools, including AccuRev, CVS, Subversion, Git, Mercurial, Perforce, ClearCase and RTC, and can execute Apache Ant, Apache Maven and sbt based projects as well as arbitrary shell scripts and Windows batch commands.', '/cicd/jenkins.png', 'Jenkins');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (11, '2020-07-13 21:17:37.847255', '2020-07-13 23:27:39.019000', true, 'JMeter is tool that can be used as a load testing tool for analyzing and measuring the performance of a variety of services, with a focus on web applications. ', '/test/jmeter.svg', 'JMeter');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (18, '2020-07-13 21:17:37.847255', '2020-07-13 23:39:28.467000', true, 'Nagios is a powerful monitoring system that enables organizations to identify and resolve IT infrastructure problems before they affect critical business processes.', '/monitor/nagios.png', 'Nagios');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (8, '2020-07-13 21:17:37.847255', '2020-07-13 23:39:59.428000', true, 'NAnt is a free and open source software tool for automating software build processes. It is similar to Apache Ant, but targeted at the .NET environment rather than Java. The name NAnt comes from the fact that the tool is Not Ant', '/build/nant.png', 'Nant');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (3, '2020-07-13 21:17:37.847255', '2020-07-13 23:30:34.436000', true, 'Jira Software is built for every member of your software team to plan,
+track, and release great software.', '/plan/jira.png', 'Jira');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (10, '2020-07-13 21:17:37.847255', '2020-07-13 23:31:57.291000', true, 'Katalon Studio is an automation testing solution developed by Katalon LLC. The software is built on top of the open-source automation frameworks Selenium, Appium with a specialized IDE interface for web, API, mobile and desktop application testing.', '/test/katalon.png', 'Katalon');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (12, '2020-07-13 21:17:37.847255', '2020-07-13 23:34:43.292000', true, 'It is used to test applications, measuring system behaviour and performance under load. LoadRunner can simulate thousands of users concurrently using application software, recording and later analyzing the performance of key components of the application.', '/test/load_runner.png', 'Load runner');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (16, '2020-07-13 21:17:37.847255', '2020-07-13 23:42:29.830000', true, 'Puppet is an open-core software configuration management tool. It runs on many Unix-like systems as well as on Microsoft Windows, and includes its own declarative language to describe system configuration.', '/configure/puppet.png', 'Puppet');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (9, '2020-07-13 21:17:37.847255', '2020-07-13 23:45:34.487000', true, 'is a free (open-source) automated testing framework used to validate web applications across different browsers and platforms. You can use multiple programming languages like Java, C#, Python etc to create Selenium Test Scripts. Testing done using the Selenium tool is usually referred to as Selenium Testing.', '/test/selenium.png', 'Selenium');
+INSERT INTO public.tools (tool_id, created_at, updated_at, active, description, image_url, name) VALUES (4, '2020-07-13 21:17:37.847255', '2020-07-13 23:45:46.690000', true, 'Trello is a web-based Kanban-style list-making application', '/plan/trello.png', 'Trello');
 ;
 INSERT INTO tool_subcategory (tool_id, subcategory_id)
 VALUES (1, 1);
@@ -173,183 +175,156 @@ VALUES (18, 11);
 INSERT INTO tool_subcategory (tool_id, subcategory_id)
 VALUES (19, 12);
 
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (2, 'Basic and test plan', 'test', 2, 2, 1);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (3, 'Azure Devops Server', 'test', 2, 2, 1);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (4, 'Bronze', 'test', 2, 2, 2);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (5, 'Silver', 'test', 2, 2, 2);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (6, 'Gold', 'test', 2, 2, 2);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (7, 'Starter', 'test', 2, 3, 2);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (8, 'Premium', 'test', 2, 3, 2);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (9, 'Ultimate', 'test', 2, 3, 2);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (10, 'STANDARD', 'test', 2, 2, 3);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (11, 'PREMIUM', 'test', 2, 2, 3);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (12, 'Server', 'test', 3, 3, 3);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (13, 'Data Center', 'test', 3, 3, 3);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (14, 'Business Class', 'test', 2, 2, 4);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (15, 'Enterprise', 'test', 2, 2, 4);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (16, 'Gradle', 'test', 3, 1, 5);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (17, 'Maven', 'test', 3, 1, 6);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (18, 'MSBuild', 'test', 3, 1, 7);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (19, 'Nant', 'test', 3, 1, 8);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (20, 'Selenium', 'test', 3, 1, 9);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (21, 'Katalon Studio', 'test', 3, 1, 10);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (22, 'Jmeter', 'test', 3, 1, 11);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (23, 'LoadRunner', 'test', 3, 2, 12);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (24, 'Team', 'test', 2, 2, 13);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (25, 'Enterprise', 'test', 2, 2, 13);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (26, 'Jenkins', 'test', 3, 1, 14);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (27, 'Chef', 'test', 3, 1, 15);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (28, 'Free', 'test', 3, 1, 16);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (29, 'Enterprise', 'test', 2, 2, 16);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (30, 'STANDARD', 'test', 2, 2, 17);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (31, 'PREMIUM', 'test', 2, 2, 17);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (32, 'Standard', 'test', 3, 2, 18);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (33, 'Enterprise', 'test', 3, 2, 18);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (34, 'Infrastructure', 'test', 2, 2, 19);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (35, 'APM', 'test', 2, 2, 19);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (36, 'Log Management', 'test', 2, 2, 19);
-INSERT INTO licenses (license_id, name, observation, pay_cycle_id, license_type_id, tool_id)
-VALUES (1, 'Basic plan', 'test', 2, 2, 1);
+-- Project type - Tool
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 15, '2020-07-17 23:23:57.644000', '2020-07-17 23:23:57.644000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 15, '2020-07-17 23:23:57.686000', '2020-07-17 23:23:57.686000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 13, '2020-07-17 23:26:30.940000', '2020-07-17 23:26:30.940000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 13, '2020-07-17 23:26:30.942000', '2020-07-17 23:26:30.942000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (3, 13, '2020-07-17 23:26:30.944000', '2020-07-17 23:26:30.944000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (4, 13, '2020-07-17 23:26:30.946000', '2020-07-17 23:26:30.946000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 2, '2020-07-17 23:28:18.131000', '2020-07-17 23:28:18.131000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 2, '2020-07-17 23:28:18.134000', '2020-07-17 23:28:18.134000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (3, 2, '2020-07-17 23:28:18.136000', '2020-07-17 23:28:18.136000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (4, 2, '2020-07-17 23:28:18.139000', '2020-07-17 23:28:18.139000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (5, 2, '2020-07-17 23:28:18.141000', '2020-07-17 23:28:18.141000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 5, '2020-07-18 01:38:47.914000', '2020-07-18 01:38:47.914000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 5, '2020-07-18 01:38:47.923000', '2020-07-18 01:38:47.923000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 19, '2020-07-17 23:25:04.789000', '2020-07-18 02:18:46.505000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 19, '2020-07-17 23:25:04.791000', '2020-07-18 02:18:46.506000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 1, '2020-07-17 23:23:16.140000', '2020-07-18 04:06:49.233000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 1, '2020-07-17 23:23:16.198000', '2020-07-18 04:06:49.233000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (3, 1, '2020-07-17 23:23:16.209000', '2020-07-18 04:06:49.233000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (4, 1, '2020-07-17 23:23:16.218000', '2020-07-18 04:06:49.234000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (5, 1, '2020-07-17 23:23:16.220000', '2020-07-18 04:06:49.234000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 17, '2020-07-17 23:21:08.056000', '2020-07-18 04:08:44.591000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 17, '2020-07-17 23:21:08.085000', '2020-07-18 04:08:44.591000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 11, '2020-07-18 04:10:53.793000', '2020-07-18 04:10:53.793000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 11, '2020-07-18 04:10:53.801000', '2020-07-18 04:10:53.801000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 14, '2020-07-18 04:12:02.494000', '2020-07-18 04:12:38.310000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 14, '2020-07-18 04:12:02.502000', '2020-07-18 04:12:38.311000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (5, 3, '2020-07-18 04:15:20.904000', '2020-07-18 04:15:20.904000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (3, 10, '2020-07-18 04:17:49.818000', '2020-07-18 04:17:49.818000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (4, 10, '2020-07-18 04:17:49.820000', '2020-07-18 04:17:49.820000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 10, '2020-07-18 04:17:15.451000', '2020-07-18 04:17:49.887000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 10, '2020-07-18 04:17:15.452000', '2020-07-18 04:17:49.887000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 12, '2020-07-18 04:18:23.777000', '2020-07-18 04:18:23.777000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 12, '2020-07-18 04:18:23.786000', '2020-07-18 04:18:23.786000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 7, '2020-07-18 04:19:29.797000', '2020-07-18 04:19:29.797000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 7, '2020-07-18 04:19:29.799000', '2020-07-18 04:19:29.799000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 6, '2020-07-18 04:21:17.378000', '2020-07-18 04:22:29.029000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 6, '2020-07-18 04:21:17.379000', '2020-07-18 04:22:29.031000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 18, '2020-07-18 04:26:27.355000', '2020-07-18 04:26:27.355000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 18, '2020-07-18 04:26:27.357000', '2020-07-18 04:26:27.357000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 8, '2020-07-18 04:28:26.190000', '2020-07-18 04:28:26.190000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 8, '2020-07-18 04:28:26.192000', '2020-07-18 04:28:26.192000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 16, '2020-07-18 04:30:05.543000', '2020-07-18 04:30:05.543000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 16, '2020-07-18 04:30:05.545000', '2020-07-18 04:30:05.545000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (1, 9, '2020-07-18 04:32:36.860000', '2020-07-18 04:32:36.860000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (2, 9, '2020-07-18 04:32:36.866000', '2020-07-18 04:32:36.866000');
+INSERT INTO public.tool_project_type (project_type_id, tool_id, created_at, updated_at) VALUES (5, 4, '2020-07-18 04:32:59.211000', '2020-07-18 04:32:59.211000');
 
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (7, -1, 1, 99, 6);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (8, -1, 1, 4, 7);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (9, -1, 1, 19, 8);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (10, -1, 1, 99, 9);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (11, 100, 1, 7, 10);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (12, 250, 101, 6, 10);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (13, 5000, 251, 5, 10);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (14, 100, 1, 14, 11);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (15, 250, 101, 10, 11);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (16, 5000, 251, 7, 11);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (17, 10, 1, 10, 12);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (18, 25, 1, 3500, 12);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (19, 50, 1, 6800, 12);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (20, 100, 1, 13300, 12);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (21, 250, 1, 26400, 12);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (22, 500, 1, 40000, 12);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (23, 2000, 1, 60000, 12);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (24, 10000, 1, 120000, 12);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (25, -1, 1, 200000, 12);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (26, 500, 1, 20400, 13);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (27, 1000, 1, 30000, 13);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (28, 2000, 1, 52800, 13);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (29, 3000, 1, 79200, 13);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (30, 10000, 1, 264000, 13);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (31, 100, 1, 9.99, 14);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (32, 20, 1, 20.83, 15);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (33, 500, 1, 17.5, 15);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (34, 1000, 1, 12.92, 15);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (35, 10000, 1, 4.83, 15);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (36, -1, 1, 0, 16);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (37, -1, 1, 0, 17);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (38, -1, 1, 0, 18);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (39, -1, 1, 0, 19);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (40, -1, 1, 0, 20);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (41, -1, 1, 0, 21);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (42, -1, 1, 0, 22);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (43, -1, 1, -1, 23);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (44, 5, 1, 25, 24);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (45, -1, 1, 9, 24);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (46, -1, 1, -1, 25);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (47, -1, 1, 0, 26);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (48, -1, 1, 0, 27);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (49, 10, 1, 0, 28);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (50, -1, 1, 0, 29);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (51, -1, 1, -1, 30);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (52, -1, 1, -1, 31);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (53, -1, 1, 1995, 32);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (54, -1, 1, 3495, 33);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (55, 1, 1, 18, 34);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (56, -1, 1, 36, 35);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (57, -1, 1, 1.91, 36);
-INSERT INTO licenses_pricing (license_pricing_id, max_users, min_users, price, license_id)
-VALUES (1, 5, 1, 0, 1);
+-- licenses
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (29, '2020-07-13 21:18:59.274894', '2020-07-13 21:18:59.274894', true, 'Enterprise', 'test', 2, 2, 16);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (6, '2020-07-13 21:18:26.350627', '2020-07-13 23:23:18.555000', true, 'Gold', 'Secure & monitor production', 2, 2, 2);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (30, '2020-07-13 21:19:00.384312', '2020-07-13 22:51:52.001000', true, 'STANDARD', 'For enterprise IT operations. 8x5 support', 2, 2, 17);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (31, '2020-07-13 21:19:01.790647', '2020-07-13 22:52:12.335000', true, 'PREMIUM', 'For mission critical DevOps. 24x7 support', 2, 2, 17);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (7, '2020-07-13 21:18:27.178796', '2020-07-13 23:23:41.889000', true, 'Starter', 'Control what goes
+into production', 3, 2, 2);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (26, '2020-07-13 21:18:56.243368', '2020-07-13 23:24:18.483000', true, 'MIT License', 'Full access to Jenkins service. Cost depends on hosting service', 3, 3, 14);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (1, '2020-07-13 21:19:07.900444', '2020-07-13 23:02:04.778000', true, 'Basic plan', 'Azure Pipelines: Includes the free offer from INDIVIDUAL SERVICES, Azure Boards: Work item tracking and Kanban boards, Azure Repos: Unlimited private Git repos, Azure Artifacts: 2 GB free per organization', 2, 2, 1);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (2, '2020-07-13 21:18:19.443933', '2020-07-13 23:03:36.672000', true, 'Basic and test plan', 'Includes all Basic plan features, test planning, tracking & execution, browser-based tests with annotation, rich-client test execution, user acceptance testing, centralized reporting', 2, 2, 1);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (3, '2020-07-13 21:18:20.662791', '2020-07-13 23:06:38.759000', true, 'Azure Devops Server', 'Azure DevOps full access hosted in your own server without user limitation', 3, 2, 1);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (27, '2020-07-13 21:18:57.274690', '2020-07-13 23:11:13.245000', true, 'Chef', 'Open source license', 1, 1, 15);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (35, '2020-07-13 21:19:06.244083', '2020-07-13 23:13:52.724000', true, 'APM', 'Find service bottlenecks, search and analyze distributed request traces', 2, 2, 19);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (34, '2020-07-13 21:19:04.697099', '2020-07-13 23:14:13.390000', true, 'Infrastructure', 'Centralize your monitoring of systems and services', 2, 2, 19);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (36, '2020-07-13 21:19:07.087941', '2020-07-13 23:14:55.809000', true, 'Log Management', 'Analyze and explore log data in context with flexible retention', 2, 2, 19);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (22, '2020-07-13 21:18:50.930480', '2020-07-13 23:28:44.217000', true, 'Apache License 2.0', 'Open source tool', 1, 1, 11);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (21, '2020-07-13 21:18:48.399063', '2020-07-13 23:33:33.505000', true, 'Katalon Studio', 'Productive IDE to Generate Automated Tests Easily', 1, 3, 10);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (10, '2020-07-13 21:18:32.210362', '2020-07-13 23:33:56.635000', true, 'STANDARD', 'Counts with 8/5 support', 2, 2, 3);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (16, '2020-07-13 21:18:38.507796', '2020-07-13 23:18:50.677000', true, 'Gradle', 'Open Source license', 1, 3, 5);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (24, '2020-07-13 21:18:54.102655', '2020-07-13 23:19:09.631000', true, 'Team', 'Unlimited public/private repositories, Required reviewers, 3,000 Actions minutes/month, Free for public repositories, 2GB of GitHub Packages storage, Free for public repositories, Code owners', 2, 2, 13);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (25, '2020-07-13 21:18:55.180797', '2020-07-13 23:19:55.380000', true, 'Enterprise', 'Everything included in Team, SAML single sign-on, 50,000 Actions minutes/month, Free for public repositories, 50GB of GitHub Packages storage, Free for public repositories, Advanced auditing', 2, 2, 13);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (14, '2020-07-13 21:18:36.257556', '2020-07-13 23:46:18.732000', true, 'Business Class', 'For small companies', 2, 2, 4);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (4, '2020-07-13 21:18:24.537943', '2020-07-13 23:20:53.653000', true, 'Bronze', 'Control what goes
+into production', 2, 2, 2);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (9, '2020-07-13 21:18:29.741452', '2020-07-13 23:21:50.301000', true, 'Ultimate', 'Secure & monitor production', 3, 2, 2);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (5, '2020-07-13 21:18:25.538074', '2020-07-13 23:22:42.604000', true, 'Silver', 'Plan across
+multiple teams', 2, 2, 2);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (8, '2020-07-13 21:18:27.991350', '2020-07-13 23:22:51.863000', true, 'Premium', 'Plan across
+multiple teams', 3, 2, 2);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (11, '2020-07-13 21:18:33.007292', '2020-07-13 23:34:28.309000', true, 'PREMIUM', 'Counts with 24/7 support', 2, 2, 3);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (12, '2020-07-13 21:18:33.851061', '2020-07-13 23:35:33.417000', true, 'Server', '-Complete control of your environment
+-A single server deployment
+-Perpetual license + free year of maintenance
+', 3, 3, 3);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (13, '2020-07-13 21:18:34.663707', '2020-07-13 23:36:05.700000', true, 'Data Center', 'Same as server with SAML 2.0 support', 3, 3, 3);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (23, '2020-07-13 21:18:51.743120', '2020-07-13 23:36:19.558000', true, 'Free', 'Get 50 virtual user licenses for life', 2, 1, 12);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (17, '2020-07-13 21:18:39.335951', '2020-07-13 23:37:43.507000', true, 'Maven', 'Open source license', 1, 3, 6);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (18, '2020-07-13 21:18:41.398551', '2020-07-13 23:38:57.182000', true, 'Microsoft License', 'Open source tool', 1, 1, 7);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (19, '2020-07-13 21:18:43.398684', '2020-07-13 23:40:28.321000', true, 'Microsoft License', 'Open source tool', 1, 1, 8);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (33, '2020-07-13 21:19:03.697029', '2020-07-13 23:42:36.261000', true, 'Enterprise', 'The Enterprise Edition provides users with additional functionality and includes features that are designed to aid in large-scale configuration, forecasting, and scheduled reporting.', 2, 3, 18);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (32, '2020-07-13 21:19:02.618887', '2020-07-13 23:43:00.321000', true, 'Standard', ' includes twelve months of maintenance (upgrade entitlements) and email support.', 2, 3, 18);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (28, '2020-07-13 21:18:58.102875', '2020-07-13 23:43:26.585000', true, 'Free', 'Open source tool', 1, 1, 16);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (15, '2020-07-13 21:18:37.226435', '2020-07-13 23:44:43.868000', true, 'Enterprise', 'For entreprises', 2, 2, 4);
+INSERT INTO public.licenses (license_id, created_at, updated_at, active, name, observation, license_type_id, pay_cycle_id, tool_id) VALUES (20, '2020-07-13 21:18:44.523851', '2020-07-13 23:45:50.763000', true, 'Selenium', 'Open source license', 1, 3, 9);
+
+-- licenses pricing
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (1, '2020-07-13 23:40:28.320000', '2020-07-13 23:40:28.320000', -1, 1, 0, 19);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (2, '2020-07-13 23:42:36.191000', '2020-07-13 23:42:36.191000', -1, 1, 3495, 33);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (3, '2020-07-13 23:43:00.320000', '2020-07-13 23:43:00.320000', -1, 1, 1995, 32);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (4, '2020-07-13 23:43:26.574000', '2020-07-13 23:43:26.574000', 10, 1, 0, 28);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (5, '2020-07-13 23:44:43.859000', '2020-07-13 23:44:43.859000', 20, 1, 20.83, 15);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (6, '2020-07-13 23:44:43.865000', '2020-07-13 23:44:43.865000', 500, 21, 17.5, 15);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (7, '2020-07-13 23:44:43.866000', '2020-07-13 23:44:43.866000', 1000, 501, 12.92, 15);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (8, '2020-07-13 23:44:43.866000', '2020-07-13 23:44:43.866000', 10000, 1001, 4.83, 15);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (9, '2020-07-13 23:45:50.746000', '2020-07-13 23:45:50.746000', -1, 1, 0, 20);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10, '2020-07-13 23:46:18.731000', '2020-07-13 23:46:18.731000', 100, 1, 9.99, 14);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (11, '2020-07-13 21:20:01.263611', '2020-07-13 21:20:01.263611', -1, 1, 0, 29);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (12, '2020-07-13 22:51:51.867000', '2020-07-13 22:51:51.867000', -1, 1, -1, 30);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (13, '2020-07-13 22:52:12.256000', '2020-07-13 22:52:12.256000', -1, 1, -1, 31);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (14, '2020-07-13 23:02:04.768000', '2020-07-13 23:02:04.768000', 5, 1, 0, 1);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (15, '2020-07-13 23:02:04.774000', '2020-07-13 23:02:04.774000', 20, 6, 6, 1);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16, '2020-07-13 23:03:36.657000', '2020-07-13 23:03:36.657000', 20, 1, 52, 2);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17, '2020-07-13 23:06:38.748000', '2020-07-13 23:06:38.748000', -1, 1, -1, 3);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (18, '2020-07-13 23:11:13.231000', '2020-07-13 23:11:13.231000', -1, 1, 0, 27);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (19, '2020-07-13 23:13:52.722000', '2020-07-13 23:13:52.722000', -1, 1, 36, 35);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (20, '2020-07-13 23:14:13.389000', '2020-07-13 23:14:13.389000', 1, 1, 18, 34);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (15500, '2020-07-13 23:14:55.807000', '2020-07-13 23:14:55.807000', -1, 1, 1.91, 36);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10200, '2020-07-13 23:18:50.667000', '2020-07-13 23:18:50.667000', -1, 1, 0, 16);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21000, '2020-07-13 23:19:09.611000', '2020-07-13 23:19:09.611000', -1, 1, 4, 24);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10300, '2020-07-13 23:19:55.377000', '2020-07-13 23:19:55.377000', -1, 1, 21, 25);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (15800, '2020-07-13 23:20:53.651000', '2020-07-13 23:20:53.651000', -1, 1, 4, 4);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10500, '2020-07-13 23:21:50.299000', '2020-07-13 23:21:50.299000', -1, 1, 99, 9);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21200, '2020-07-13 23:22:42.601000', '2020-07-13 23:22:42.601000', -1, 0, 19, 5);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10700, '2020-07-13 23:22:51.862000', '2020-07-13 23:22:51.862000', -1, 1, 19, 8);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21300, '2020-07-13 23:23:18.552000', '2020-07-13 23:23:18.552000', -1, 1, 99, 6);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10800, '2020-07-13 23:23:41.879000', '2020-07-13 23:23:41.879000', -1, 1, 4, 7);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21400, '2020-07-13 23:24:18.479000', '2020-07-13 23:24:18.479000', -1, 1, 0, 26);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (15900, '2020-07-13 23:28:44.213000', '2020-07-13 23:28:44.213000', -1, 1, 0, 22);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21500, '2020-07-13 23:33:33.500000', '2020-07-13 23:33:33.500000', -1, 1, 0, 21);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16000, '2020-07-13 23:33:56.623000', '2020-07-13 23:33:56.623000', 100, 1, 7, 10);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16100, '2020-07-13 23:33:56.623000', '2020-07-13 23:33:56.623000', 250, 101, 6, 10);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16200, '2020-07-13 23:33:56.623000', '2020-07-13 23:33:56.623000', 5000, 251, 5, 10);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16300, '2020-07-13 23:34:28.237000', '2020-07-13 23:34:28.237000', 100, 1, 14, 11);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16400, '2020-07-13 23:34:28.238000', '2020-07-13 23:34:28.238000', 250, 101, 10, 11);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16500, '2020-07-13 23:34:28.238000', '2020-07-13 23:34:28.238000', 5000, 251, 7, 11);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16600, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 10, 1, 10, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16700, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 25, 1, 3500, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16800, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 50, 1, 6800, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (16900, '2020-07-13 23:35:33.414000', '2020-07-13 23:35:33.414000', 100, 1, 13300, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17000, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 250, 1, 26400, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17100, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 500, 1, 40000, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17200, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 2000, 1, 60000, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17300, '2020-07-13 23:35:33.415000', '2020-07-13 23:35:33.415000', 10000, 1, 120000, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17400, '2020-07-13 23:35:33.416000', '2020-07-13 23:35:33.416000', -1, 1, 200000, 12);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17500, '2020-07-13 23:36:05.641000', '2020-07-13 23:36:05.641000', 500, 1, 20400, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17600, '2020-07-13 23:36:05.642000', '2020-07-13 23:36:05.642000', 1000, 1, 30000, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17700, '2020-07-13 23:36:05.642000', '2020-07-13 23:36:05.642000', 2000, 1, 52800, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17800, '2020-07-13 23:36:05.642000', '2020-07-13 23:36:05.642000', 3000, 1, 79200, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (17900, '2020-07-13 23:36:05.643000', '2020-07-13 23:36:05.643000', 10000, 1, 264000, 13);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (10900, '2020-07-13 23:36:19.554000', '2020-07-13 23:36:19.554000', 50, 1, 0, 23);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (11000, '2020-07-13 23:37:43.506000', '2020-07-13 23:37:43.506000', -1, 1, 0, 17);
+INSERT INTO public.licenses_pricing (license_pricing_id, created_at, updated_at, max_users, min_users, price, license_id) VALUES (21600, '2020-07-13 23:38:57.172000', '2020-07-13 23:38:57.172000', -1, 1, 0, 18);
 
 
 INSERT INTO level (level_id, description, points)
@@ -367,3 +342,5 @@ INSERT INTO profile (id, description)
 VALUES (3, 'Frontend Developer');
 INSERT INTO profile (id, description)
 VALUES (4, 'DevOps Engineer');
+INSERT INTO profile (id, description)
+VALUES (5, 'Scrum master');

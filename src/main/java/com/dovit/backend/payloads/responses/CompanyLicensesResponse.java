@@ -32,4 +32,9 @@ public class CompanyLicensesResponse {
   private String licenseToolImageUrl;
 
   private List<LicensePricingResponse> licensePrices;
+
+  private boolean active;
+  private List<String> tags;
+  private Long membersUsingQty;
+  private Double pricing;
 }

@@ -1,13 +1,12 @@
 package com.dovit.backend.repositories;
 
 import com.dovit.backend.domain.Audit;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Ramón París
@@ -23,5 +22,5 @@ public interface AuditRepository extends JpaRepository<Audit, Long> {
       @Param("user_id") Long user_id)
       throws Exception;
 
-  Page<Audit> findAllByActionDateBetween(LocalDateTime from, LocalDateTime to, Pageable pageable);
+  List<Audit> findAllByActionDateBetweenOrderByActionDate(LocalDateTime from, LocalDateTime to);
 }

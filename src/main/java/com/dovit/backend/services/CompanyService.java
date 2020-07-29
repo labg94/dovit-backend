@@ -14,11 +14,15 @@ public interface CompanyService {
 
   Company findById(Long id);
 
-    CompanyResponse findCompanyResponseById(Long id);
+  CompanyResponse findCompanyResponseById(Long id);
 
-    List<CompanyResponse> findAll();
+  List<CompanyResponse> findAll();
 
-    Company createCompany(CompanyRequest companyRequest);
+  Company createCompany(CompanyRequest companyRequest);
 
-    Company updateCompany(CompanyRequest companyRequest);
+  Company updateCompany(CompanyRequest companyRequest);
+
+  void toggleCompanyStatus(Long id);
+
+  List<CompanyResponse> findAllActives();
 }

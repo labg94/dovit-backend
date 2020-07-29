@@ -115,10 +115,11 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public String createUserToken(RegisterTokenRequest registerTokenRequest) {
-    final Boolean exists = userRepository.existsByEmail(registerTokenRequest.getEmail());
+    registerTokenRequest.setEmail(registerTokenRequest.getEmail().toLowerCase());
+    final Boolean exists = userRepository.existsByEmailIgnoreCase(registerTokenRequest.getEmail());
     if (exists) {
       throw new DataIntegrityViolationException(
-          "Detail:Email " + registerTokenRequest.getEmail() + " ya se encuentra en base de datos");
+          "Detail:Email " + registerTokenRequest.getEmail() + " already exists in database");
     }
 
     String token = tokenProvider.generateRegisterToken(registerTokenRequest);
@@ -131,6 +132,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public void toggleActive(Long userId) {
     User user = this.findById(userId);
+    validatorUtil.canActOnCompany(user.getCompany().getId());
     user.setActive(!user.isActive());
     userRepository.save(user);
   }
@@ -146,6 +148,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<UserResponse> findAllByCompanyId(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     List<User> users = userRepository.findAllByCompanyIdOrderById(companyId);
     return users.stream()
         .map(u -> modelMapper.map(u, UserResponse.class))
@@ -155,6 +158,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserResponse findResponseById(Long userId) {
     User u = this.findById(userId);
+    validatorUtil.canActOnCompany(u.getCompany().getId());
     return modelMapper.map(u, UserResponse.class);
   }
 

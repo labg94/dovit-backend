@@ -27,6 +27,7 @@ public class MemberResponseDetail {
   private String availableStatusDescription;
   private Long activeProjectsQty;
   private Long allProjectsQty;
+  private Long closedProjectsQty;
   private List<ProfileResponse> profiles;
   private List<ToolProfileResponse> tools;
   private List<ProjectMemberResume> projects;

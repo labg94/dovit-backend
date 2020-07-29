@@ -1,6 +1,7 @@
 package com.dovit.backend.services;
 
 import com.dovit.backend.domain.CompanyLicense;
+import com.dovit.backend.domain.License;
 import com.dovit.backend.exceptions.BadRequestException;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.payloads.requests.CompanyLicenseRequest;
@@ -13,7 +14,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.dovit.backend.util.DateUtil.isBetween;
@@ -33,15 +36,43 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
 
   @Override
   @Transactional
-  public List<CompanyLicensesResponse> findAllByCompanyIdAndToolId(Long companyId, Long toolId) {
+  public List<CompanyLicensesResponse> findAllByCompanyId(Long companyId) {
     validatorUtil.canActOnCompany(companyId);
     List<CompanyLicense> companyLicenses =
-        companyLicenseRepository.findAllByCompanyIdAndLicenseToolIdOrderByStartDateDesc(
-            companyId, toolId);
+        companyLicenseRepository.findAllByCompanyIdOrderByStartDateDesc(companyId);
 
+    final LocalDate now = LocalDate.now();
     return companyLicenses.stream()
-        .map(c -> modelMapper.map(c, CompanyLicensesResponse.class))
+        .map(c -> mapCompanyLicenseResponse(companyId, now, c))
         .collect(Collectors.toList());
+  }
+
+  private CompanyLicensesResponse mapCompanyLicenseResponse(
+      Long companyId, LocalDate now, CompanyLicense c) {
+    final CompanyLicensesResponse response = modelMapper.map(c, CompanyLicensesResponse.class);
+
+    response.setActive(isBetween(now, c.getStartDate(), c.getExpirationDate()));
+
+    final Long membersUsingQty =
+        c.getLicense().getTool().getToolProfile().stream()
+            .filter(toolProfile -> toolProfile.getMember().getCompany().getId().equals(companyId))
+            .count();
+    response.setMembersUsingQty(membersUsingQty);
+
+    c.getLicense().getLicensePrices().stream()
+        .filter(licensePricing -> licensePricing.getPrice() != null)
+        .filter(licensePricing -> licensePricing.getPrice().compareTo(-1.0) > 0)
+        .filter(
+            licensePricing ->
+                membersUsingQty.compareTo(licensePricing.getMinUsers()) >= 0
+                    && (licensePricing.getMaxUsers().compareTo(-1L) == 0
+                        || membersUsingQty.compareTo(licensePricing.getMaxUsers()) <= 0))
+        .filter(licensePricing -> licensePricing.getPrice() != null)
+        .findFirst()
+        .ifPresent(
+            licensePricing -> response.setPricing(licensePricing.getPrice() * membersUsingQty));
+
+    return response;
   }
 
   @Override
@@ -72,6 +103,7 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
     checkCurrentLicense(request);
     companyLicense.setStartDate(request.getStartDate());
     companyLicense.setExpirationDate(request.getExpirationDate());
+    companyLicense.setLicense(License.builder().id(request.getLicenseId()).build());
     companyLicense = companyLicenseRepository.save(companyLicense);
     log.info("CompanyLicense {} updated", companyLicense.getId());
     return companyLicense;
@@ -89,6 +121,15 @@ public class CompanyLicenseServiceImpl implements CompanyLicenseService {
     companyLicenseRepository.delete(companyLicense);
     log.info("CompanyLicense {} deleted", companyLicense.getId());
     return true;
+  }
+
+  @Override
+  public CompanyLicensesResponse findAllByCompanyIdAndToolId(Long companyId, Long toolId) {
+    final Optional<CompanyLicense> companyLicense =
+        companyLicenseRepository.findByCompanyIdAndLicenseToolIdOrderByStartDateDesc(
+            companyId, toolId);
+    LocalDate now = LocalDate.now();
+    return companyLicense.map(c -> this.mapCompanyLicenseResponse(companyId, now, c)).orElseThrow();
   }
 
   private void checkCurrentLicense(CompanyLicenseRequest request) {

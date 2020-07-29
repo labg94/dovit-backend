@@ -12,11 +12,13 @@ import java.util.List;
  */
 public interface CompanyLicenseService {
 
-  List<CompanyLicensesResponse> findAllByCompanyIdAndToolId(Long companyId, Long toolId);
+  List<CompanyLicensesResponse> findAllByCompanyId(Long companyId);
 
-    CompanyLicense createCompanyLicense(CompanyLicenseRequest request);
+  CompanyLicense createCompanyLicense(CompanyLicenseRequest request);
 
-    CompanyLicense updateCompanyLicense(CompanyLicenseRequest request);
+  CompanyLicense updateCompanyLicense(CompanyLicenseRequest request);
 
-    boolean deleteCompanyLicense(Long companyLicenseId);
+  boolean deleteCompanyLicense(Long companyLicenseId);
+
+  CompanyLicensesResponse findAllByCompanyIdAndToolId(Long companyId, Long toolId);
 }

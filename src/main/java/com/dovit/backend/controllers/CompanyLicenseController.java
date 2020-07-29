@@ -36,9 +36,15 @@ public class CompanyLicenseController {
    */
   @IsAuthenticated
   @GetMapping("/company/{companyId}/tool/{toolId}")
-  public ResponseEntity<?> findAllLicenses(
+  public ResponseEntity<?> findLicensesByToolId(
       @PathVariable Long companyId, @PathVariable Long toolId) {
     return ResponseEntity.ok(companyLicenseService.findAllByCompanyIdAndToolId(companyId, toolId));
+  }
+
+  @IsAuthenticated
+  @GetMapping("/company/{companyId}/licenses")
+  public ResponseEntity<?> findAllLicenses(@PathVariable Long companyId) {
+    return ResponseEntity.ok(companyLicenseService.findAllByCompanyId(companyId));
   }
 
   @PostMapping("/company/license")
@@ -52,7 +58,7 @@ public class CompanyLicenseController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "Licencia asociada correctamente"));
+        .body(new ApiResponse(true, "Company license created successfully"));
   }
 
   @PutMapping("/company/license")
@@ -66,12 +72,12 @@ public class CompanyLicenseController {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "Licencia editada correctamente"));
+        .body(new ApiResponse(true, "Company license updated successfully"));
   }
 
   @DeleteMapping("/company/license/{companyLicenseId}")
   public ResponseEntity<?> deleteCompanyLicense(@PathVariable Long companyLicenseId) {
     Boolean resp = companyLicenseService.deleteCompanyLicense(companyLicenseId);
-    return ResponseEntity.ok(new ApiResponse(resp, "Licencia eliminada"));
+    return ResponseEntity.ok(new ApiResponse(resp, "License deleted"));
   }
 }

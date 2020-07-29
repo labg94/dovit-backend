@@ -105,7 +105,7 @@ public class CustomRepositoryImpl implements CustomRepository {
             + "                  join pipeline p on pt.pipeline_id = p.id "
             + "             and p.recommended = false "
             + "                  join project p2 on p.project_id = p2.id "
-            + "             and p2.company_company_id = ? "
+            + "             and p2.company_id = ? "
             + "         group by pt.tool_id, pt.pipeline_id) as helper "
             + "join tools t on t.tool_id = helper.tool_id "
             + "group by helper.tool_id, t.name "

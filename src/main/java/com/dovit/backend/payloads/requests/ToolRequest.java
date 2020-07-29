@@ -36,4 +36,6 @@ public class ToolRequest {
 
   @NotNull(message = "Project Type is a mandatory field")
   private List<Long> projectTypeIds;
+
+  private boolean active;
 }

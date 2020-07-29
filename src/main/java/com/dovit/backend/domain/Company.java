@@ -30,6 +30,9 @@ public class Company extends DateAudit {
 
   @NotEmpty private String name;
 
+  @Column(columnDefinition = "boolean default true")
+  private boolean active;
+
   @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<CompanyLicense> licenses;
 

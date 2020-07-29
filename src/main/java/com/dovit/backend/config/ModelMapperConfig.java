@@ -1,6 +1,7 @@
 package com.dovit.backend.config;
 
 import com.dovit.backend.domain.*;
+import com.dovit.backend.model.ToolRecommendationDTO;
 import com.dovit.backend.payloads.requests.*;
 import com.dovit.backend.payloads.responses.*;
 import com.dovit.backend.util.DateUtil;
@@ -28,8 +29,6 @@ import java.util.stream.Stream;
 @Configuration
 public class ModelMapperConfig {
 
-  private final Gson gson = new Gson();
-
   @Value("${api.image.route}")
   private String BASE_IMAGE_URL;
 
@@ -50,6 +49,8 @@ public class ModelMapperConfig {
     modelMapper.addMappings(this.mapProjectTypeResponse());
     modelMapper.addMappings(this.pipelineToolResponsePropertyMap(BASE_IMAGE_URL));
     modelMapper.addMappings(this.categoryRecommendationResponsePropertyMap());
+    modelMapper.addMappings(this.companyLicensesResponsePropertyMap(BASE_IMAGE_URL));
+    modelMapper.addMappings(this.toolRecommendationDTOPropertyMap(BASE_IMAGE_URL));
 
     // Add requests mappers
     modelMapper.addMappings(projectRequestPropertyMap());
@@ -69,6 +70,19 @@ public class ModelMapperConfig {
         map(source.getToolId()).setToolId(1L);
         skip(destination.getPipeline());
         skip(destination.getPipelineId());
+      }
+    };
+  }
+
+  private PropertyMap<Tool, ToolRecommendationDTO> toolRecommendationDTOPropertyMap(
+      String BASE_IMAGE_URL) {
+    Converter<String, String> convertImageUrl =
+        mappingContext -> BASE_IMAGE_URL + mappingContext.getSource();
+
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        using(convertImageUrl).map(source.getImageUrl()).setToolImageUrl("");
       }
     };
   }
@@ -169,20 +183,21 @@ public class ModelMapperConfig {
                 .map(id -> DevOpsSubcategory.builder().id(id).build())
                 .collect(Collectors.toList());
 
-    Converter<String, String> imageUrlConverter =
-        mappingContext -> "/" + mappingContext.getSource().toLowerCase();
+    //    Converter<String, String> imageUrlConverter =
+    //        mappingContext -> "/" + mappingContext.getSource().toLowerCase();
 
     return new PropertyMap<>() {
       @Override
       protected void configure() {
         using(converter).map(source.getSubcategoryIds()).setSubcategories(new ArrayList<>());
-        using(imageUrlConverter).map(source.getName()).setImageUrl("");
+        //        using(imageUrlConverter).map(source.getName()).setImageUrl("");
 
+        skip(destination.getImageUrl());
         skip(destination.getProjectTypes());
         skip(destination.getCreatedAt());
         skip(destination.getUpdatedAt());
         skip(destination.getToolProfile());
-        skip(destination.isActive());
+        //        skip(destination.isActive());
       }
     };
   }
@@ -207,7 +222,7 @@ public class ModelMapperConfig {
         using(licenseIdConverter).map(source).setId(1L);
         //        map(source.getLicenseId()).setId(1L);
 
-        skip(destination.isActive());
+        //        skip(destination.isActive());
         skip(destination.getCreatedAt());
         skip(destination.getUpdatedAt());
         skip(destination.getCompanyLicenses());
@@ -232,15 +247,29 @@ public class ModelMapperConfig {
     Converter<LocalDateTime, String> dateConverter =
         mappingContext -> DateUtil.formatDateToString(mappingContext.getSource());
 
-    Converter<Object, String> jsonConverter =
-        mappingContext -> gson.toJson(mappingContext.getSource());
-
     return new PropertyMap<>() {
       @Override
       protected void configure() {
         using(fullNameConverter).map(source.getUser()).setUserFullName("");
         using(dateConverter).map(source.getActionDate()).setActionDate("");
-        using(jsonConverter).map(source.getData()).setData("");
+      }
+    };
+  }
+
+  private PropertyMap<CompanyLicense, CompanyLicensesResponse> companyLicensesResponsePropertyMap(
+      String BASE_IMAGE_URL) {
+    Converter<String, String> converter =
+        mappingContext -> BASE_IMAGE_URL + mappingContext.getSource();
+
+    return new PropertyMap<>() {
+      @Override
+      protected void configure() {
+        using(converter)
+            .map(source.getLicense().getTool().getImageUrl())
+            .setLicenseToolImageUrl("");
+        using(toolTagsConverter())
+            .map(source.getLicense().getTool().getSubcategories())
+            .setTags(Collections.emptyList());
       }
     };
   }
@@ -302,17 +331,52 @@ public class ModelMapperConfig {
     Converter<List<ProjectMember>, Long> allProjectsQtyConverter =
         mappingContext -> this.calculateProjectQtyOfMembers(mappingContext.getSource().stream());
 
+    Converter<List<ProjectMember>, Long> closedProjectsQtyConverter =
+        mappingContext ->
+            this.calculateProjectQtyOfMembers(mappingContext.getSource().stream())
+                - this.calculateProjectQtyOfMembers(
+                    mappingContext.getSource().stream()
+                        .filter(projectMember -> !projectMember.getProject().getFinished()));
+
+    Converter<List<ProjectMember>, List<ProjectMemberResume>> projectMemberConverter =
+        context ->
+            context.getSource().stream()
+                .collect(Collectors.groupingBy(ProjectMember::getProject))
+                .entrySet()
+                .stream()
+                .map(
+                    entrySet ->
+                        ProjectMemberResume.builder()
+                            .projectName(entrySet.getKey().getName())
+                            .projectId(entrySet.getKey().getId())
+                            .projectStart(entrySet.getKey().getStart().toString())
+                            .projectFinished(entrySet.getKey().getFinished())
+                            .projectEndDate(
+                                entrySet.getKey().getEndDate() != null
+                                    ? entrySet.getKey().getEndDate().toString()
+                                    : null)
+                            .categoriesParticipation(
+                                entrySet.getValue().stream()
+                                    .map(pm -> pm.getDevOpsCategories().getDescription())
+                                    .collect(Collectors.toList()))
+                            .build())
+                .collect(Collectors.toList());
+
     return new PropertyMap<>() {
       @Override
       protected void configure() {
         using(toolConverter).map(source.getToolProfile()).setTools(new ArrayList<>());
         using(allProjectsQtyConverter).map(source.getProjects()).setAllProjectsQty(1L);
         using(activeProjectsQtyConverter).map(source.getProjects()).setActiveProjectsQty(1L);
+        using(closedProjectsQtyConverter).map(source.getProjects()).setClosedProjectsQty(1L);
         using(availableStatusDescriptionConverter)
             .map(source.getProjects())
             .setAvailableStatusDescription("");
 
         using(availableStatusIdConverter).map(source.getProjects()).setAvailableStatusId(1L);
+        using(projectMemberConverter)
+            .map(source.getProjects())
+            .setProjects(Collections.emptyList());
       }
     };
   }
@@ -426,22 +490,15 @@ public class ModelMapperConfig {
 
   /** Property Map used to map DevOpsSubcategory and DevOpsCategory into tags */
   private PropertyMap<Tool, ToolResponse> toolResponsePropertyMap(String BASE_IMAGE_URL) {
-    Converter<List<DevOpsSubcategory>, List<String>> converterTags =
-        mappingContext -> {
-          List<String> tags =
-              mappingContext.getSource().stream()
-                  .map(DevOpsSubcategory::getDescription)
-                  .collect(Collectors.toList());
+    Converter<List<DevOpsSubcategory>, List<String>> converterTags = toolTagsConverter();
 
-          List<String> parentTags =
-              mappingContext.getSource().stream()
-                  .map(DevOpsSubcategory::getDevOpsCategory)
-                  .map(DevOpsCategory::getDescription)
-                  .distinct()
-                  .collect(Collectors.toList());
-
-          return Stream.concat(parentTags.stream(), tags.stream()).collect(Collectors.toList());
-        };
+    Converter<List<DevOpsSubcategory>, List<String>> converterParentTags =
+        mappingContext ->
+            mappingContext.getSource().stream()
+                .map(DevOpsSubcategory::getDevOpsCategory)
+                .map(DevOpsCategory::getDescription)
+                .distinct()
+                .collect(Collectors.toList());
 
     Converter<String, String> convertImgUrl =
         mappingContext -> BASE_IMAGE_URL + mappingContext.getSource();
@@ -450,8 +507,27 @@ public class ModelMapperConfig {
       @Override
       protected void configure() {
         using(converterTags).map(source.getSubcategories()).setTags(new ArrayList<>());
+        using(converterParentTags).map(source.getSubcategories()).setParentTags(new ArrayList<>());
         using(convertImgUrl).map(source.getImageUrl()).setImageUrl(BASE_IMAGE_URL);
       }
+    };
+  }
+
+  private Converter<List<DevOpsSubcategory>, List<String>> toolTagsConverter() {
+    return mappingContext -> {
+      List<String> tags =
+          mappingContext.getSource().stream()
+              .map(DevOpsSubcategory::getDescription)
+              .collect(Collectors.toList());
+
+      List<String> parentTags =
+          mappingContext.getSource().stream()
+              .map(DevOpsSubcategory::getDevOpsCategory)
+              .map(DevOpsCategory::getDescription)
+              .distinct()
+              .collect(Collectors.toList());
+
+      return Stream.concat(parentTags.stream(), tags.stream()).collect(Collectors.toList());
     };
   }
 

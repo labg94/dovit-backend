@@ -23,5 +23,6 @@ public class ToolResponse {
   private String description;
   private boolean active;
   private List<String> tags;
+  private List<String> parentTags;
   private List<ProjectTypeResponse> projectTypes;
 }

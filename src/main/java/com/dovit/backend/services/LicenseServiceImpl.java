@@ -4,6 +4,7 @@ import com.dovit.backend.domain.License;
 import com.dovit.backend.exceptions.ResourceNotFoundException;
 import com.dovit.backend.payloads.requests.LicenseRequest;
 import com.dovit.backend.payloads.responses.LicenseResponse;
+import com.dovit.backend.repositories.LicensePricingRepository;
 import com.dovit.backend.repositories.LicenseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class LicenseServiceImpl implements LicenseService {
 
   private final LicenseRepository licenseRepository;
+  private final LicensePricingRepository licensePricingRepository;
   private final ModelMapper modelMapper;
 
   @Override
@@ -39,7 +41,13 @@ public class LicenseServiceImpl implements LicenseService {
   @Transactional
   public License save(LicenseRequest licenseRequest) {
     licenseRequest.setLicenseId(null);
-    licenseRequest.getLicensePrices().forEach(pricing -> pricing.setId(null));
+    if (licenseRequest.getLicensePrices() != null) {
+      licenseRequest.getLicensePrices().forEach(pricing -> pricing.setId(null));
+    }
+
+    if (licenseRequest.getActive() == null) {
+      licenseRequest.setActive(true);
+    }
     final License license = modelMapper.map(licenseRequest, License.class);
     license.getLicensePrices().forEach(licensePricing -> licensePricing.setLicense(license));
     return licenseRepository.save(license);
@@ -48,15 +56,15 @@ public class LicenseServiceImpl implements LicenseService {
   @Override
   @Transactional
   public License update(LicenseRequest licenseRequest) {
-    License license = findLicenseById(licenseRequest.getLicenseId());
-    licenseRequest.setToolId(null);
-    licenseRequest.setLicensePrices(null);
-    modelMapper.map(licenseRequest, license);
+    final boolean exists = licenseRepository.existsById(licenseRequest.getLicenseId());
+    if (exists) {
+      final License license = modelMapper.map(licenseRequest, License.class);
+      license.getLicensePrices().forEach(licensePricing -> licensePricing.setLicense(license));
+      licensePricingRepository.deleteAllByLicenseId(license.getId());
+      return licenseRepository.save(license);
+    }
 
-    // TODO por algún motivo el map me está cambiando el ID de la licencia por el valor en el
-    // licensePricingId.. En honor al tiempo se hizo esta weá, pero se tiene que mejorar
-    license.setId(licenseRequest.getLicenseId());
-    return licenseRepository.save(license);
+    return null;
   }
 
   @Override

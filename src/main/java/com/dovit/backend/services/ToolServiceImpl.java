@@ -53,6 +53,7 @@ public class ToolServiceImpl implements ToolService {
     List<Tool> tools = toolRepository.findAllByCompanyId(companyId);
     return tools.stream()
         .map(tool -> modelMapper.map(tool, ToolResponse.class))
+        .sorted(Comparator.comparing(ToolResponse::getToolName))
         .collect(Collectors.toList());
   }
 
@@ -62,6 +63,7 @@ public class ToolServiceImpl implements ToolService {
     List<Tool> tools = toolRepository.findAll();
     return tools.stream()
         .map(tool -> modelMapper.map(tool, ToolResponse.class))
+        .sorted(Comparator.comparing(ToolResponse::getToolName))
         .collect(Collectors.toList());
   }
 
@@ -120,6 +122,23 @@ public class ToolServiceImpl implements ToolService {
     // Should not update licenses
     request.setLicenses(null);
     modelMapper.map(request, tool);
+
+    final List<ToolProjectType> projectTypeToDelete =
+        tool.getProjectTypes().stream()
+            .filter(pt -> !request.getProjectTypeIds().contains(pt.getProjectTypeId()))
+            .collect(Collectors.toList());
+
+    toolProjectTypeRepository.deleteAll(projectTypeToDelete);
+    List<ToolProjectType> toolProjectTypes =
+        request.getProjectTypeIds().stream()
+            .map(
+                projectTypeId ->
+                    ToolProjectType.builder()
+                        .projectTypeId(projectTypeId)
+                        .toolId(tool.getId())
+                        .build())
+            .collect(Collectors.toList());
+    tool.setProjectTypes(toolProjectTypes);
     return toolRepository.save(tool);
   }
 
@@ -210,8 +229,7 @@ public class ToolServiceImpl implements ToolService {
     return createToolRecommendation(tools)
         .map(
             recommendation ->
-                recommendation
-                    .toBuilder()
+                recommendation.toBuilder()
                     .points(
                         Collections.singletonList(
                             RecommendationPointsDTO.builder()
@@ -253,9 +271,7 @@ public class ToolServiceImpl implements ToolService {
                                           toolProjectType.getProjectType().getDescription()))
                                   .build())
                       .collect(Collectors.toList());
-              return modelMapper
-                  .map(tool, ToolRecommendationDTO.class)
-                  .toBuilder()
+              return modelMapper.map(tool, ToolRecommendationDTO.class).toBuilder()
                   .points(points)
                   .totalPoints(
                       points.stream()
@@ -275,8 +291,7 @@ public class ToolServiceImpl implements ToolService {
     return createToolRecommendation(tools)
         .map(
             recommendation ->
-                recommendation
-                    .toBuilder()
+                recommendation.toBuilder()
                     .points(
                         Collections.singletonList(
                             RecommendationPointsDTO.builder()

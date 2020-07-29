@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CompanyResponse {
 
-    private Long id;
-    private String name;
+  private Long id;
+  private String name;
+  private boolean active;
 }

@@ -6,6 +6,7 @@ import com.dovit.backend.model.MemberKnowledgeHelperDTO;
 import com.dovit.backend.payloads.responses.MemberResponseResume;
 import com.dovit.backend.payloads.responses.charts.*;
 import com.dovit.backend.repositories.*;
+import com.dovit.backend.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -36,10 +38,12 @@ public class ChartServiceImpl implements ChartService {
   private final CompanyLicenseRepository companyLicenseRepository;
   private final ProjectRepository projectRepository;
   private final ModelMapper modelMapper;
+  private final ValidatorUtil validatorUtil;
 
   @Override
   @Transactional
   public List<ChartTopSeniorMemberResponse> findTopSeniorMembers(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     Pageable pageable = PageRequest.of(0, 3);
     final Page<Object[]> page = memberRepository.findTopSeniorMembers(companyId, pageable);
 
@@ -53,84 +57,12 @@ public class ChartServiceImpl implements ChartService {
             .collect(Collectors.toList());
     final List<ChartTopSeniorMemberResponse> charts =
         topMembers.stream()
-            .map(
-                member -> {
-                  final String fullName =
-                      String.format("%s %s", member.getName(), member.getLastName());
-
-                  final List<ChartMemberKnowledge> knowledgeList =
-                      member.getToolProfile().stream()
-                          .map(
-                              toolProfile ->
-                                  toolProfile.getTool().getSubcategories().stream()
-                                      .map(DevOpsSubcategory::getDevOpsCategory)
-                                      .distinct()
-                                      .map(
-                                          category ->
-                                              MemberKnowledgeHelperDTO.builder()
-                                                  .toolProfile(toolProfile)
-                                                  .devOpsCategory(category)
-                                                  .build())
-                                      .collect(Collectors.toList()))
-                          .flatMap(Collection::stream)
-                          .collect(
-                              Collectors.groupingBy(MemberKnowledgeHelperDTO::getDevOpsCategory))
-                          .entrySet()
-                          .stream()
-                          .map(
-                              entrySet ->
-                                  ChartMemberKnowledge.builder()
-                                      .categoryId(entrySet.getKey().getId())
-                                      .category(entrySet.getKey().getDescription())
-                                      .value(
-                                          entrySet.getValue().stream()
-                                              .map(
-                                                  value ->
-                                                      value.getToolProfile().getLevel().getPoints())
-                                              .reduce(0, Integer::sum))
-                                      .tools(
-                                          entrySet.getValue().stream()
-                                              .map(
-                                                  tool -> tool.getToolProfile().getTool().getName())
-                                              .collect(Collectors.joining(", ")))
-                                      .build())
-                          .collect(Collectors.toList());
-                  return ChartTopSeniorMemberResponse.builder()
-                      .id(member.getId())
-                      .fullName(fullName)
-                      .knowledgeList(knowledgeList)
-                      .build();
-                })
+            .map(this::mapMemberToChartSeniorMemberResponse)
             .collect(Collectors.toList());
 
     // Agregando todas las categorías siempre
     List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAllByActiveOrderById(true);
-    charts.forEach(
-        chart -> {
-          final List<Long> categoryIds =
-              chart.getKnowledgeList().stream()
-                  .map(ChartMemberKnowledge::getCategoryId)
-                  .collect(Collectors.toList());
-
-          final List<ChartMemberKnowledge> otherKnowledge =
-              devOpsCategories.stream()
-                  .filter(category -> !categoryIds.contains(category.getId()))
-                  .map(
-                      category ->
-                          ChartMemberKnowledge.builder()
-                              .categoryId(category.getId())
-                              .category(category.getDescription())
-                              .value(0)
-                              .tools("")
-                              .build())
-                  .collect(Collectors.toList());
-
-          chart.getKnowledgeList().addAll(otherKnowledge);
-          chart.setKnowledgeList(
-              chart.getKnowledgeList().stream()
-                  .sorted(Comparator.comparing(ChartMemberKnowledge::getCategoryId))
-                  .collect(Collectors.toList()));
-        });
+    charts.forEach(chart -> setMissingCategoriesInSeniorChart(devOpsCategories, chart));
 
     charts.stream()
         .map(ChartTopSeniorMemberResponse::getKnowledgeList)
@@ -143,7 +75,28 @@ public class ChartServiceImpl implements ChartService {
   }
 
   @Override
+  public ChartTopSeniorMemberResponse findMemberKnowledgeById(Long memberId) {
+    final Optional<Member> memberEntity = memberRepository.findById(memberId);
+    memberEntity.ifPresent(member -> validatorUtil.canActOnCompany(member.getCompany().getId()));
+    List<DevOpsCategory> devOpsCategories = devOpsCategoryRepository.findAllByActiveOrderById(true);
+
+    return memberEntity
+        .map(this::mapMemberToChartSeniorMemberResponse)
+        .map(
+            chart -> {
+              setMissingCategoriesInSeniorChart(devOpsCategories, chart);
+              chart.getKnowledgeList().stream()
+                  .map(ChartMemberKnowledge::getValue)
+                  .max(Integer::compareTo)
+                  .ifPresent(chart::setMaxValue);
+              return chart;
+            })
+        .orElseThrow();
+  }
+
+  @Override
   public List<ChartMemberProjectQty> findTopWorkers(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<MemberResponseResume> members =
         customRepository.findAllMembersResumeByCompanyId(companyId, true);
     return members.stream()
@@ -163,6 +116,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartTopToolsByMembersResponse> findTopMemberTools(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     Pageable pageable = PageRequest.of(0, 5);
     final Page<Object[]> topMembersTool = toolRepository.findTopMembersTool(pageable, companyId);
     return topMembersTool
@@ -182,6 +136,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartMemberByCategory> findQtyMemberByCategory(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<DevOpsCategory> categories = devOpsCategoryRepository.findAllByActiveOrderById(true);
     return categories.stream()
         .map(
@@ -210,12 +165,14 @@ public class ChartServiceImpl implements ChartService {
 
   @Override
   public List<ChartTopToolsByProject> findTopToolsByProject(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     return customRepository.findTopToolsByProject(companyId);
   }
 
   @Override
   @Transactional
   public List<ChartTopProjectTypes> findTopProjectTypes(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     Pageable pageable = PageRequest.of(0, 5);
     Page<Object[]> page = projectTypeRepository.findTopProjectTypes(pageable, companyId);
 
@@ -235,6 +192,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartLicenseResponse> findLicensesExpired(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesExpired(companyId, LocalDate.now());
 
@@ -246,6 +204,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartLicenseResponse> findLicensesExpiring(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesExpiring(companyId, LocalDate.now());
 
@@ -257,6 +216,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartLicenseResponse> findLicensesActives(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesActives(companyId, LocalDate.now());
 
@@ -268,6 +228,7 @@ public class ChartServiceImpl implements ChartService {
   @Override
   @Transactional
   public List<ChartLicenseConflict> findLicensesConflicts(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<CompanyLicense> licenses =
         companyLicenseRepository.findLicensesActives(companyId, LocalDate.now());
     final List<ChartLicenseConflict> charts =
@@ -337,6 +298,7 @@ public class ChartServiceImpl implements ChartService {
 
   @Override
   public ChartProjectQty findProjectQty(Long companyId) {
+    validatorUtil.canActOnCompany(companyId);
     final List<Project> projects = projectRepository.findAllByCompanyId(companyId);
     return ChartProjectQty.builder()
         .allQty(projects.size())
@@ -353,5 +315,75 @@ public class ChartServiceImpl implements ChartService {
       default:
         return "It seems that there are similar licenses active. Check if it is possible to use only one";
     }
+  }
+
+  private void setMissingCategoriesInSeniorChart(
+      List<DevOpsCategory> devOpsCategories, ChartTopSeniorMemberResponse chart) {
+    final List<Long> categoryIds =
+        chart.getKnowledgeList().stream()
+            .map(ChartMemberKnowledge::getCategoryId)
+            .collect(Collectors.toList());
+
+    final List<ChartMemberKnowledge> otherKnowledge =
+        devOpsCategories.stream()
+            .filter(category -> !categoryIds.contains(category.getId()))
+            .map(
+                category ->
+                    ChartMemberKnowledge.builder()
+                        .categoryId(category.getId())
+                        .category(category.getDescription())
+                        .value(0)
+                        .tools("")
+                        .build())
+            .collect(Collectors.toList());
+
+    chart.getKnowledgeList().addAll(otherKnowledge);
+    chart.setKnowledgeList(
+        chart.getKnowledgeList().stream()
+            .sorted(Comparator.comparing(ChartMemberKnowledge::getCategoryId))
+            .collect(Collectors.toList()));
+  }
+
+  private ChartTopSeniorMemberResponse mapMemberToChartSeniorMemberResponse(Member member) {
+    final String fullName = String.format("%s %s", member.getName(), member.getLastName());
+
+    final List<ChartMemberKnowledge> knowledgeList =
+        member.getToolProfile().stream()
+            .map(
+                toolProfile ->
+                    toolProfile.getTool().getSubcategories().stream()
+                        .map(DevOpsSubcategory::getDevOpsCategory)
+                        .distinct()
+                        .map(
+                            category ->
+                                MemberKnowledgeHelperDTO.builder()
+                                    .toolProfile(toolProfile)
+                                    .devOpsCategory(category)
+                                    .build())
+                        .collect(Collectors.toList()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.groupingBy(MemberKnowledgeHelperDTO::getDevOpsCategory))
+            .entrySet()
+            .stream()
+            .map(
+                entrySet ->
+                    ChartMemberKnowledge.builder()
+                        .categoryId(entrySet.getKey().getId())
+                        .category(entrySet.getKey().getDescription())
+                        .value(
+                            entrySet.getValue().stream()
+                                .map(value -> value.getToolProfile().getLevel().getPoints())
+                                .reduce(0, Integer::sum))
+                        .tools(
+                            entrySet.getValue().stream()
+                                .map(tool -> tool.getToolProfile().getTool().getName())
+                                .collect(Collectors.joining(", ")))
+                        .build())
+            .collect(Collectors.toList());
+    return ChartTopSeniorMemberResponse.builder()
+        .id(member.getId())
+        .fullName(fullName)
+        .knowledgeList(knowledgeList)
+        .build();
   }
 }

@@ -18,13 +18,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(
+    name = "project",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"name", "company_id"}))
 public class Project extends DateAudit {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @NotBlank private String name;
+  @NotBlank
+  @Column(name = "name", nullable = false)
+  private String name;
 
   @Column private LocalDate start;
 
@@ -35,7 +40,9 @@ public class Project extends DateAudit {
 
   @Column private Boolean finished;
 
-  @ManyToOne private Company company;
+  @ManyToOne
+  @JoinColumn(name = "company_id")
+  private Company company;
 
   @OneToMany(mappedBy = "project", cascade = CascadeType.REFRESH)
   private List<ProjectMember> members;

@@ -51,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public AuthResponse authenticateUser(AuthRequest request) {
+    request.setEmail(request.getEmail().toLowerCase());
     Authentication authentication;
     try {
       authentication =
@@ -123,7 +124,7 @@ public class AuthServiceImpl implements AuthService {
     user.setLastName(signUpRequest.getLastName());
     user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
     user.setRut(signUpRequest.getRut());
-    user.setEmail(tokenInfo.getEmail());
+    user.setEmail(tokenInfo.getEmail().toLowerCase());
     user.setCompany(company);
     user.setRole(role);
     user.setActive(true);

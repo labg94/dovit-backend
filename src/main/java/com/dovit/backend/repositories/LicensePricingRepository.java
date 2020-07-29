@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
  * @since 23-05-20
  */
 @Repository
-public interface LicensePricingRepository extends JpaRepository<LicensePricing, Long> {}
+public interface LicensePricingRepository extends JpaRepository<LicensePricing, Long> {
+
+  void deleteAllByLicenseId(Long licenseId);
+}
